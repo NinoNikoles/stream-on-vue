@@ -2,28 +2,24 @@
     <div class="innerWrap marg-top-l marg-bottom-l">
         <h1>{{ langSnippet('movies') }}</h1>
 
-        <div class="grid-row">';
+        <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
                 <label class="select">{{ langSnippet('genres') }}
-                    <select id="genre-filter" v-model="genreFilter">
+                    <select id="genre-filter" v-model="genreFilter" @change="getMovies">
                         <option value="all">{{ langSnippet('all') }}</option>
-
-                        <!-- $genres = getAllGenre();
-                        foreach ( $genres as $genre ) {
-                            echo '<option value="'.$genre['genre_id'].'">'.$genre['genre_name'].'</option>';
-                        } -->
+                        <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
                     </select>
                 </label>
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
                 <label class="select">{{ langSnippet('sorting') }}
-                    <select id="title-filter" v-model="orderFilter">
-                        <option value="title ASC">A - Z</option>
-                        <option value="title DESC">Z - A</option>
-                        <option value="releaseDate DESC">Neuste - Älteste</option>
-                        <option value="releaseDate ASC">Älteste - Neuste</option>
-                        <option value="rating DESC">Bewertung: Höchste - Niedrigste</option>
-                        <option value="rating ASC">Bewertung: Niedrigste - Höchste</option>
+                    <select id="title-filter" v-model="orderFilter" @change="getMovies">
+                        <option value="title,ASC">A - Z</option>
+                        <option value="title,DESC">Z - A</option>
+                        <option value="releaseDate,DESC">Neuste - Älteste</option>
+                        <option value="releaseDate,ASC">Älteste - Neuste</option>
+                        <option value="rating,DESC">Bewertung: Höchste - Niedrigste</option>
+                        <option value="rating,ASC">Bewertung: Niedrigste - Höchste</option>
                     </select>
                 </label>
             </div>
@@ -104,20 +100,32 @@ export default {
             selectedMovie: null,
             selectedMovieGenre: null,
             url: window.location.protocol + '//' + window.location.hostname,
-            genreFilter: null,
-            orderFilter: null
+            genres: null,
+            genreFilter: 'all',
+            orderFilter: "title,ASC"
         };
     },
 
     methods: {
         async getMovies() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="movie"&orderBy=title&order=ASC`);
+            var genreID = this.genreFilter;
+            var orderString = this.orderFilter;
+            var orderArr = orderString.split(',');
+            var orderBy = orderArr[0];
+            var orderType = orderArr[1];
+
+            if ( genreID === 'all' ) {
+                try {
+                    const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type='movie'&orderBy=${orderBy}&order=${orderType}`);
+                    this.movies = response.data;
+                    
+                } catch (error) {
+                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                    console.log(error);
+                }
+            } else {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaFiltered?mediaType=movie&orderBy=${orderBy}&order=${orderType}&genreID=${genreID}`);
                 this.movies = response.data;
-                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
             }
         },
         async genreMovies(genreID) {
@@ -129,10 +137,20 @@ export default {
                 console.log(error);
             }
         },
+        async getGenre() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
+                this.genres = response.data;
+                
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
         async selectMovie(movie) {
             this.selectedMovie = movie;
             var mediaGenres = JSON.parse(this.selectedMovie.genres);
-            console.log(mediaGenres);
+
             const selectedMediaGenre = [];
 
             for ( var genre of mediaGenres ) {
@@ -151,6 +169,7 @@ export default {
     },
     mounted() {
         this.getMovies();
+        this.getGenre();
     }
 };
 </script>

@@ -152,6 +152,21 @@ const addShow = (req, res) => {
     });
 };
 
+const getMediaFiltered = (req, res) => {
+    const { mediaType, orderBy, order, genreID } = req.query;
+    let query = `SELECT m.* FROM media AS m
+        JOIN media_genre AS mg ON m.tmdbID = mg.media_id
+        WHERE mg.genre_id = "${genreID}" AND m.media_type = "${mediaType}" ORDER BY ${orderBy} ${order}`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 // Genre
 const saveGenre = (req, res) => {
     const { genres } = req.body;
@@ -254,6 +269,7 @@ module.exports = {
     addMovie,
     addShow,
     getMedia,
+    getMediaFiltered,
     saveGenre,
     getGenre,
     getGenreNameByID,

@@ -39,7 +39,7 @@ $(document).ready(function() {
             self.remoteWatch();
             self.highlight();
             //self.mediaPopUp();
-            self.sorting();
+            //self.sorting();
             
         },
 
