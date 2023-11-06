@@ -16,7 +16,10 @@
                     </p>
                 </div>
             </div>
-            <div class="col3 marg-left-col1">
+            <div v-if="isHighlight==null" class="col3 marg-left-col1">
+                <div class="col12">
+                    <button @click="addHighlight(movie.tmdbID)" class="btn btn-success btn-save">Save</button>
+                </div>
                 <div class="col6">
                     <a href="#movie-poster" data-fancybox data-src="#movie-poster">
                         <figure class="poster">
@@ -43,6 +46,7 @@ export default {
         return {
             movie: null,
             genre: null,
+            isHighlight: null,
         };
     },
     methods: {
@@ -66,6 +70,40 @@ export default {
             }
 
             this.genre = genreData;
+        },
+        async addHighlight(mediaID) {
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/addHighlight?mediaID=${mediaID}`);
+
+                try {
+                    await this.checkForHighlight(); 
+                } catch (err) {
+                    console.log(err);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
+                       
+        },
+        async checkForHighlight() {
+            console.log('check');
+            var isTrue;
+
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/checkForHighlight?mediaID=${this.movie.tmdbID}`);
+                console.log(response.data.length);
+
+                if ( response.data.length > 0 ) {
+                    isTrue = 1;
+                } else {
+                    isTrue = null;
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
+            this.isHighlight = isTrue;
         }
     },
     mounted() {
@@ -77,6 +115,7 @@ export default {
             const genres = JSON.parse(this.movie.genres);
 
             this.getGenre(genres);
+            this.checkForHighlight();
         });
     }
 };

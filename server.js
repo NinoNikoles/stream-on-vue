@@ -43,6 +43,9 @@ app.get('/api/db/genreNameByID', serverAPI.getGenreNameByID);
 app.get('/api/db/genreSlider', serverAPI.genreSlider);
 app.get('/api/db/genreMovies', serverAPI.genreMovies);
 
+app.post('/api/db/addHighlight', serverAPI.addHighlight);
+app.get('/api/db/checkForHighlight', serverAPI.checkForHighlight);
+app.get('/api/db/getHighlight', serverAPI.getHighlight);
 
 
 app.listen(PORT, () => {

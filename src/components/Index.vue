@@ -1,4 +1,17 @@
 <template>
+    <div v-if="highlight" class="highlight-wrapper">
+        <figure class="widescreen"><img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" :alt="`${highlight.title}`"></figure>
+        <figure class="poster"><img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" :alt="`${highlight.title}`"></figure>
+        <div class='content-wrap mobile-only'>
+            <h1 class="h1 text-center">{{  highlight.title }}</h1>
+            <p class="small">{{  highlight.overview }}</p>
+        </div>
+        <div class='content-wrap desktop-only'>
+            <h1 class="h2 text-center">{{  highlight.title }}</h1>
+            <p>{{  highlight.overview }}</p>
+        </div>
+    </div>
+
     <div v-if="availableSlider" class="marg-bottom-l">
         <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index}`">
             <div class="col12 marg-top-l">
@@ -85,6 +98,7 @@ export default {
     mixins: [langSnippet],
     data() {
         return {
+            highlight: null,
             availableGenre: null,
             availableSlider: null,
             selectedMedia: null,
@@ -153,9 +167,19 @@ export default {
             }
 
             
+        },
+        async getHighlight() {
+            try {
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/getHighlight`);
+            } catch (err) {
+                console.log(err);
+            }
+
+            this.highlight = response.data[0];
         }
     },
     mounted() {
+        this.getHighlight();
         this.genreSlider();
     }
 };

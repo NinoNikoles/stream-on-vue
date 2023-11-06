@@ -225,8 +225,6 @@ function sendEpisode(episode) {
 };
 
 const genreSlider = (req, res) => {
-    //const { id } = req.query;
-
     let query = `SELECT DISTINCT genre.genre_id, genre.genre_name
     FROM genre
     WHERE genre.genre_id IN (
@@ -262,6 +260,45 @@ const genreMovies = (req, res) => {
     });
 }
 
+//-- Highlight --
+const checkForHighlight = (req, res) => {
+    const { mediaID } = req.query;
+    let query = `SELECT id FROM highlights WHERE highlight_id = ${mediaID}`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+const addHighlight = (req, res) => {
+    const { mediaID } = req.query;
+    let query = `INSERT OR REPLACE INTO highlights(highlight_id, highlight_status) 
+    VALUES (${mediaID}, 1)`;
+
+    db.run(query);
+}
+
+const getHighlight = (req, res) => {
+    let query = `SELECT highlights.highlight_id, media.title, media.overview, media.poster, media.backdrop, media.media_type, media.trailer
+    FROM highlights 
+    INNER JOIN media ON highlights.highlight_id = media.tmdbID
+    WHERE highlights.highlight_status = 1
+    ORDER BY RANDOM()
+    LIMIT 1`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 module.exports = {
     getSettings,
     getApiKey,
@@ -275,4 +312,7 @@ module.exports = {
     getGenreNameByID,
     genreSlider,
     genreMovies,
+    checkForHighlight,
+    addHighlight,
+    getHighlight
 };
