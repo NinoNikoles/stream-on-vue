@@ -41,11 +41,11 @@
                                 <a :href="`${route.path}`" :title="`${route.name}`">{{ route.name }}</a>
                             </li>
 
-                            <div class="col12 mobile-onlymarg-top-m">
+                            <div class="col12 mobile-only marg-top-m">
                                 <li class="menu-item spacer"><span>{{ langSnippet('admin') }}</span></li>
                             </div>
 
-                            <li v-for="route in backendRoutes" :key="route.name" class="menu-item">
+                            <li v-for="route in backendRoutes" :key="route.name" class="menu-item mobile-only">
                                 <a :href="`${route.path}`" :title="`${route.name}`">{{ route.name }}</a>
                             </li>
                             <!-- <div class="col12 mobile-only marg-top-m">
