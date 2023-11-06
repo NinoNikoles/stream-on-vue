@@ -1,0 +1,37 @@
+nav.header-menu-main {
+    overflow-y: auto;
+    
+    .menu {
+        .menu-item {
+            a {
+                &:not(.subbutton):not(.backbutton) {
+                    color: var(--font-color);
+
+                    &:hover {
+                        background: {
+                            color: var(--white-20);
+                        }
+                        
+                    }
+
+                    @include MQ(medium) {
+                        line-height: rem-calc(50);
+                        padding: {
+                            top: 0;
+                            bottom: 0;
+                        }
+                    }
+                }
+            }
+
+            &.current-menu-item > a:not(.subbutton):not(.backbutton),
+            &.current-menu-parent > a:not(.subbutton):not(.backbutton) {
+                color: var(--font-color-invert);
+            }
+
+            > a:not(.subbutton):not(.backbutton):hover {
+                color: var(--font-color);
+            }
+        }
+    }
+}

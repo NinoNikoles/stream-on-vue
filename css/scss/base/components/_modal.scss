@@ -1,0 +1,208 @@
+.modal {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 100%;
+    z-index: -200;
+    pointer-events: none;
+    @include transitions(left $transition-default, z-index 0s ease 0.3s);
+
+    @include MQ(xsmall) {
+        left: 0;
+        z-index: -200;
+    }
+
+    &.active {
+        pointer-events: all;
+        left: 0;
+        z-index: 9999;
+        @include transitions(left $transition-default 0.1s, z-index 0s ease 0s);
+
+        .modal-overlay {
+            opacity: 1;
+        }
+
+        .modal-wrap {
+            opacity: 1;
+        }
+    }
+
+    &-wrap {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        background: {
+            color: var(--dark-light);
+        }
+        width: 100%;
+        height: 100%;
+        position: relative;
+        /*padding: {
+            right: rem-calc($grid-padding);
+            left: rem-calc($grid-padding);
+        }*/
+        z-index: 1;
+    
+        @include MQ(xsmall) {
+            width: 75%;
+            height: auto;
+            max-height: 80%;    
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            @include transition(opacity $transition-default);
+        }
+    
+        @include MQ(medium) {
+            width: 40%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+        
+            &:hover {
+                background: var(--primary-dark);//
+            }
+        }
+    
+        &.small {
+            @include MQ(medium) {
+                width: 25%;
+            }
+        }
+        &.medium {
+            @include MQ(medium) {
+                width: 35%;
+            }
+        }
+        &.large {
+            @include MQ(medium) {
+                width: 50%;
+            }
+        }
+        &.full {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+    }
+
+    &-inner-wrap {
+        height: 100%;
+        position: relative;
+        overflow-y: auto;
+
+        @include MQ(xsmall) {
+            padding: {
+                top: rem-calc($grid-padding*2);
+                right: rem-calc($grid-padding);
+                bottom: rem-calc($grid-padding*2);
+                left: rem-calc($grid-padding);
+            }
+        }
+
+        > * {
+            display: block !important;
+            font-size: 0;
+        }
+    }
+
+    &-overlay {
+        display: block;
+        background: {
+            color: rgba(0,0,0,0.75);
+        }
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        @include transition(opacity $transition-default);
+    }
+
+    &-close {
+        background: {
+            color: var(--dark-light);
+        }
+        color: var(--font-color);
+        line: {
+            height: 1;
+        }
+        margin: 0;
+        padding: {
+            top: rem-calc($grid-padding/2 + 5);
+            right: rem-calc($grid-padding);
+            bottom: rem-calc($grid-padding/2 + 5);
+            left: rem-calc($grid-padding);
+        }
+        z-index: 1;
+
+        &::before {
+            content: "\e91e";
+            font: {
+                family: $icon-font;
+                size: rem-calc(24);
+            }
+            line: {
+                height: 1;
+            }
+        }
+
+        @include MQ(xsmall) {
+            background: {
+                color: transparent;
+            }
+            width: rem-calc($grid-padding*2);
+            height: rem-calc($grid-padding*2);
+            padding: 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+
+            &::before {
+                content: 'x';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    }
+
+    &-content {
+        display: none;
+    }
+
+    .modal-content {
+        display: block;
+    }
+}
+
+body.active-modal {
+    overflow: hidden;
+}
+
+.fancybox__container {
+    .fancybox__content {
+        background: {
+            color: var(--dark-light);
+        }
+    }
+}
+
+.fancybox__content {    
+    > .carousel__button {
+        &.is-close {
+            top: 0 !important;
+        }
+    }
+}

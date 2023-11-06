@@ -1,0 +1,144 @@
+.highlight {
+    &-wrapper {
+        display: flex;
+        height: 100vh;
+        margin: {
+            bottom: rem-calc(-180);
+        }
+        position: relative;
+        overflow: hidden;
+
+        @include MQ(medium) {
+            margin: {
+                top: rem-calc(-50);
+                bottom: rem-calc(-180);
+            } 
+        }
+
+        &::after {
+            display: block;
+            //background: rgb(0,0,0);
+            //background: linear-gradient(0deg, rgba(18,18,18,1) 10%, rgba(18,18,18,0.95) 15%, rgba(18,18,18,0.9) 20%, rgba(18,18,18,0.08) 90%, rgba(18,18,18,0.06) 92%, rgba(18,18,18,0.04) 94%, rgba(18,18,18,0.02) 96%, rgba(18,18,18,0.01) 98%);
+            background-image: linear-gradient(180deg,#14141400 0,hsla(0,0%,8%,.15) 15%,hsla(0,0%,8%,.35) 29%,hsla(0,0%,8%,.58) 44%,#121212ab 68%,#121212);
+            content: "";
+            width: 100%;
+            height: 20%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+
+            @include MQ(medium) {
+                height: rem-calc(180);
+            }
+        }
+
+        .poster {
+            display: flex;
+
+            @include MQ(xxsmall) {
+                display: none;
+                width: 25%;
+            }            
+        }
+
+        .widescreen {
+            display: none;
+            width: 100%;
+
+            @include MQ(xxsmall) {
+                display: flex;
+            }          
+        }
+
+        .button-wrap {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+            padding: {
+                top: 0;
+                right: 5%;
+                bottom: rem-calc(60);
+                left: 5%;
+            }
+            position: absolute;            
+            left: 0;
+            bottom: 0;
+            min-width: unset;
+            z-index: 1;
+
+            @include MQ(medium) {
+                flex-direction: column;
+                align-items: center;
+                width: 25%;
+                height: 100%;   
+                padding: 0;             
+            }
+
+            .btn {
+                -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+                -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+                box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+                display: inline-flex;
+                width: fit-content;
+                min-width: unset;
+
+                &:hover {
+                    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75) !important;
+                    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75) !important;
+                    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75) !important;
+                }
+            }
+        }
+
+        .content-wrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+            padding: {
+                right: rem-calc($space-base);
+                bottom: rem-calc(180);
+                left: rem-calc($space-base);
+            }
+            position: absolute;            
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            pointer-events: none;
+
+            @include MQ(xsmall) {
+                padding: {
+                    right: rem-calc($space-base*8);
+                    left: rem-calc($space-base*8);
+                }
+            }
+
+            @include MQ(medium) {
+                padding: {
+                    right: rem-calc($space-base*16);
+                    bottom: rem-calc(140);
+                    left: rem-calc($space-base*8);
+                }
+            }
+
+            &::before {
+                display: block;
+                background: {
+                    image: linear-gradient(180deg,#14141400 0,hsla(0,0%,8%,.15) 15%,hsla(0,0%,8%,.35) 29%,hsla(0,0%,8%,.58) 44%,#121212ab 68%,#121212);
+                }
+                content: "";
+                width: 100%;
+                height: 80%;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                z-index: 0;
+            }
+
+            > * {
+                z-index: 1;
+            }
+        }
+    }
+}

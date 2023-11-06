@@ -1,0 +1,64 @@
+.fancybox__content {
+    >.f-button.is-close-btn {
+        background: {
+            color: rgba(0, 0, 0, 0.6);
+        }
+        opacity: 0.75;
+        width: rem-calc($grid-padding*2);
+        height: rem-calc($grid-padding*2);
+        @include transition(all 0.15s ease);
+        
+        svg {
+            display: none;
+        }
+
+        &::before {
+            content: "x";
+            color: var(--white) !important;
+            font-family: "Default";
+            font-size: 1.5rem;
+            line-height: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+#movie-poster,
+#show-poster,
+#movie-backdrop,
+#show-backdrop {
+
+    @include MQ(xsmall) {
+        width: 70%;
+        height: auto;
+        max-height: 90%;
+    }
+}
+
+.modal-close {
+    background: {
+        color: rgba(0, 0, 0, 0.6);
+    }
+    opacity: 0.75;
+    @include transition(all 0.15s ease);
+
+    &::before {
+        color: var(--white) !important;
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+
+    @include MQ(m) {
+        width: rem-calc($grid-padding*2);
+        height: rem-calc($grid-padding*2);
+    }
+}

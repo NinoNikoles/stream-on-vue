@@ -1,0 +1,156 @@
+<template>
+    <div class="innerWrap marg-top-l marg-bottom-l">
+        <h1>{{ langSnippet('movies') }}</h1>
+
+        <div class="grid-row">';
+            <div class="col-12 col-3-medium grid-padding marg-bottom-s">
+                <label class="select">{{ langSnippet('genres') }}
+                    <select id="genre-filter" v-model="genreFilter">
+                        <option value="all">{{ langSnippet('all') }}</option>
+
+                        <!-- $genres = getAllGenre();
+                        foreach ( $genres as $genre ) {
+                            echo '<option value="'.$genre['genre_id'].'">'.$genre['genre_name'].'</option>';
+                        } -->
+                    </select>
+                </label>
+            </div>
+            <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
+                <label class="select">{{ langSnippet('sorting') }}
+                    <select id="title-filter" v-model="orderFilter">
+                        <option value="title ASC">A - Z</option>
+                        <option value="title DESC">Z - A</option>
+                        <option value="releaseDate DESC">Neuste - Älteste</option>
+                        <option value="releaseDate ASC">Älteste - Neuste</option>
+                        <option value="rating DESC">Bewertung: Höchste - Niedrigste</option>
+                        <option value="rating ASC">Bewertung: Niedrigste - Höchste</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div v-if="movies" class="grid-row" id="media-list">
+            <div v-for="(movie, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
+                <div class="media-card">
+                    <div class="media-card-wrapper">
+                        <figure class="widescreen desktop-only">
+                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${movie.title}`">
+                        </figure>
+                        <figure class="poster mobile-only">
+                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${movie.title}`">
+                        </figure>
+                        <div class="link-wrapper">
+                            <a v-if="movie.file_path" href="#" :title="`${movie.title}`" class="play-trigger"></a>
+                            <a href="#" @click="selectMovie(movie)" :title="langSnippet('more_informations')" class="info-trigger" data-modal :data-src="`${movie.tmdbID}`"></a>
+                            <a :href="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-wrap large">
+            <div class="modal-inner-wrap">
+                <div v-if="selectedMovie" class="info-popup" :id="`${selectedMovie.tmdbID}`">
+                    <div class="col12 marg-bottom-xs mobile-only">
+                        <figure class="widescreen">
+                            <img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
+                        </figure>
+                    </div>
+                    <div class="innerWrap">
+                        <div class="col7 marg-right-col1">
+                            <p class="h2">{{ selectedMovie.title }}</p>
+                            <p class="small tag-list marg-bottom-base">
+                                <span class="tag">{{ selectedMovie.release_date }}</span>
+                                <span class="tag">{{ selectedMovie.rating }}/10 ★</span>
+                                <!-- <span class="tag">'.$extraInfo.'</span> -->
+                            </p>
+                            <a v-if="selectedMovie.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                            <p class="small">{{ selectedMovie.overview }}</p>
+                            <p v-if="selectedMovieGenre" class="small tag-list marg-bottom-base">
+                                <span v-for="(genre, index) in selectedMovieGenre" :key="index" class="tag">
+                                    {{ genre }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col4 desktop-only">
+                            <figure class="poster">
+                                <img data-img="http://localhost:8080/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="modal-close"></a>
+        </div>
+    </div>
+
+</template>
+
+<script>
+import axios from 'axios';
+import langSnippet from '../api/language.vue';
+//import { Swiper, SwiperSlide } from 'swiper/vue';
+
+export default {
+    name: 'FrontendMovies',
+    mixins: [langSnippet],
+    data() {
+        return {
+            movies: null,
+            selectedMovie: null,
+            selectedMovieGenre: null,
+            url: window.location.protocol + '//' + window.location.hostname,
+            genreFilter: null,
+            orderFilter: null
+        };
+    },
+
+    methods: {
+        async getMovies() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="movie"&orderBy=title&order=ASC`);
+                this.movies = response.data;
+                
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
+        async genreMovies(genreID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreMovies?genreID=${genreID}`);
+                return response.data;
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
+        async selectMovie(movie) {
+            this.selectedMovie = movie;
+            var mediaGenres = JSON.parse(this.selectedMovie.genres);
+            console.log(mediaGenres);
+            const selectedMediaGenre = [];
+
+            for ( var genre of mediaGenres ) {
+                try {
+                    const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genre}`);
+                    var genreName  = response.data[0].genre_name;
+                    selectedMediaGenre.push(genreName);
+                } catch (error) {
+                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                    console.log(error);
+                }
+            }
+
+            this.selectedMediaGenre = selectedMediaGenre;            
+        }
+    },
+    mounted() {
+        this.getMovies();
+    }
+};
+</script>

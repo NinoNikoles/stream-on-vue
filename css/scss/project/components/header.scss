@@ -1,0 +1,43 @@
+#header {
+    padding: {
+        right: rem-calc($grid-padding);
+        left: rem-calc($grid-padding);
+    }
+
+    .logo {
+        height: rem-calc(50);
+    }
+
+    @include MQ(small) {
+        background: {
+            color: transparent;
+        }
+    }
+
+    &.fluid {
+        @include MQ(small) {
+            background: {
+                color: var(--header-bg);
+            }
+        } 
+    }
+}
+
+.menu-item {
+    &.spacer {
+        span {
+            display: block;
+            background: {
+                color: var(--grey-light);
+            }
+            color: var(--font-color-invert);
+            font-weight: 700;
+            padding-top: 1rem;
+            padding-right: 1.25rem;
+            padding-bottom: 1rem;
+            padding-left: 1.25rem;
+            width: 100%;
+            margin: 0;
+        }
+    }
+}

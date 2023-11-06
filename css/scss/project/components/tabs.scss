@@ -1,0 +1,61 @@
+.tabs {
+    @include MQ(medium) {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
+
+    &-panel {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: {
+            right: rem-calc($space-base/2);
+            left: rem-calc($space-base/2);
+        }
+
+        &.is-active {
+            display: flex;
+        }
+
+        > div {
+            display: flex;
+            flex-direction: column;
+            align-self: stretch;
+
+            padding: {
+                right: rem-calc($space-base/2);
+                left: rem-calc($space-base/2);
+            }
+
+            &:hover {
+                background: {
+                    color: var(--black);
+                }
+            }
+
+            &:first-of-type {
+                &:hover {
+                    background: {
+                        color: transparent;
+                    }
+                }
+            }
+
+            > span {
+                flex-grow: 1;
+            }
+        }
+    }
+
+    &-title {
+        max-width: 100%;
+
+        > a {
+            width: 100%;
+
+            @include MQ(medium) {
+                width: max-content;
+            }
+        }
+    }
+}

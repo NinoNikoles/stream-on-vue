@@ -1,0 +1,129 @@
+
+@mixin animate($animation,$duration,$method,$times){
+    animation: $animation $duration $method $times;
+}
+
+@mixin keyframes($name){
+    @keyframes #{$name}{
+        @content;
+    }
+}
+
+a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
+    line: {
+        height: 1 !important;
+    }
+    min-height: rem-calc(50) !important;
+
+    @include MQ(xsmall) {
+        min-width: unset !important;
+    }
+
+    &::before {
+        font: {
+            size: rem-calc(26) !important;
+        }
+    }
+
+    &.mylist-btn {
+        &.hidden {
+            display: none;
+        }
+    }
+
+    &.loading {
+        @include transitions(background-color $transition-default, color 0s ease);
+
+        &::after {
+            display: block !important;
+            background: {
+                color: transparent;
+            }
+            content: '\f110';
+            color: var(--font-color) !important;
+            font: {
+                family: $icon-font;
+                size: rem-calc(28);
+            }
+            margin: 0 !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) rotate(0deg);
+            opacity: 0;
+            visibility: hidden;
+
+            @include keyframes(spinner) {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            };
+        }
+
+        &.is-loading {
+            color: transparent !important;
+    
+            &::after {
+                opacity: 1;
+                visibility: visible;
+                @include animate(spinner, 2s, linear, infinite);
+            }
+        }
+
+        &.saved {
+            color: transparent !important;
+
+            &::after {
+                content: $icon-save;
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+}
+
+i {
+    &.icon-spinner {
+        &::after {
+            display: block !important;
+            background: {
+                color: transparent;
+            }
+            content: '\f110';
+            color: var(--white) !important;
+            font: {
+                family: $icon-font;
+                size: rem-calc(40);
+            }
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+
+            @include keyframes(spinner) {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            };
+            @include animate(spinner, 2s, linear, infinite);
+
+        }
+    }
+}
+
+.menu-button {
+    &.active-button {
+        .bar {
+            &-2 {
+                width: 0;
+                opacity: 1;
+            }
+        }
+    }
+}
