@@ -1,25 +1,15 @@
 <template>
-    <div></div>
+    <div class="innerWrap">
+        <div>
+            <iframe src="http://localhost/backend/tinyfilemanager.php" style="height: 1000px !important;"></iframe>
+        </div>
+    </div>
 </template>
 
 <script>
-//import axios from 'axios';
 
 export default {
     name: 'AppTest',
-    data() {
-        return {
-            movie: null,
-        };
-    },
-    methods: {
-        async outPutMovie() {
-
-        }
-    },
-    mounted() {
-
-    }
 };
 </script>
 
