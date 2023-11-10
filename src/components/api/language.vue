@@ -48,8 +48,11 @@ const langs = [
             'page_title': 'Page title',
             'password': 'Password',
             'profile': 'Profile',
+            'rating': 'Rating',
+            'release_date': 'Release date',
             'remove': 'Remove',
             'role': 'Role',
+            'runtime': 'Runtime',
             'save': 'Save',
             'search': 'Search',
             'search_results': 'Search results',
@@ -61,6 +64,7 @@ const langs = [
             'shows': 'TV Shows',
             'similar': 'Similar',
             'status': 'Status',
+            'thumbnail': 'Thumbnail',
             'tmdb_id': 'TMDB ID',
             'trailer': 'Trailer',
             'update': 'Update',
@@ -83,6 +87,12 @@ const langs = [
             'no_content_found': 'No content was found.',
             'pls_wait_for_admin_setup': 'No content has been added yet. Please be patient a little longer.',
             'upload_new_img': 'Upload new profile image',
+
+            //Add
+            'add_movie_to_library': 'Do you want to add the movie <strong>"$content"</strong> to your library?',
+
+            //Delete
+            'delete_highlight': 'Do you want to remove <strong>"$content"</strong> from highlights?',
         }
         
     },
@@ -133,8 +143,11 @@ const langs = [
             'page_title': 'Seitenname',
             'password': 'Passwort',
             'profile': 'Profil',
+            'rating': 'Bewertung',
+            'release_date': 'Erscheinungsdatum',
             'remove': 'Entfernen',
             'role': 'Rolle',
+            'runtime': 'Dauer',
             'save': 'Speichern',
             'search': 'Suchen',
             'search_results': 'Suchergebnisse',
@@ -146,6 +159,7 @@ const langs = [
             'shows': 'TV Serien',
             'similar': 'Ähnlich',
             'status': 'Status',
+            'thumbnail': 'Thumbnail',
             'tmdb_id': 'TMDB ID',
             'trailer': 'Trailer',
             'update': 'Aktualisieren',
@@ -168,6 +182,12 @@ const langs = [
             'no_content_found': 'Keine Inhalte gefunden.',
             'pls_wait_for_admin_setup': 'Es wurden noch keine Inhalte hinzugfügt. Bitte hab noch etwas Gedult.',
             'upload_new_img': 'Neues Profilbild hochladen',
+
+            //Add
+            'add_movie_to_library': 'Möchtest du den Film <strong>"$content"</strong> deiner Bibliothek hinzufügen?',
+
+            //Delete
+            'delete_highlight': 'Möchtest du <strong>"$content"</strong> aus den Highlights entfernen?',
         }
     }
 ]
@@ -175,15 +195,27 @@ const langs = [
 export default {
     name: 'LangSnippet',
     methods: {
-        langSnippet(snippet) {
+        langSnippet(snippet, content = '' ) {
             const browserLanguage = navigator.language || navigator.userLanguage;
             var langObject = langs.find(lang => lang.locale === browserLanguage);
             if (langObject && langObject.translations[snippet]) {
-                return langObject.translations[snippet];
+                let langsnippet = langObject.translations[snippet];
+
+                if ( content !== '' && langsnippet.includes("$content") ) {
+                    langsnippet = langsnippet.replace("$content", content);
+                }
+
+                return langsnippet;
             } else {
                 langObject = langs.find(lang => lang.locale === 'en-US');
                 if (langObject && langObject.translations[snippet]) {
-                    return langObject.translations[snippet];
+                    let langsnippet = langObject.translations[snippet];
+
+                    if ( content !== '' && langsnippet.includes("$content") ) {
+                        langsnippet = langsnippet.replace("$content", content);
+                    }
+
+                    return langsnippet;
                 }
                 return snippet;
             }            
