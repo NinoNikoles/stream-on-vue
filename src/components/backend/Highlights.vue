@@ -12,13 +12,13 @@
                             <th class="desktop-only">{{ langSnippet('thumbnail') }}</th>
                             <th>{{ langSnippet('name') }}</th>
                             <th>{{ langSnippet('status') }}</th>
-                            <th>{{ langSnippet('delete') }}</th>
+                            <th>{{ langSnippet('remove') }}</th>
                         </thead>
                         <tbody>
                             
                             <tr v-for="(highlight, index) in highlights" :key="index">
                                 <td class="desktop-only"><figure class="widescreen"><img :data-img="$loadImg('original', highlight.backdrop)" loading="lazy"></figure></td>
-                                <td>{{ highlight.title }}</td>
+                                <td><a :href="`/backend/movie/${highlight.highlight_id}`" :title="`${highlight.title}`" class="marg-no dark">{{ highlight.title }}</a></td>
                                 <td>
                                     <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-if="highlight.highlight_status === 1" v-bind:checked="true">
                                     <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-else>
@@ -26,9 +26,9 @@
                                 <td><button :data-src="`#delete-highlight-${highlight.highlight_id}`" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button></td>
                             
                                 <div :id="`delete-highlight-${highlight.highlight_id}`" style="display:none;">
-                                    <p>Möchtest du den Nutzer <strong>"{{ highlight.title }}"</strong> wirklich löschen?</p>
+                                    <p v-html="langSnippet('delete_highlight', highlight.title)"></p>
                                     <p class="text-right marg-no">
-                                        <button class="btn btn-alert" :data-media="`${highlight.highlight_id}`" data-fancybox-close type="submit" name="delete-highlight" @click="deleteHighlight">{{ langSnippet('delete') }}</button>
+                                        <button class="btn btn-alert icon-left icon-trash" :data-media="`${highlight.highlight_id}`" data-fancybox-close type="submit" name="delete-highlight" @click="deleteHighlight">{{ langSnippet('remove') }}</button>
                                     </p>
                                 </div>
                             </tr>
