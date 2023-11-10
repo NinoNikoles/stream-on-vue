@@ -7,16 +7,23 @@
 
             <div v-if="genreAvailable" class="col12 marg-bottom-m">
                 <div id="searchbar">
-                    <label for="movie-api-search">{{ langSnippet('movie_name') }}*
+                    <label for="movie-api-search">{{ langSnippet('movie_title') }}*
                         <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" placeholder="" required>
                     </label>
 
                     <div v-if="movies" id="movieSearchResults">
-                        <a v-for="(movie, index) in movies" :key="index" :href="`#movie-${movie.id}`" @click="selectMovie(movie)" class="display-flex flex-row marg-no">
+                        <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.tmdbID}`" data-fancybox class="display-flex flex-row marg-no">
                             <figure class="poster" style="width:20%;max-width:100px;">
                                 <img :data-img="$loadImg()" loading="lazy" :alt="`${movie.title}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ movie.title }}</span>
+
+                            <div :id="`add-movie-${movie.tmdbID}`" style="display:none;">
+                                <p v-html="langSnippet('add_movie_to_library', movie.title)"></p>
+                                <p class="text-right marg-no">
+                                    <button class="btn btn-success icon-left icon-add" :data-media="`${movie.tmdbID}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(movie)">{{ langSnippet('add') }}</button>
+                                </p>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -40,21 +47,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal" id="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-wrap large">
-            <div class="modal-inner-wrap">
-                <div v-if="selectedMovie">
-                    <p>Möchtest du {{ selectedMovie.title}} hinzufügen?</p>
-                    <p class="text-right">
-                        <button @click="saveData(selectedMovie)" class="btn btn-success icon-left icon-add" id="add-movie" name="add-movie">Add</button>
-                    </p>
-                </div>
-            </div>
-            <a href="#" class="modal-close"></a>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -70,7 +62,6 @@ export default {
             inputText: '',
             outputText: '',
             movies: null,
-            selectedMovie: null,
             outputMovies: null,
             genre: null,
             loader: document.getElementById('loader'),
@@ -120,7 +111,6 @@ export default {
         },
         async saveData(data) {
             this.loader.classList.remove('hidden');
-            document.getElementById('modal').classList.remove('active');
             const movie = await this.searchMovieByID(data.id);
             const genres = movie.genres.map(genre => genre.id);
 
@@ -152,7 +142,7 @@ export default {
                 console.log(err);
             }
             
-            console.log(this.langSnippet('add_movie_success'));
+            this.clearSearch();
             this.outPutMovies().then(outputMovies => {
                 // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
                 this.outputMovies = outputMovies;
@@ -176,9 +166,9 @@ export default {
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
         },
-        selectMovie(movie) {
-            document.getElementById('modal').classList.add('active');
-            this.selectedMovie = movie;
+        clearSearch() {
+            this.inputText = "";
+            this.outputText = this.inputText;
         },
         async outPutGenres() {
             try {
