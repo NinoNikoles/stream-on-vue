@@ -1,4 +1,8 @@
 .fancybox {
+    &-placeholder {
+        display: none;
+    }
+    
     &__content {
         display: flex !important;
         width: 100%;

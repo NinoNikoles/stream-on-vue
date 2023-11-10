@@ -12,6 +12,7 @@ import BackendMovies from './components/backend/Movies.vue';
 import BackendMovie from './components/backend/SingleMovie.vue';
 import BackendShows from './components/backend/Shows.vue';
 import BackendShow from './components/backend/SingleShow.vue';
+import BackendHighlights from './components/backend/Highlights.vue';
 
 function name(snippet) {
     return langSnippet.methods.langSnippet(snippet);
@@ -77,6 +78,12 @@ var routes = [
         name: name('show'),
         component: BackendShow,
         meta: { requiresAuth: false }
+    },
+    {
+        path: '/backend/highlights', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+        name: name('highlights'),
+        component: BackendHighlights,
+        meta: { requiresAuth: false, backend: true }
     },
     {
         path: '/test', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt

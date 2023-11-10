@@ -53,19 +53,21 @@ export default {
 
             if ( genres !== false ) {
                 try {
-                    await axios.post(`${this.$mainURL}:3000/api/db/saveGenre`, { genres } );
+                    var response = await axios.post(`${this.$mainURL}:3000/api/db/saveGenre`, { genres } );
+
+                    if ( response ) {
+                        this.outPutGenres().then(genres => {
+                            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
+                            if ( genres.length > 0 ) {
+                                this.genre = genres;
+                            } else {
+                                this.genre = null;
+                            }            
+                        });
+                    }
                 } catch (err) {
                     console.log(err);
-                }
-
-                this.outPutGenres().then(genres => {
-                    // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-                    if ( genres.length > 0 ) {
-                        this.genre = genres;
-                    } else {
-                        this.genre = null;
-                    }            
-                });
+                }                
             } else {
                 this.enableButton(saveButton);
             }            

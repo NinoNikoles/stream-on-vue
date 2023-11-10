@@ -607,6 +607,10 @@ function initCustomJS() {
         sliderNumber++;
     });
 
+    Fancybox.bind('[data-fancybox]', {
+        dragToClose: false,
+    });
+
     // info popup
     $modal = $('#modal');
     $modalCloseBtn = $('#modal .modal-close');

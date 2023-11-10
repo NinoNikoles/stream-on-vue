@@ -45,7 +45,10 @@ app.get('/api/db/genreMovies', serverAPI.genreMovies);
 
 app.post('/api/db/addHighlight', serverAPI.addHighlight);
 app.get('/api/db/checkForHighlight', serverAPI.checkForHighlight);
+app.get('/api/db/getAllHighlights', serverAPI.getAllHighlights);
 app.get('/api/db/getHighlight', serverAPI.getHighlight);
+app.post('/api/db/changeHighlightStatus', serverAPI.changeHighlightStatus);
+app.post('/api/db/deleteHighlight', serverAPI.deleteHighlight);
 
 
 app.listen(PORT, () => {

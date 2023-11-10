@@ -18,7 +18,7 @@
             </div>
             <div v-if="isHighlight==null" class="col3 marg-left-col1">
                 <div class="col12">
-                    <button @click="addHighlight(movie.tmdbID)" class="btn btn-success btn-save">Save</button>
+                    <button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
                 </div>
                 <div class="col6">
                     <a href="#movie-poster" data-fancybox data-src="#movie-poster">
@@ -73,12 +73,14 @@ export default {
         },
         async addHighlight(mediaID) {
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/addHighlight?mediaID=${mediaID}`);
+                var response = await axios.post(`${this.$mainURL}:3000/api/db/addHighlight?mediaID=${mediaID}`);
 
-                try {
-                    await this.checkForHighlight(); 
-                } catch (err) {
-                    console.log(err);
+                if ( response ) {
+                    try {
+                        await this.checkForHighlight(); 
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
             } catch (err) {
                 console.log(err);

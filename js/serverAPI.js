@@ -177,7 +177,7 @@ const saveGenre = (req, res) => {
         if (err) {
             res.status(500).json({ error: 'Failed to add data.' });
         } else {
-            res.json({ message: 'Data added successfully!', title: values[1] });
+            res.json(true);
         }
     });
 };
@@ -279,7 +279,27 @@ const addHighlight = (req, res) => {
     let query = `INSERT OR REPLACE INTO highlights(highlight_id, highlight_status) 
     VALUES (${mediaID}, 1)`;
 
-    db.run(query);
+    db.run(query, (err) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(true);
+    });
+}
+
+const getAllHighlights = (req, res) => {
+    let query = `SELECT highlights.highlight_id, highlights.highlight_status, media.title, media.backdrop
+    FROM highlights
+    INNER JOIN media ON highlights.highlight_id = media.tmdbID`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
 }
 
 const getHighlight = (req, res) => {
@@ -299,6 +319,31 @@ const getHighlight = (req, res) => {
     });
 }
 
+const changeHighlightStatus = (req, res) => {
+    const { id, status } = req.query;
+    let query = `UPDATE highlights SET highlight_status=${status} WHERE highlight_id=${id}`;
+
+    db.run(query, (err) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+    });
+}
+
+const deleteHighlight = (req, res) => {
+    const { id } = req.query;
+    let query = `DELETE FROM highlights WHERE highlight_id=${id}`;
+
+    db.all(query, (err) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(true);
+    });
+}
+
 module.exports = {
     getSettings,
     getApiKey,
@@ -314,5 +359,8 @@ module.exports = {
     genreMovies,
     checkForHighlight,
     addHighlight,
-    getHighlight
+    getAllHighlights,
+    getHighlight,
+    changeHighlightStatus,
+    deleteHighlight,
 };
