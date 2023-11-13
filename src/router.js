@@ -58,13 +58,13 @@ var routes = [
     },
     {
         path: '/backend/movies',
-        name: 'backend movies',
+        name: name('backend_movies'),
         component: BackendMovies,
         meta: { requiresAuth: false, backend: true }
     },
     {
         path: '/backend/shows',
-        name: name('shows'),
+        name: name('backend_shows'),
         component: BackendShows,
         meta: { requiresAuth: false, backend: true }
     },
