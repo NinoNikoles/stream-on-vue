@@ -1,5 +1,5 @@
 <template>
-    <div v-if="movie">
+    <div class="marg-top-xl marg-bottom-xl" v-if="movie">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ movie.title }}</h1></div>
@@ -7,7 +7,7 @@
                 <div class="col12"><p>{{ movie.overview }}</p></div>
                 <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
                 <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ movie.release_date }}</p></div>
-                <div class="col4"><p><strong>{{ langSnippet('runtime') }}:</strong><br>{{ movie.runtime }}</p></div>
+                <div class="col4"><p><strong>{{ langSnippet('runtime') }}:</strong><br>{{ runtime(movie.runtime) }}</p></div>
                 <div class="col12">
                     <p><strong>{{ langSnippet('genres') }}:</strong><br>
                         <span v-for="(listGenre, index) in genre" :key="index" class="tag">
@@ -38,10 +38,11 @@
 import axios from 'axios';
 import tmdbAPI from '../api/tmdbAPI.vue';
 import langSnippet from '../api/language.vue';
+import functions from '../api/functions.vue';
 
 export default {
     name: 'BackendMovie',
-    mixins: [tmdbAPI, langSnippet],
+    mixins: [tmdbAPI, langSnippet, functions],
     data() {
         return {
             movie: null,
@@ -89,12 +90,10 @@ export default {
                        
         },
         async checkForHighlight() {
-            console.log('check');
             var isTrue;
 
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/checkForHighlight?mediaID=${this.movie.tmdbID}`);
-                console.log(response.data.length);
 
                 if ( response.data.length > 0 ) {
                     isTrue = 1;

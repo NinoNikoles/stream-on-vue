@@ -2,12 +2,12 @@
     <div class="innerWrap">
         <div class="col12 marg-top-xl">
             <div class="col12">
-                <h1>Shows</h1>
+                <h1>{{ langSnippet('shows') }}</h1>
             </div>
 
             <div class="col12 marg-bottom-m">
                 <div id="searchbar">
-                    <label for="show-api-search">Show Name*
+                    <label for="show-api-search">{{ langSnippet('show_name') }}*
                         <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" placeholder="" required>
                     </label>
 
