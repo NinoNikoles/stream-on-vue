@@ -36,7 +36,7 @@
                     </table>
                 </div>
                 <div v-else>
-                    <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre">Add</button>
+                    <p>{{ langSnippet('')}}</p>
                 </div>
             </div>
         </div>
