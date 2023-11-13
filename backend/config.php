@@ -27,7 +27,7 @@ $auth_users = array(
 // Readonly users
 // e.g. array('users', 'guest', ...)
 $readonly_users = array(
-    'user'
+    'guest'
 );
 
 // Enable highlight.js (https://highlightjs.org/) on view's page
@@ -35,7 +35,7 @@ $use_highlightjs = true;
 
 // highlight.js style
 // for dark theme use 'ir-black'
-$highlightjs_style = 'vs';
+$highlightjs_style = 'ir-black';
 
 // Enable ace.js (https://ace.c9.io/) on view's page
 $edit_files = false;
@@ -102,7 +102,7 @@ $sticky_navbar = false;
 $path_display_mode = 'host';
 
 // max upload file size
-$max_upload_size_bytes = 500000;
+$max_upload_size_bytes = 50000000000000000000;
 
 // Possible rules are 'OFF', 'AND' or 'OR'
 // OFF => Don't check connection IP, defaults to OFF

@@ -25,6 +25,7 @@ module.exports = function(grunt) {
                 files: {
                     '<%= config.root %>public/build/style.min.css' : '<%= config.root %>css/scss/style.scss',
                     '<%= config.root %>public/build/font.min.css' : '<%= config.root %>css/scss/font.scss',
+                    '<%= config.root %>public/build/media-library.min.css' : '<%= config.root %>css/scss/media-library.scss',
                 }
             }
         },

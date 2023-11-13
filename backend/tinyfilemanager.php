@@ -1,6 +1,6 @@
 <?php
 //Default Configuration
-$CONFIG = '{"lang":"en","error_reporting":false,"show_hidden":false,"hide_Cols":false,"theme":"light"}';
+$CONFIG = '{"lang":"en","error_reporting":false,"show_hidden":false,"hide_Cols":false,"theme":"dark"}';
 
 
 /**
@@ -1503,7 +1503,7 @@ if (isset($_GET['settings']) && !FM_READONLY) {
                         }
                     }
                     ?>
-                    <div class="mt-3 mb-3 row ">
+                    <div class="mt-3 mb-3 row " style="display: none !important;">
                         <label for="js-error-report" class="col-sm-3 col-form-label"><?php echo lng('ErrorReporting') ?></label>
                         <div class="col-sm-9">
                             <div class="form-check form-switch">
@@ -1512,7 +1512,7 @@ if (isset($_GET['settings']) && !FM_READONLY) {
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-3 row" style="display: none !important;">
                         <label for="js-show-hidden" class="col-sm-3 col-form-label"><?php echo lng('ShowHiddenFiles') ?></label>
                         <div class="col-sm-9">
                             <div class="form-check form-switch">
@@ -1521,7 +1521,7 @@ if (isset($_GET['settings']) && !FM_READONLY) {
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-3 row" style="display: none !important;">
                         <label for="js-hide-cols" class="col-sm-3 col-form-label"><?php echo lng('HideColumns') ?></label>
                         <div class="col-sm-9">
                             <div class="form-check form-switch">
@@ -1530,7 +1530,7 @@ if (isset($_GET['settings']) && !FM_READONLY) {
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-3 row" style="display: none !important;">
                         <label for="js-3-1" class="col-sm-3 col-form-label"><?php echo lng('Theme') ?></label>
                         <div class="col-sm-5">
                             <select class="form-select w-100" id="js-3-0" name="js-theme-3">
@@ -2182,16 +2182,16 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                 <li class="list-inline-item"><a href="#/unselect-all" class="btn btn-small btn-outline-primary btn-2" onclick="unselect_all();return false;"><i class="fa fa-window-close"></i> <?php echo lng('UnSelectAll') ?> </a></li>
                 <li class="list-inline-item"><a href="#/invert-all" class="btn btn-small btn-outline-primary btn-2" onclick="invert_all();return false;"><i class="fa fa-th-list"></i> <?php echo lng('InvertSelection') ?> </a></li>
                 <li class="list-inline-item"><input type="submit" class="hidden" name="delete" id="a-delete" value="Delete" onclick="return confirm('<?php echo lng('Delete selected files and folders?'); ?>')">
-                    <a href="javascript:document.getElementById('a-delete').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-trash"></i> <?php echo lng('Delete') ?> </a></li>
-                <li class="list-inline-item"><input type="submit" class="hidden" name="zip" id="a-zip" value="zip" onclick="return confirm('<?php echo lng('Create archive?'); ?>')">
-                    <a href="javascript:document.getElementById('a-zip').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-file-archive-o"></i> <?php echo lng('Zip') ?> </a></li>
-                <li class="list-inline-item"><input type="submit" class="hidden" name="tar" id="a-tar" value="tar" onclick="return confirm('<?php echo lng('Create archive?'); ?>')">
-                    <a href="javascript:document.getElementById('a-tar').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-file-archive-o"></i> <?php echo lng('Tar') ?> </a></li>
+                    <a href="javascript:document.getElementById('a-delete').click();" class="btn btn-small btn-alert btn-2"><i class="fa fa-trash"></i> <?php echo lng('Delete') ?> </a></li>
+                <!-- <li class="list-inline-item"><input type="submit" class="hidden" name="zip" id="a-zip" value="zip" onclick="return confirm('<?php echo lng('Create archive?'); ?>')">
+                    <a href="javascript:document.getElementById('a-zip').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-file-archive-o"></i> <?php echo lng('Zip') ?> </a></li> -->
+                <!-- <li class="list-inline-item"><input type="submit" class="hidden" name="tar" id="a-tar" value="tar" onclick="return confirm('<?php echo lng('Create archive?'); ?>')">
+                    <a href="javascript:document.getElementById('a-tar').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-file-archive-o"></i> <?php echo lng('Tar') ?> </a></li> -->
                 <li class="list-inline-item"><input type="submit" class="hidden" name="copy" id="a-copy" value="Copy">
                     <a href="javascript:document.getElementById('a-copy').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-files-o"></i> <?php echo lng('Copy') ?> </a></li>
             </ul>
         </div>
-        <div class="col-3 d-none d-sm-block"><a href="https://tinyfilemanager.github.io" target="_blank" class="float-right text-muted">Tiny File Manager <?php echo VERSION; ?></a></div>
+        <div class="col-3 d-none d-sm-block" style="display: none !important;"><a href="https://tinyfilemanager.github.io" target="_blank" class="float-right text-muted">Tiny File Manager <?php echo VERSION; ?></a></div>
         <?php else: ?>
             <div class="col-12"><a href="https://tinyfilemanager.github.io" target="_blank" class="float-right text-muted">Tiny File Manager <?php echo VERSION; ?></a></div>
         <?php endif; ?>
@@ -3620,7 +3620,7 @@ global $lang, $root_url, $sticky_navbar, $favicon_path;
 $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
 ?>
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -3764,6 +3764,7 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
             .theme-dark .btn-outline-primary:hover, .theme-dark .btn-outline-primary:active { background-color: #028211;}
         </style>
     <?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="http://localhost/public/build/media-library.min.css">
 </head>
 <body class="<?php echo (FM_THEME == "dark") ? 'theme-dark' : ''; ?> <?php echo $isStickyNavBar; ?>">
 <div id="wrapper" class="container-fluid">
@@ -3778,10 +3779,6 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
                 </div>
                 <div class="modal-body">
                     <p><label for="newfile"><?php echo lng('ItemType') ?> </label></p>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="newfile" id="customRadioInline1" name="newfile" value="file">
-                      <label class="form-check-label" for="customRadioInline1"><?php echo lng('File') ?></label>
-                    </div>
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" type="radio" name="newfile" id="customRadioInline2" value="folder" checked>
                       <label class="form-check-label" for="customRadioInline2"><?php echo lng('Folder') ?></label>

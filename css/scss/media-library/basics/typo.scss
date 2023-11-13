@@ -1,0 +1,11 @@
+*:not(i) {
+    font-family: $font-family !important;
+}
+
+a, a:hover, a:visited, a:active, #main-table .filename a {
+    color: var(--white);
+}
+
+.text-danger {
+    color: var(--alert);
+}
