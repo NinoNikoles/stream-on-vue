@@ -13,15 +13,18 @@ export default {
     methods: {
         async tmdbApiRequest(request, query = "", language = this.LANGUAGE) {
             if ( this.API_KEY === null ) return false;
+            var requestQuery = '';
+            var requestLanguage = '';
 
-            var requestSettings;
             if ( query !== "" ) {
-                requestSettings = `&query=${query}&language=${language}`;
-            } else {
-                requestSettings = `&language=${language}`;
+                requestQuery = `&query=${query}&language=${language}`;
             }
-
-            const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestSettings}`);
+            
+            if ( language !== "" ) {
+                requestLanguage = `&language=${language}`;
+            }
+            
+            const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
             return response;
         },
         async checkApiKey(key) {
@@ -84,14 +87,22 @@ export default {
             return mediaObj.genres;
         },
         // Thumbnails
-        async getBackdrops(mediaID, language = ``) {
-            const movie = await this.tmdbApiRequest(`movie/${mediaID}/images`, '', language);
-            return movie.data.backdrops;
+        async getBackdrops(type, mediaID) {
+            try {
+                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`, '', '');
+                return response.data.backdrops;
+            } catch(err) {
+                console.log(err);
+            }
         },
         // Poster
-        async getPosters(mediaID, language = ``) {
-            const movie = await this.tmdbApiRequest(`movie/${mediaID}/images`, '', language);
-            return movie.data.posters;
+        async getPosters(type, mediaID) {
+            try {
+                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`, '', '');
+                return response.data.posters;
+            } catch(err) {
+                console.log(err);
+            }
         },
         async getSettings() {
             try {
