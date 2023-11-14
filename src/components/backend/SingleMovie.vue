@@ -16,17 +16,60 @@
                     </p>
                 </div>
             </div>
-            <div v-if="isHighlight==null" class="col3 marg-left-col1">
-                <div class="col12">
+  
+            <div class="col3 marg-left-col1">
+                <div v-if="isHighlight==null" class="col12">
                     <button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
                 </div>
-                <div class="col6">
-                    <a href="#movie-poster" data-fancybox data-src="#movie-poster">
-                        <figure class="poster">
-                            <img :data-img="`${movie.poster }`" loading="lazy" alt="">
-                        </figure>
-                    </a>
-                    <div id="movie-poster" class="bg-primary" style="display:none;"><p>test</p></div>
+
+                <div class="row">
+                    <div class="col6 column">
+                        <a href="#movie-poster" data-fancybox data-src="#movie-poster">
+                            <figure class="poster">
+                                <img :data-img="$loadImg('original', movie.poster)" loading="lazy" alt="">
+                            </figure>
+                        </a>
+                        <div id="movie-poster" style="display:none;">
+                            <p>{{ langSnippet('select_new_poster') }}:</p>
+                            <div v-if="allPosters" class="row">
+                                <div v-for="(poster, index) in allPosters" :key="index" class="col-6 col-3-medium column marg-bottom-base">
+                                    <div class="poster-select">
+                                        <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster}`">
+                                        <figure class="poster">
+                                            <img :data-img="$loadImg('original', poster.file_path)" loading="lazy" alt="">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-right">
+                                <button @click="savePoster()" class="btn btn-success" name="change-poster">{{ langSnippet('save') }}</button>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col6 column">
+                        <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
+                            <figure class="widescreen">
+                                <img :data-img="$loadImg('original', movie.backdrop)" loading="lazy" alt="">
+                            </figure>
+                        </a>
+                        <div id="movie-backdrop" style="display:none;">
+                            <p>{{ langSnippet('select_new_backdrop') }}:</p>
+                            <div v-if="allBackdrops" class="row">
+                                <div v-for="(backdrop, index) in allBackdrops" :key="index" class="col-6 col-3-medium column marg-bottom-base">
+                                    <div class="poster-select">
+                                        <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop}`">
+                                        <figure class="original">
+                                            <img :data-img="$loadImg('original', backdrop.file_path)" loading="lazy" alt="">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-right">
+                                <button @click="saveBackdrop()" class="btn btn-success" name="change-backdrop">{{ langSnippet('save') }}</button>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -48,6 +91,8 @@ export default {
             movie: null,
             genre: null,
             isHighlight: null,
+            allPosters: null,
+            allBackdrops: null,
         };
     },
     methods: {
@@ -72,13 +117,34 @@ export default {
 
             this.genre = genreData;
         },
+        async getAllImages(mediaID) {
+            try {
+                var posters = await this.getPosters('movie', mediaID);
+            } catch(err) {
+                console.log();
+            }
+            try {
+                var backdrops = await this.getBackdrops('movie', mediaID);
+            } catch(err) {
+                console.log();
+            }
+            
+            this.allPosters = posters;
+            this.allBackdrops = backdrops;
+        },
+        async savePoster() {
+
+        },
+        async saveBackdrop() {
+
+        },
         async addHighlight(mediaID) {
             try {
                 var response = await axios.post(`${this.$mainURL}:3000/api/db/addHighlight?mediaID=${mediaID}`);
 
                 if ( response ) {
                     try {
-                        await this.checkForHighlight(); 
+                        this.isHighlight = await this.checkForHighlight(); 
                     } catch (err) {
                         console.log(err);
                     }
@@ -104,21 +170,25 @@ export default {
                 console.log(err);
             }
 
-            this.isHighlight = isTrue;
+            return isTrue;
         }
     },
     mounted() {
         const movieID = this.$route.params.id;
-        
+
         this.outPutMovie(movieID).then(movie => {
             // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
             this.movie = movie[0];
             const genres = JSON.parse(this.movie.genres);
-
+            
+            this.getAllImages(movieID);
             this.getGenre(genres);
-            this.checkForHighlight();
+            this.checkForHighlight().then(isTrue => {
+                this.isHighlight = isTrue;
+            });
         });
     }
+        
 };
 </script>
 

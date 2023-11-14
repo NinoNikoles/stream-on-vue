@@ -7,9 +7,9 @@ const app = createApp(App);
 // Setze globale Konfigurationsoptionen (wie productionTip)
 app.config.globalProperties.productionTip = false; // Setze den Wert auf true oder false, wie benötigt
 
-function loadImg() {
-    //return `http://image.tmdb.org/t/p/${size}${img}`;
-    return '../build/css/images/img_preview.webp';
+function loadImg(size, img) {
+    return `http://image.tmdb.org/t/p/${size}${img}`;
+    //return '/build/css/images/img_preview.webp';
 }
 
 function truncate(string, length = 100, append = "...") {
