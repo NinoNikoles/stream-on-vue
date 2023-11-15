@@ -24,10 +24,9 @@
                     <div class="search-bar">
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
-                            <input type="text" id="movie-live-search" name="search" placeholder="Suchen">
+                            <input type="text" id="media-live-search" v-model="searchInput" @input="handleSearchInput" name="search" placeholder="Suchen">
                             <button class="btn search-btn"></button>
                         </div>
-                        <div id="movieLivesearchResults"></div>
                     </div>
 
                     <!-- Navigation -->
@@ -86,23 +85,27 @@
             </div>
         </div>
 
-
+        <div v-if="searchResults" id="searchResults" style="width:100vw;height:calc(100vh - 50px);position:absolute;top:50px;left:0;z-index:-10;background-color:blue"></div>
     </header>
 </template>
   
 <script>
+import axios from 'axios';
 import router from './../router';
 import langSnippet from './api/language.vue';
+import tmdb from './api/tmdbAPI.vue';
 
 export default {
     name: 'AppHeader',
-    mixins: [langSnippet],
+    mixins: [langSnippet, tmdb],
     data() {
         return {
             mainRoutes: null,
             backendRoutes: null,
             router: router, // Greife auf die Routen des router-Objekts zu
             routes: router.options.routes,
+            searchInput: '',
+            searchResults: null
         };
     },
     methods: {
@@ -115,7 +118,20 @@ export default {
             return this.routes.filter(route => {
                 return route.meta.backend;
             });
-        }
+        },
+        async handleSearchInput() {
+            let input = this.searchInput;
+            console.log(input);
+
+            try {
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
+                console.log(response.data);
+                this.searchResults = response.data;
+            } catch (err) {
+                console.log(err);
+            }
+            
+        },
     },
     mounted() {
         this.mainRouter().then(routes => {

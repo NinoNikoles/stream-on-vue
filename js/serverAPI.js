@@ -77,6 +77,30 @@ const getMedia = (req, res) => {
     });
 }
 
+const getMediaByInput = (req, res) => {
+    const { input, orderBy, order } = req.query;
+
+    let query = `SELECT * FROM media`;
+
+    query += ` WHERE title LIKE '%${input}%'`;
+
+    if (orderBy) {
+        query += ` ORDER BY ${orderBy}`;
+    }
+
+    if (order) {
+        query += ` ${order}`;
+    }
+    console.log(query);
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 const addMovie = (req, res) => {
     const { media } = req.body;
  
@@ -351,6 +375,7 @@ module.exports = {
     addMovie,
     addShow,
     getMedia,
+    getMediaByInput,
     getMediaFiltered,
     saveGenre,
     getGenre,

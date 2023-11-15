@@ -32,6 +32,7 @@ app.get('/api/db/getApiKey', serverAPI.getApiKey);
 app.post('/api/db/movie', serverAPI.addMovie);
 app.post('/api/db/show', serverAPI.addShow);
 app.get('/api/db/media', serverAPI.getMedia);
+app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 
 // API-Endpunkt für Genre

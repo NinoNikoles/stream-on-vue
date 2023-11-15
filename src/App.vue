@@ -17,5 +17,3 @@ export default {
     },
 };
 </script>
-
-<!-- <script src="/build/combined.min.js"></script> -->
