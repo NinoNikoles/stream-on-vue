@@ -12,16 +12,16 @@
                     </label>
 
                     <div v-if="movies" id="movieSearchResults">
-                        <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.tmdbID}`" data-fancybox class="display-flex flex-row marg-no">
+                        <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.id}`" data-fancybox class="display-flex flex-row marg-no">
                             <figure class="poster" style="width:20%;max-width:100px;">
                                 <img :data-img="$loadImg()" loading="lazy" :alt="`${movie.title}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ movie.title }}</span>
 
-                            <div :id="`add-movie-${movie.tmdbID}`" style="display:none;">
+                            <div :id="`add-movie-${movie.id}`" style="display:none;">
                                 <p v-html="langSnippet('add_movie_to_library', movie.title)"></p>
                                 <p class="text-right marg-no">
-                                    <button class="btn btn-success icon-left icon-add" :data-media="`${movie.tmdbID}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(movie)">{{ langSnippet('add') }}</button>
+                                    <button class="btn btn-success icon-left icon-add" :data-media="`${movie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(movie)">{{ langSnippet('add') }}</button>
                                 </p>
                             </div>
                         </a>
@@ -115,12 +115,28 @@ export default {
             const genres = movie.genres.map(genre => genre.id);
 
             let date = movie.release_date;
-            let parsedDate = new Date(date);
+            let parsedDate = '';
+
+            if ( date != '' ) {
+                parsedDate = new Date(date);
+ 
+                
+            } else {
+                parsedDate = new Date();
+            }
+
             let day = parsedDate.getDate();
             let month = parsedDate.getMonth() + 1;
             let year = parsedDate.getFullYear();
             let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
+            var collection = null;
 
+            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
+                collection = movie.belongs_to_collection.id;
+            } else {
+                collection = null;
+            }
+            
             var media = {
                 tmdbID: movie.id,
                 title: movie.title,
@@ -129,11 +145,12 @@ export default {
                 overview: movie.overview,
                 poster: movie.poster_path,
                 backdrop: movie.backdrop_path,
-                collection: movie.belongs_to_collection,
+                collection: collection,
                 runtime: movie.runtime,
                 rating: movie.vote_average.toFixed(2),
                 release_date: formattedDate,
-                media_type: "movie"
+                media_type: "movie",
+                created: new Date()
             }
 
             try {

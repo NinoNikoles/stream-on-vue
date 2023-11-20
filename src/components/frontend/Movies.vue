@@ -5,7 +5,7 @@
         <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
                 <label class="select">{{ langSnippet('genres') }}
-                    <select id="genre-filter" v-model="genreFilter" @change="getMovies">
+                    <select id="genre-filter" v-model="genreFilter" @change="getMovies()">
                         <option value="all">{{ langSnippet('all') }}</option>
                         <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
                     </select>
@@ -13,7 +13,7 @@
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
                 <label class="select">{{ langSnippet('sorting') }}
-                    <select id="title-filter" v-model="orderFilter" @change="getMovies">
+                    <select id="title-filter" v-model="orderFilter" @change="getMovies()">
                         <option value="title,ASC">A - Z</option>
                         <option value="title,DESC">Z - A</option>
                         <option value="releaseDate,DESC">Neuste - Älteste</option>
@@ -124,7 +124,7 @@ export default {
                     console.log(error);
                 }
             } else {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaFiltered?mediaType=movie&orderBy=${orderBy}&order=${orderType}&genreID=${genreID}`);
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaFiltered?mediaType=movie&orderBy=${orderBy}&order=${orderType}&genreID=${parseInt(genreID)}`);
                 this.movies = response.data;
             }
         },

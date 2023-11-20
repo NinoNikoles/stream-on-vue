@@ -104,6 +104,43 @@ export default {
                 console.log(err);
             }
         },
+
+
+
+        //-- Get collection movies
+        async getCollectionMovies(collectionID) {
+            try {
+                const response = await this.tmdbApiRequest(`collection/${collectionID}`, '');
+                return response.data.parts;
+            } catch(err) {
+                console.log(err);
+            }
+        },
+
+        //-- Get simliar movies
+        async getSimilarMovies(mediaID) {
+            try {
+                const response = await this.tmdbApiRequest(`movie/${mediaID}/similar`, '');
+                return response.data;
+            } catch(err) {
+                console.log(err);
+            }
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         async getSettings() {
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/getSettings`);
@@ -112,6 +149,25 @@ export default {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
+        },
+        async checkIfMediaIsInDB(mediaArray) {
+            const newCheckedArray = [];
+
+            // Verwende map anstelle von forEach, um ein Array von Promises zu erhalten
+            const promises = mediaArray.map(async (media) => {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${media.id}"`);
+                if (response.data.length === 0) newCheckedArray.push(media);
+            } catch (error) {
+                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
+                    // Wirf einen Fehler, um zu signalisieren, dass etwas schief gelaufen ist
+                    throw error;
+                }
+            });
+
+            // Warte auf Abschluss aller Promises
+            await Promise.all(promises);
+            return newCheckedArray;
         }
     },
     mounted() {

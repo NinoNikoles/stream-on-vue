@@ -72,7 +72,54 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="innerWrap marg-top-xl" v-if="collection.length > 0">
+            <div class="col12">
+                <h2>Kollektion</h2>
+
+                <div class="row">
+                    <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium column">
+                        <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card">
+                            <figure class="poster">
+                                <img :src="$loadImg()" loading="lazy" :alt="`${kMovie.title}`">
+                            </figure>
+                            <span class="title marg-no">{{ $truncate(kMovie.title, 15) }}</span>
+                        </a>
+
+                        <div :id="`add-movie-${kMovie.id}`" style="display:none;">
+                            <p v-html="langSnippet('add_movie_to_library', kMovie.title)"></p>
+                            <p class="text-right marg-no">
+                                <button class="btn btn-success icon-left icon-add" :data-media="`${kMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(kMovie)">{{ langSnippet('add') }}</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="innerWrap marg-top-xl" v-if="similarMovies.length > 0">
+            <div class="col12">
+                <h2>Ähnliche</h2>
+
+                <div class="row">
+                    <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium column">
+                        <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card">
+                            <figure class="poster">
+                                <img :src="$loadImg()" loading="lazy" :alt="`${sMovie.title}`">
+                            </figure>
+                            <span class="title marg-no">{{ $truncate(sMovie.title, 15) }}</span>
+                        </a>
+
+                        <div :id="`add-movie-${sMovie.id}`" style="display:none;">
+                            <p v-html="langSnippet('add_movie_to_library', sMovie.title)"></p>
+                            <p class="text-right marg-no">
+                                <button class="btn btn-success icon-left icon-add" :data-media="`${sMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(sMovie)">{{ langSnippet('add') }}</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>    
 </template>
@@ -93,6 +140,10 @@ export default {
             isHighlight: null,
             allPosters: null,
             allBackdrops: null,
+            collection: [],
+            collectionID: null,
+            similarMovies: [],
+            loader: document.getElementById('loader'),
         };
     },
     methods: {
@@ -171,19 +222,131 @@ export default {
             }
 
             return isTrue;
-        }
+        },
+        async returnCollectionMovies(collectionID) {
+            try {
+                const response = await this.getCollectionMovies(collectionID);
+                var checkedCollection = await this.checkIfMediaIsInDB(response);
+                this.collection = checkedCollection;
+            } catch (err) {
+                console.log(err);
+            }   
+        },
+        async returnSimilarMovies(movieID) {
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            try {
+                const response = await this.getSimilarMovies(movieID);
+                if (!response || !response.results) {
+                    console.error('Ungültige Antwort von API:', response);
+                    return;
+                }
+
+                var newCheckedArray = await this.checkIfMediaIsInDB(response.results);
+                if (!newCheckedArray || newCheckedArray.length === 0) {
+                    console.error('Leeres oder ungültiges Array nach Überprüfung:', newCheckedArray);
+                    this.similarMovies = null;
+                } else {
+                    // Mische das Array
+                    const shuffledArray = shuffleArray(newCheckedArray);
+                    if (!shuffledArray || shuffledArray.length === 0) {
+                        this.similarMovies = null;
+                    }
+
+                    // Slice
+                    this.similarMovies = shuffledArray.slice(0, 12);
+                }
+
+
+            } catch (err) {
+                console.log(err);
+            }
+        },
+
+
+
+        async saveData(data) {
+            this.loader.classList.remove('hidden');
+            
+            const movie = await this.searchMovieByID(data.id);
+            const genres = movie.genres.map(genre => genre.id);
+
+            let date = movie.release_date;
+            let parsedDate = '';
+
+            if ( date != '' ) {
+                parsedDate = new Date(date);
+ 
+                
+            } else {
+                parsedDate = new Date();
+            }
+
+            let day = parsedDate.getDate();
+            let month = parsedDate.getMonth() + 1;
+            let year = parsedDate.getFullYear();
+            let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
+            var collection = null;
+
+            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
+                collection = movie.belongs_to_collection.id;
+            } else {
+                collection = null;
+            }
+            
+            var media = {
+                tmdbID: movie.id,
+                title: movie.title,
+                tagline: movie.tagline,
+                genres: JSON.stringify(genres),
+                overview: movie.overview,
+                poster: movie.poster_path,
+                backdrop: movie.backdrop_path,
+                collection: collection,
+                runtime: movie.runtime,
+                rating: movie.vote_average.toFixed(2),
+                release_date: formattedDate,
+                media_type: "movie",
+                created: new Date()
+            }
+
+            try {
+                await this.sendMedia(media);
+            } catch (err) {
+                console.log(err);
+            }
+            
+            this.returnCollectionMovies(this.movie.collection);
+            this.returnSimilarMovies(this.$route.params.id);
+        },
+        async sendMedia(media) {
+            var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
+
+            if ( response.data.message === true ) {
+                this.loader.classList.add('hidden');
+            }
+        },
     },
     mounted() {
         const movieID = this.$route.params.id;
 
-        this.outPutMovie(movieID).then(movie => {
+        this.outPutMovie(movieID).then(async(movie) => {
             // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
             this.movie = movie[0];
             const genres = JSON.parse(this.movie.genres);
+            const collection = this.movie.collection;
             
-            this.getAllImages(movieID);
-            this.getGenre(genres);
-            this.checkForHighlight().then(isTrue => {
+            await this.getAllImages(movieID);
+            await this.getGenre(genres);
+            await this.returnCollectionMovies(collection);
+            await this.returnSimilarMovies(movieID);
+            await this.checkForHighlight().then(isTrue => {
                 this.isHighlight = isTrue;
             });
         });

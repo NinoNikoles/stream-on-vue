@@ -191,6 +191,32 @@ const getMediaFiltered = (req, res) => {
     });
 }
 
+//-- Seasons --
+const getSeasons = (req, res) => {
+    const { showID } = req.query;
+    let query = `SELECT * FROM seasons WHERE show_tmdbID = ${showID} ORDER BY season_number ASC`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+//-- Episodes --
+const getEpisodes = (req, res) => {
+    const { showID } = req.query;
+    let query = `SELECT * FROM episodes WHERE show_id = ${showID} ORDER BY season_number, episode_number ASC`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 // Genre
 const saveGenre = (req, res) => {
     const { genres } = req.body;
@@ -377,6 +403,8 @@ module.exports = {
     getMedia,
     getMediaByInput,
     getMediaFiltered,
+    getSeasons,
+    getEpisodes,
     saveGenre,
     getGenre,
     getGenreNameByID,
