@@ -12,15 +12,15 @@
         </div>
     </div>
 
-    <div v-if="availableSlider" class="marg-bottom-l">
+    <div v-if="availableSlider" class="marg-bottom-xl">
         <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index}`">
-            <div class="col12 marg-top-l">
-                <div class="column">
+            <div class="col12 marg-top-xl">
+                <div class="column column-space-2">
                     <h3>{{ slider.genre.genre_name }}</h3>
                 </div>
 
                 <div class="col12">
-                    <div class="swiper card-slider column">
+                    <div class="swiper card-slider column column-space-2">
                         <div class="swiper-wrapper">
                             <div v-for="(media, index) in slider.mediaElements" :key="index" class="swiper-slide">
                                 <div class="media-card">
