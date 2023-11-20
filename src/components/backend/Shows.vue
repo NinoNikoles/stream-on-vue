@@ -12,23 +12,19 @@
                     </label>
 
                     <div v-if="shows" id="showsearchResults">
-                        <a v-for="(show, index) in shows" @click="saveData(show)" :key="index" :href="`#show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox :data-src="`#show-${show.tmdbID}`">
+                        <a v-for="(show, index) in shows" :key="index" :href="`#add-show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox>
                             <figure class="poster" style="width:20%;max-width:100px;">
                                 <img :data-img="$loadImg()" loading="lazy" :alt="`${show.name}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ show.name }}</span>
-                        </a>';
 
-                        <!-- Add show popup verification -->
-                        <div v-for="(show, index) in shows" :key="index" id="show-'.$id.'" style="display:none;">
-                            <p>Möchtest du {{ show.title}} hinzufügen?</p>';
-                            <form name="show-'.$id.'-form" id="show-'.$id.'-form" method="post" action="/admin/shows">
-                                <input type="text" name="id" value="'.$id.'" required style="display:none;">
-                                <p class="text-right">';
-                                    <button @click="saveData(show)" class="btn btn-success icon-left icon-add" id="add-show" name="add-show">Add</button>
+                            <div :id="`add-show-${show.id}`" style="display:none;">
+                                <p>Möchtest du {{ show.title}} hinzufügen?</p>
+                                <p class="text-right">
+                                    <button class="btn btn-success icon-left icon-add" :data-media="`${show.id}`" data-fancybox-close type="submit" name="add-show" @click="saveData(show)">{{ langSnippet('add') }}</button>
                                 </p>
-                            </form>
-                        </div>
+                            </div>
+                        </a>                        
                     </div>
                 </div>
 

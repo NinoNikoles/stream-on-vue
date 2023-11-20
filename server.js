@@ -35,6 +35,10 @@ app.get('/api/db/media', serverAPI.getMedia);
 app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 
+// API-Endpunkt für Seasons
+app.get('/api/db/getSeasons', serverAPI.getSeasons);
+app.get('/api/db/getEpisodes', serverAPI.getEpisodes);
+
 // API-Endpunkt für Genre
 app.post('/api/db/saveGenre', serverAPI.saveGenre);
 app.get('/api/db/allGenre', serverAPI.getGenre);

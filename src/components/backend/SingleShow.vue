@@ -1,20 +1,5 @@
-<!-- <template>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
-
-<script>
-import HelloWorld from './components/Index.vue'
-
-export default {
-    name: 'App',
-    components: {
-        HelloWorld
-    }
-}
-</script> -->
 <template>
-    <div v-if="show">
+    <div v-if="show" class="marg-top-xl marg-bottom-xl">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ show.title }}</h1></div>
@@ -29,6 +14,25 @@ export default {
                     </p>
                 </div>
             </div>
+
+            <div class="col12 marg-top-s" v-if="seasons">
+                <ul class="tabs" data-tabs id="season-tabs">
+                    <li v-for="(season, index) in seasons" :key="index" class="tabs-title">
+                        <a :href="`#season-${season.season_number}`" :data-tab-id="`season-${season.season_number}`">{{season.title}}</a>
+                    </li>
+                </ul>
+                <div class="tabs-content" data-tabs-content="season-tabs">
+                    <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
+                        <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col4">
+                            <figure class="widescreen">
+                                <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
+                            </figure>
+                            <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
+                            <a href="#" class="btn btn-small btn-success" >{{ langSnippet('select_movie_file')  }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>   
 </template>
@@ -36,14 +40,17 @@ export default {
 <script>
 import axios from 'axios';
 import tmdbAPI from '../api/tmdbAPI.vue';
+import language from '../api/language.vue';
 
 export default {
     name: 'BackendShow',
-    mixins: [tmdbAPI],
+    mixins: [tmdbAPI, language],
     data() {
         return {
             show: null,
             genre: null,
+            seasons: [],
+            episodes: [],
         };
     },
     methods: {
@@ -67,19 +74,39 @@ export default {
             }
 
             this.genre = genreData;
+        },
+        async getSeasons(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
+                this.seasons = response.data;
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        async getEpisodes(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
+                this.episodes = response.data;
+            } catch (err) {
+                console.log(err);
+            }
         }
     },
     mounted() {
         const showID = this.$route.params.id;
         
-        this.outPutShow(showID).then(show => {
+        this.outPutShow(showID).then(async(show) => {
             // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            console.log(show[0]);
             this.show = show[0];
 
             const genres = JSON.parse(this.show.genres);
 
-            this.getGenre(genres);
+            await this.getGenre(genres);
+            await this.getSeasons(showID);
+            await this.getEpisodes(showID).then(() => {
+                document.querySelector('.tabs .tabs-title a').setAttribute('aria-selected', 'true');
+                document.querySelector('.tabs-content .tabs-panel').classList.add('is-active');
+            });
         });
     }
 };
