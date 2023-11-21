@@ -492,6 +492,7 @@ $(document).ready(function() {
 
 
 function initCustomJS() {
+    console.log('test');
     // Fancy load
     forEach(document.querySelectorAll('img[data-img]'), function(el){
         el.setAttribute('src', el.getAttribute("data-img"));
@@ -650,6 +651,41 @@ function initCustomJS() {
                 $tabPanel = $tabsContent.find(panelID);
             $tabsContent.find('.tabs-panel').removeClass('is-active');
             $tabPanel.addClass('is-active');
+        }
+    });
+
+    $('.search-btn').on('click', function(e) {
+        e.preventDefault();
+        $('.search-bar').toggleClass('active-search');
+
+        if ( $('.search-bar').hasClass('active-search') ) {
+            $('#searchpage').removeClass('hidden');
+            $('body').addClass('active-search');
+        } else {
+            $('#searchpage').addClass('hidden');
+            $('body').removeClass('active-search');
+            $('#media-live-search').val('');
+        }                
+    });
+
+    //-- User Menu Btn --
+    $menuBtn = $('#user-menu-btn');
+
+    $menuBtn.on('click', function(e) {
+        var $this = $(this);
+
+        if ( $this.hasClass('active') && ! $(e.target).is('.user-menu') ) {
+            $this.removeClass('active');
+        } else {
+            $this.addClass('active');
+        }
+    });
+
+    $menuBtn.on('blur', function() {
+        var $this = $(this);
+
+        if ( !$this.is(':hover') && $this.hasClass('active') ) {
+            $this.removeClass('active');
         }
     });
 }

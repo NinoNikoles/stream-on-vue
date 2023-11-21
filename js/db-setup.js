@@ -275,6 +275,14 @@ function dbSetup() {
                                     console.log(`${yellowColor}Admin-Benutzer erstellt.${resetColor}`);
                                 }
                             });
+
+                            db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', ['user', hashed_password, 'user'], (err) => {
+                                if (err) {
+                                    console.error('Fehler beim Erstellen des Admin-Benutzers:', err.message);
+                                } else {
+                                    console.log(`${yellowColor}Admin-Benutzer erstellt.${resetColor}`);
+                                }
+                            });
                         }
                     });
 

@@ -1,8 +1,56 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const axios = require('axios');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const db = new sqlite3.Database('./database.db');
+
+const getSession = (req, res) => {
+    const sessionData = req.session;
+    res.json(sessionData);
+}
+
+//-- Login --
+const login = (req, res) => {
+    const { username, password } = req.body;
+    // Finde den Benutzer in der Datenbank
+    db.all("SELECT * FROM users WHERE username = ?", username, (err, user) => {
+        if (user[0]) {
+            // Vergleiche das eingegebene Passwort mit dem gehashten Passwort
+            bcrypt.compare(password, user[0].password, (err, result) => {
+                if (result) {
+                    req.session.user = {
+                        name: user[0].username,
+                        role: user[0].role,
+                        isLoggedIn: true
+                    }
+                    req.session.save();
+                    res.json({message: 'login successful'});
+                } else {
+                    // Falsches Passwort
+                    res.status(401).json({ message: 'Invalid password' });
+                }
+            });
+        } else {
+            // Benutzer nicht gefunden
+            res.status(404).json({ message: 'User not found' });
+        }
+    });
+}
+
+const logout = (req, res) => {
+    const { username, role } = req.body;
+
+    req.session.user = {
+        name: username,
+        role: role,
+        isLoggedIn: false
+    }
+    req.session.save();
+    res.json({message: 'logout successful'});
+}
 
 // Settings
 const getSettings = (req, res) => {
@@ -395,6 +443,9 @@ const deleteHighlight = (req, res) => {
 }
 
 module.exports = {
+    getSession,
+    login,
+    logout,
     getSettings,
     getApiKey,
     updateSettings,

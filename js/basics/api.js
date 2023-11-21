@@ -510,6 +510,7 @@ $(document).ready(function() {
                 } else {
                     $('#searchpage').addClass('hidden');
                     $('body').removeClass('active-search');
+                    $('#media-live-search').val('');
                 }                
             });
         },

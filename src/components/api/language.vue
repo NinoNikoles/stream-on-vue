@@ -64,6 +64,7 @@ const langs = [
             'send': 'Send',
             'settings': 'Settings',
             'show': 'TV Show',
+            'show_name': 'TV Show Title',
             'shows': 'TV Shows',
             'similar': 'Similar',
             'status': 'Status',
@@ -89,6 +90,7 @@ const langs = [
             'loading_content': 'Loading content, please wait.',
             'no_content_found': 'No content was found.',
             'pls_wait_for_admin_setup': 'No content has been added yet. Please be patient a little longer.',
+            'select_file': 'Select a file',
             'upload_new_img': 'Upload new profile image',
 
             //Add
@@ -162,6 +164,7 @@ const langs = [
             'send': 'Senden',
             'settings': 'Einstellungen',
             'show': 'TV Serie',
+            'show_name': 'Name der TV Serie',
             'shows': 'TV Serien',
             'similar': 'Ähnlich',
             'status': 'Status',
@@ -187,6 +190,7 @@ const langs = [
             'loading_content': 'Inhalte werden geladen, bitte warte.',
             'no_content_found': 'Keine Inhalte gefunden.',
             'pls_wait_for_admin_setup': 'Es wurden noch keine Inhalte hinzugfügt. Bitte hab noch etwas Gedult.',
+            'select_file': 'Datei auswählen',
             'upload_new_img': 'Neues Profilbild hochladen',
 
             //Add

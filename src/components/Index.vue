@@ -106,7 +106,6 @@ export default {
             url: window.location.protocol + '//' + window.location.hostname
         };
     },
-
     methods: {
         async genreSlider() {
             try {

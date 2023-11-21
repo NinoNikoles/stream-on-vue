@@ -142,7 +142,6 @@ export default {
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
 
-            console.log(this.langSnippet('add_show_success'));
             this.outPutShows().then(outputShows => {
                 // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
                 this.outputShows = outputShows;

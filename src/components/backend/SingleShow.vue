@@ -28,7 +28,7 @@
                                 <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
                             <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
-                            <a href="#" class="btn btn-small btn-success" >{{ langSnippet('select_movie_file')  }}</a>
+                            <a href="#" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</a>
                         </div>
                     </div>
                 </div>

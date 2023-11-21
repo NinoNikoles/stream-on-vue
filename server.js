@@ -1,18 +1,29 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const axios = require('axios');
+const session = require('express-session');
 const cors = require('cors');
-
-const { dbSetup } = require('./js/db-setup');
-const serverAPI = require('./js/serverAPI');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 3000;
+const corsOptions = {
+    origin: 'http://localhost:8080',
+    credentials: true
+};
 
-app.use(bodyParser.json({ limit: '1000mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '1000mb' }));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(session({
+    secret: 'hh830476c753416c76xn915xnm76c4765',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 604800000,
+    }
+}));
+app.use(bodyParser.json());
+
+const { dbSetup } = require('./js/db-setup');
+const serverAPI = require('./js/serverAPI');
 
 const resetColor = "\x1b[0m";
 const redColor = "\x1b[31m";
@@ -27,6 +38,11 @@ dbSetup();
 app.post('/api/db/saveSettings', serverAPI.updateSettings);
 app.get('/api/db/getSettings', serverAPI.getSettings);
 app.get('/api/db/getApiKey', serverAPI.getApiKey);
+
+// API-Endpunkt für User
+app.get('/api/db/session', serverAPI.getSession);
+app.post('/api/db/login', serverAPI.login);
+app.post('/api/db/logout', serverAPI.logout);
 
 // API-Endpunkt für Media
 app.post('/api/db/movie', serverAPI.addMovie);
