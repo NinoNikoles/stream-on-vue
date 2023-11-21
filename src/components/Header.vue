@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-top-xxl pad-bottom-xxl" style="height: calc(100vh - 50px);">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-top-xxl pad-bottom-xxl" style="height: calc(100vh - 50px); width: 100%; position:absolute; top:50px; left:0;">
             <div class="innerWrap">
                 <div class="col12">
                     <h1>Suchergebnisse für: {{ searchInput }}</h1>
@@ -102,7 +102,7 @@
                                     </figure>
                                     <div class="link-wrapper">
                                         <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                        <a href="#" @click="selectMedia(media)" :title="langSnippet('more_informations')" class="info-trigger" data-modal :data-src="`${media.tmdbID}`"></a>
+                                        <a href="#" @click="selectMedia(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
                                         <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
         </div>
     </header>
 
-    <div class="modal" id="modal">
+    <div class="modal" id="modalHeader">
         <div class="modal-overlay"></div>
         <div class="modal-wrap large">
             <div class="modal-inner-wrap">
@@ -265,17 +265,6 @@ export default {
                 this.backendRouter().then(routes => {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.backendRoutes = routes;
-                });
-
-                var searchBtn = document.querySelector('.search-btn');
-                searchBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('test');
-                    if ( document.querySelector('.search-bar').classList.contains('active-search') ) {
-                        this.searchInput = null;
-                        this.searchResults = null;
-                        console.log(this.searchResults);
-                    }
                 });
             }
         });

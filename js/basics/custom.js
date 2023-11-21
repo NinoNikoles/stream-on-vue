@@ -612,10 +612,25 @@ function initCustomJS() {
         dragToClose: false,
     });
 
+    // info popup Header
+    $modalHeader = $('#modalHeader');
+    $modalHeaderCloseBtn = $('#modalHeader .modal-close');
+    $(document).on('click', '.info-trigger.trigger-header', function(e) {
+        e.preventDefault();
+        $body.addClass('active-modal');
+        $modalHeader.addClass('active');
+    });
+
+    $modalHeaderCloseBtn.on('click', function(e) {
+        e.preventDefault();
+        $('body').removeClass('active-modal');
+        $modalHeader.removeClass('active');
+    });
+
     // info popup
     $modal = $('#modal');
     $modalCloseBtn = $('#modal .modal-close');
-    $(document).on('click', '.info-trigger', function(e) {
+    $(document).on('click', '.info-trigger.trigger-normal', function(e) {
         e.preventDefault();
         $body.addClass('active-modal');
         $modal.addClass('active');

@@ -37,7 +37,7 @@
                         </figure>
                         <div class="link-wrapper">
                             <a v-if="movie.file_path" href="#" :title="`${movie.title}`" class="play-trigger"></a>
-                            <a href="#" @click="selectMovie(movie)" :title="langSnippet('more_informations')" class="info-trigger" data-modal :data-src="`${movie.tmdbID}`"></a>
+                            <a href="#" @click="selectMovie(movie)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
                             <a :href="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                         </div>
                     </div>
@@ -148,7 +148,7 @@ export default {
             }
         },
         async selectMovie(movie) {
-            this.selectedMovie = movie;
+            this.selectedMovie = await movie;
             var mediaGenres = JSON.parse(this.selectedMovie.genres);
 
             const selectedMediaGenre = [];
@@ -164,6 +164,7 @@ export default {
                 }
             }
 
+            
             this.selectedMediaGenre = selectedMediaGenre;            
         }
     },

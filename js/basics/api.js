@@ -1161,7 +1161,7 @@ $(document).ready(function() {
             // $modalWrap = $('#modal .modal-wrap');
             // $modalInnerWrap = $('#modal .modal-inner-wrap');
             // $modalOverlay = $('#modal .modal-overlay');
-            $modalCloseBtn = $('#modal .modal-close');
+            //$modalCloseBtn = $('#modal .modal-close');
 
             // $(document).on('click', '.info-trigger', function(e) {
             //     e.preventDefault();
@@ -1202,11 +1202,11 @@ $(document).ready(function() {
             //     $('body').removeClass('active-modal');
             // });
 
-            $modalCloseBtn.on('click', function(e) {
-                e.preventDefault();
-                $modal.removeClass('active');
-                // $('body').removeClass('active-modal');
-            });
+            // $modalCloseBtn.on('click', function(e) {
+            //     e.preventDefault();
+            //     $modal.removeClass('active');
+            //     // $('body').removeClass('active-modal');
+            // });
         },
 
         sorting: function() {
