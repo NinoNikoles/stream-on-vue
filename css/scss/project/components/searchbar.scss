@@ -39,3 +39,17 @@
         }
     }
 }
+
+#searchResults {
+    width: 100%;
+    height: calc(100vh - 100px);
+    position: absolute;
+    top: rem-calc(100);
+    left: 0;
+    overflow-y: scroll;
+
+    @include MQ(medium) {
+        height: calc(100vh - 50px);
+        top: rem-calc(50);
+    }
+}
