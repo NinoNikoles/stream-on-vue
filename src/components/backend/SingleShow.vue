@@ -39,8 +39,8 @@
 
 <script>
 import axios from 'axios';
-import tmdbAPI from '../api/tmdbAPI.vue';
-import language from '../api/language.vue';
+import tmdbAPI from '../mixins/tmdbAPI.vue';
+import language from '../mixins/language.vue';
 
 export default {
     name: 'BackendShow',

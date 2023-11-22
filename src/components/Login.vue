@@ -19,7 +19,7 @@
   
 <script>
 import axios from 'axios';
-import langSnippet from './api/language.vue';
+import langSnippet from './mixins/language.vue';
   
 export default {
     name: 'AppLogin',

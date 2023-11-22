@@ -32,8 +32,8 @@
 
 <script>
 import axios from 'axios';
-import tmdbAPI from '../api/tmdbAPI.vue';
-import mainFunctions from '../api/functions.vue';
+import tmdbAPI from '../mixins/tmdbAPI.vue';
+import mainFunctions from '../mixins/functions.vue';
 
 export default {
     name: 'BackendGenre',

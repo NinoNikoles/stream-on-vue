@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import langSnippet from './components/api/language.vue';
+import langSnippet from './components/mixins/language.vue';
 import { isAuthenticated } from '@/auth';
 
 import Index from './components/Index.vue';

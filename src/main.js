@@ -26,6 +26,11 @@ app.config.globalProperties.$truncate = truncate;
 
 app.mixin({
     updated() {
+        document.querySelectorAll('img[data-img]').forEach(function(el) {
+            el.setAttribute('src', el.getAttribute('data-img'));
+            el.removeAttribute('data-img');
+        });
+        
         this.$nextTick(() => {
             window.initCustomJS();
         });
