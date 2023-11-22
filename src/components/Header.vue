@@ -21,11 +21,11 @@
                 <div class="navWrap">
 
                     <!-- Suche -->
-                    <div class="search-bar">
+                    <div id="search-bar" class="search-bar">
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
                             <input type="text" id="media-live-search" v-model="searchInput" @input="handleSearchInput" name="search" placeholder="Suchen">
-                            <button class="btn search-btn"></button>
+                            <button id="search-btn" @click="searchTrigger()" class="btn search-btn"></button>
                         </div>
                     </div>
 
@@ -56,7 +56,7 @@
                     </nav>
 
                     <!-- Profil -->
-                    <button href="#" id="user-menu-btn">
+                    <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
                         <figure class="square">
                             <img data-img="" loading="lazy" alt="">
                         </figure>
@@ -75,7 +75,7 @@
                     <!--<a href="#" id="theme-switch" class="icon"></a>-->
 
                     <!-- Mobile Menu Button -->
-                    <a href="#" class="nav-trigger menu-button" title="Menü öffnen">
+                    <a href="#" @click="menuBtn()" id="menu-button" class="nav-trigger menu-button" title="Menü öffnen">
                         <span class="tx">MENÜ</span>
                         <span class="trigger-bar bar-1"></span>
                         <span class="trigger-bar bar-2"></span>
@@ -85,31 +85,32 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-top-xxl pad-bottom-xxl" style="height: calc(100vh - 50px); width: 100%; position:absolute; top:50px; left:0;">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-top-l pad-bottom-l bg-dark">
             <div class="innerWrap">
                 <div class="col12">
                     <h1>Suchergebnisse für: {{ searchInput }}</h1>
+                </div>
+            </div>
 
-                    <div class="grid-row" id="media-list">
-                        <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
-                            <div class="media-card">
-                                <div class="media-card-wrapper">
-                                    <figure class="widescreen desktop-only">
-                                        <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
-                                    </figure>
-                                    <figure class="poster mobile-only">
-                                        <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
-                                    </figure>
-                                    <div class="link-wrapper">
-                                        <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                        <a href="#" @click="selectMedia(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
-                                        <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
-                                    </div>
+            <div class="innerWrap">
+                <div class="grid-row" id="media-list">
+                    <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
+                        <div class="media-card">
+                            <div class="media-card-wrapper">
+                                <figure class="widescreen desktop-only">
+                                    <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                </figure>
+                                <figure class="poster mobile-only">
+                                    <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                </figure>
+                                <div class="link-wrapper">
+                                    <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
+                                    <a href="#" @click="popUpTrigger(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
+                                    <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -149,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="modal-close"></a>
+            <a href="#" class="modal-close" @click="closePopUpHeader()"></a>
         </div>
     </div>
 </template>
@@ -157,12 +158,13 @@
 <script>
 import axios from 'axios';
 import router from './../router';
-import langSnippet from './api/language.vue';
-import tmdb from './api/tmdbAPI.vue';
+import functions from './mixins/functions.vue';
+import langSnippet from './mixins/language.vue';
+import tmdb from './mixins/tmdbAPI.vue';
 
 export default {
     name: 'AppHeader',
-    mixins: [langSnippet, tmdb],
+    mixins: [functions, langSnippet, tmdb],
     data() {
         return {
             username: '',
@@ -202,6 +204,12 @@ export default {
             } else {
                 this.searchResults = null;
             }            
+        },
+        async popUpTrigger(media) {
+            await this.selectMedia(media)
+            .then(() => {
+                this.openPopUpHeader();
+            });
         },
         async selectMedia(media) {
             this.selectedMedia = media;
@@ -252,6 +260,23 @@ export default {
         },
         async isAdminOrSuperadmin() {
             return this.role;
+        },
+        searchTrigger() {
+            // var searchBtn = document.getElementById('search-btn');
+            var searchBar = document.getElementById('search-bar');
+            var liveSearch = document.getElementById('media-live-search');
+            var activeClass = 'active-search';            
+
+            if ( !(searchBar.classList.contains(activeClass)) ) {
+                liveSearch.value = '';
+                searchBar.classList.add(activeClass);
+                document.body.classList.add(activeClass);
+            } else {
+                liveSearch.value = '';
+                searchBar.classList.remove(activeClass);
+                document.body.classList.remove(activeClass);
+                this.searchResults = null;
+            }
         }
     },
     mounted() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap marg-top-l marg-bottom-l">
+    <div class="innerWrap marg-top-xl marg-bottom-xl">
         <h1>{{ langSnippet('movies') }}</h1>
 
         <div class="grid-row">
@@ -37,7 +37,7 @@
                         </figure>
                         <div class="link-wrapper">
                             <a v-if="movie.file_path" href="#" :title="`${movie.title}`" class="play-trigger"></a>
-                            <a href="#" @click="selectMovie(movie)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
+                            <a href="#" @click="popUpTrigger(movie)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
                             <a :href="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="modal-close"></a>
+            <a href="#" class="modal-close" @click="closePopUp()"></a>
         </div>
     </div>
 
@@ -88,12 +88,13 @@
 
 <script>
 import axios from 'axios';
-import langSnippet from '../api/language.vue';
+import functions from '../mixins/functions.vue';
+import langSnippet from '../mixins/language.vue';
 //import { Swiper, SwiperSlide } from 'swiper/vue';
 
 export default {
     name: 'FrontendMovies',
-    mixins: [langSnippet],
+    mixins: [functions, langSnippet],
     data() {
         return {
             movies: null,
@@ -147,7 +148,13 @@ export default {
                 console.log(error);
             }
         },
-        async selectMovie(movie) {
+        async popUpTrigger(media) {
+            await this.selectMedia(media)
+            .then(() => {
+                this.openPopUp();
+            });
+        },
+        async selectMedia(movie) {
             this.selectedMovie = await movie;
             var mediaGenres = JSON.parse(this.selectedMovie.genres);
 

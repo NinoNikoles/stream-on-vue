@@ -33,7 +33,7 @@
                                         </figure>
                                         <div class="link-wrapper">
                                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                            <a href="#" @click="selectMedia(media)" :title="langSnippet('more_informations')" class="info-trigger" data-modal :data-src="`${media.tmdbID}`"></a>
+                                            <a href="#" @click="popUpTrigger(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
                                             <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="modal-close"></a>
+            <a href="#" class="modal-close" @click="closePopUp()"></a>
         </div>
     </div>
 
@@ -90,12 +90,13 @@
 
 <script>
 import axios from 'axios';
-import langSnippet from './api/language.vue';
+import functions from './mixins/functions.vue';
+import langSnippet from './mixins/language.vue';
 //import { Swiper, SwiperSlide } from 'swiper/vue';
 
 export default {
     name: 'AppIndex',
-    mixins: [langSnippet],
+    mixins: [functions, langSnippet],
     data() {
         return {
             highlight: null,
@@ -142,6 +143,12 @@ export default {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                 console.log(error);
             }
+        },
+        async popUpTrigger(media) {
+            await this.selectMedia(media)
+            .then(() => {
+                this.openPopUp();
+            });
         },
         async selectMedia(media) {
             this.selectedMedia = media;
