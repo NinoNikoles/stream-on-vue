@@ -56,12 +56,12 @@ $(document).ready(function() {
             self.desktopViewportCheck();
             self.fixedHeader();
             self.navMobile();
-            self.tabs();
-            self.selectTabs();
-            self.initScrolltrigger();
-            self.userMenuBtn();
+            // self.tabs();
+            // self.selectTabs();
+            //self.initScrolltrigger();
+            //self.userMenuBtn();
             //self.initPlayer();
-            self.fancyBox();
+            //self.fancyBox();
             self.updateOverlay();
             self.pageReady();
             //self.passwordChange();
@@ -490,15 +490,13 @@ $(document).ready(function() {
     page.init();
 });
 
-
-function initCustomJS() {
-    console.log('test');
-    // Fancy load
-    forEach(document.querySelectorAll('img[data-img]'), function(el){
-        el.setAttribute('src', el.getAttribute("data-img"));
-        $(el).removeAttr('data-img');
+function fancyLoad() {
+    Fancybox.bind('[data-fancybox]', {
+        dragToClose: false,
     });
+}
 
+function scrollTrigger() {
     // Scroll Trigger
     const trigger = new ScrollTrigger.default({
         trigger: {
@@ -513,12 +511,15 @@ function initCustomJS() {
             },
         }
     });
+
     trigger.add('[data-trigger]');
     trigger.add('.card-slider');
     trigger.add('.genre-slider');
     trigger.add('#load-count');
     trigger.add('.currentWatch-slider');
+}
 
+function initSliders() {
     // Slider
     sliderNumber = 0;
     $(".swiper").each(function () {
@@ -607,42 +608,9 @@ function initCustomJS() {
         
         sliderNumber++;
     });
+}
 
-    Fancybox.bind('[data-fancybox]', {
-        dragToClose: false,
-    });
-
-    // info popup Header
-    $modalHeader = $('#modalHeader');
-    $modalHeaderCloseBtn = $('#modalHeader .modal-close');
-    $(document).on('click', '.info-trigger.trigger-header', function(e) {
-        e.preventDefault();
-        $body.addClass('active-modal');
-        $modalHeader.addClass('active');
-    });
-
-    $modalHeaderCloseBtn.on('click', function(e) {
-        e.preventDefault();
-        $('body').removeClass('active-modal');
-        $modalHeader.removeClass('active');
-    });
-
-    // info popup
-    $modal = $('#modal');
-    $modalCloseBtn = $('#modal .modal-close');
-    $(document).on('click', '.info-trigger.trigger-normal', function(e) {
-        e.preventDefault();
-        $body.addClass('active-modal');
-        $modal.addClass('active');
-    });
-
-    $modalCloseBtn.on('click', function(e) {
-        e.preventDefault();
-        $('body').removeClass('active-modal');
-        $modal.removeClass('active');
-    });
-
-
+function initTabs() {
     // Tabs
     $tabTitleLink = $('.tabs .tabs-title > a');
 
@@ -668,21 +636,9 @@ function initCustomJS() {
             $tabPanel.addClass('is-active');
         }
     });
+}
 
-    $('.search-btn').on('click', function(e) {
-        e.preventDefault();
-        $('.search-bar').toggleClass('active-search');
-
-        if ( $('.search-bar').hasClass('active-search') ) {
-            $('#searchpage').removeClass('hidden');
-            $('body').addClass('active-search');
-        } else {
-            $('#searchpage').addClass('hidden');
-            $('body').removeClass('active-search');
-            $('#media-live-search').val('');
-        }                
-    });
-
+function userMenuBtn() {
     //-- User Menu Btn --
     $menuBtn = $('#user-menu-btn');
 
@@ -703,6 +659,15 @@ function initCustomJS() {
             $this.removeClass('active');
         }
     });
+}
+
+
+function initCustomJS() {
+    fancyLoad();
+    scrollTrigger();
+    initSliders();
+    initTabs();
+    //userMenuBtn();    
 }
 
 window.initCustomJS = initCustomJS;

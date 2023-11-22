@@ -9,7 +9,7 @@ $(document).ready(function() {
         $apiSearch: $('#movie-api-search'),
         $showApiSearch: $('#show-api-search'),
         $liveSearch: $('#movie-live-search'),
-        $searchBtn: $('.search-btn'),
+        //$searchBtn: $('.search-btn'),
 
         mobileSize: 1080,
         tabletSize: 1600,
@@ -30,8 +30,8 @@ $(document).ready(function() {
             self.changeUserPassword();
 
 
-            self.movieLiveSearch();
-            self.showLiveSearch();
+            //self.movieLiveSearch();
+            //self.showLiveSearch();
             self.jstreeMovie();
             self.jstreeEpisode();
             self.myList();
