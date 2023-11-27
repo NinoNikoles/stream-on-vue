@@ -15,6 +15,7 @@ import BackendShows from './components/backend/Shows.vue';
 import BackendShow from './components/backend/SingleShow.vue';
 import BackendHighlights from './components/backend/Highlights.vue';
 import MediaLibrary from './components/backend/MediaLibrary.vue';
+import Users from './components/backend/Users.vue';
 
 function name(snippet) {
     return langSnippet.methods.langSnippet(snippet);
@@ -96,6 +97,12 @@ const router = createRouter({
             meta: { requiresAuth: false, backend: true }
         },
         {
+            path: '/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            name: 'Users',
+            component: Users,
+            meta: { requiresAuth: true, backend: true  }
+        },
+        {
             path: '/test', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: 'Test',
             component: Test,
@@ -108,8 +115,9 @@ router.beforeEach(async(to, from, next) => {
     try {
         const user = await isAuthenticated();
         const isLoggedIn = user && user.isLoggedIn;
-    
+        console.log(user);
         if (to.matched.some((record) => record.meta.requiresAuth)) {
+            
             if (!isLoggedIn) {
                 next({
                     path: '/login',

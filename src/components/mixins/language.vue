@@ -94,10 +94,11 @@ const langs = [
             'upload_new_img': 'Upload new profile image',
 
             //Add
-            'add_movie_to_library': 'Do you want to add the movie <strong>"$content"</strong> to your library?',
+            'add_movie_to_library': 'Do you want to add the movie "<strong>$content</strong>" to your library?',
 
             //Delete
-            'delete_highlight': 'Do you want to remove <strong>"$content"</strong> from highlights?',
+            'delete_highlight': 'Do you want to remove "<strong>$content</strong>" from highlights?',
+            'delete_user': 'Do you really want to delete the user "<strong>$content</strong>"?',
         }
         
     },
@@ -194,10 +195,11 @@ const langs = [
             'upload_new_img': 'Neues Profilbild hochladen',
 
             //Add
-            'add_movie_to_library': 'Möchtest du den Film <strong>"$content"</strong> deiner Bibliothek hinzufügen?',
+            'add_movie_to_library': 'Möchtest du den Film "<strong>$content</strong>" deiner Bibliothek hinzufügen?',
 
             //Delete
-            'delete_highlight': 'Möchtest du <strong>"$content"</strong> aus den Highlights entfernen?',
+            'delete_highlight': 'Möchtest du "<strong>$content</strong>" aus den Highlights entfernen?',
+            'delete_user': 'Möchtest du den Benutzer "<strong>$content</strong>" wirklich löschen?',
         }
     }
 ]

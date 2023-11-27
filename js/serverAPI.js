@@ -442,29 +442,125 @@ const deleteHighlight = (req, res) => {
     });
 }
 
+
+//-- Users --
+const getAllUsers = (req, res) => {
+    let query = `SELECT * FROM users`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+const addUser = (req, res) => {
+    const { username, password, role } = req.query;
+
+    let query = `INSERT INTO users 
+    (username, password, role) VALUES (?, ?, ?)`;
+
+    const hashed_password = bcrypt.hashSync(password, saltRounds);
+    var stringRole = 'user';
+    if ( role ===  'true' || role ===  true ) stringRole = 'admin';
+
+    db.all(query,  [username, hashed_password, stringRole], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+const editUser = (req, res) => {
+    const { userID, username, role } = req.query;
+
+    let query = `UPDATE users SET username = ?, role = ? WHERE id = ?`;
+
+    var stringRole = 'user';
+    if ( role ===  'true' || role ===  true ) stringRole = 'admin';
+
+    db.all(query, [username, stringRole, userID], (err) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.send();
+    });
+}
+
+const changeUserPassword = (req, res) => {
+    const { userID, password } = req.query;
+
+    let query = `UPDATE users SET password = ? WHERE id = ?`;
+    const hashed_password = bcrypt.hashSync(password, saltRounds);
+
+    db.all(query, [hashed_password, userID], (err) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.send();
+    });
+}
+
+const deleteUser = (req, res) => {
+    const { userID } = req.query;
+
+    let query = `DELETE FROM users WHERE id = ${userID}`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 module.exports = {
     getSession,
     login,
     logout,
+
+    // Settings
     getSettings,
     getApiKey,
     updateSettings,
+
+    // Media
     addMovie,
-    addShow,
+    addShow,    
     getMedia,
     getMediaByInput,
     getMediaFiltered,
+
+    // Episodes
     getSeasons,
     getEpisodes,
+
+    // Genre
     saveGenre,
     getGenre,
     getGenreNameByID,
     genreSlider,
     genreMovies,
+
+    // Highlights
     checkForHighlight,
     addHighlight,
     getAllHighlights,
     getHighlight,
     changeHighlightStatus,
     deleteHighlight,
+
+    // Users
+    getAllUsers,
+    addUser,
+    editUser,
+    changeUserPassword,
+    deleteUser
 };
