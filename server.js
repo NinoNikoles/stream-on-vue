@@ -2,11 +2,14 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const http = require('http');
+const WebSocket = require('ws');
+const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
+
 const corsOptions = {
-    origin: 'http://localhost:8080',
+    origin: true,
     credentials: true
 };
 
@@ -34,36 +37,37 @@ const blueColor = "\x1b[34m";
 // Connects / Init database
 dbSetup();
 
-// API-Endpunkt für Settings
+//-- Settings
 app.post('/api/db/saveSettings', serverAPI.updateSettings);
 app.get('/api/db/getSettings', serverAPI.getSettings);
 app.get('/api/db/getApiKey', serverAPI.getApiKey);
 
-// API-Endpunkt für User
+//-- Session
 app.get('/api/db/session', serverAPI.getSession);
 app.post('/api/db/login', serverAPI.login);
 app.post('/api/db/logout', serverAPI.logout);
 
-// API-Endpunkt für Media
+//-- Media
 app.post('/api/db/movie', serverAPI.addMovie);
 app.post('/api/db/show', serverAPI.addShow);
 app.get('/api/db/media', serverAPI.getMedia);
 app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 
-// API-Endpunkt für Seasons
+//--r Seasons
 app.get('/api/db/getSeasons', serverAPI.getSeasons);
 app.get('/api/db/getEpisodes', serverAPI.getEpisodes);
 
-// API-Endpunkt für Genre
+//-- Genre
 app.post('/api/db/saveGenre', serverAPI.saveGenre);
 app.get('/api/db/allGenre', serverAPI.getGenre);
 app.get('/api/db/genreNameByID', serverAPI.getGenreNameByID);
 
-// Index Page Genre Slider
+//-- Genre Slider
 app.get('/api/db/genreSlider', serverAPI.genreSlider);
 app.get('/api/db/genreMovies', serverAPI.genreMovies);
 
+//-- Highlights
 app.post('/api/db/addHighlight', serverAPI.addHighlight);
 app.get('/api/db/checkForHighlight', serverAPI.checkForHighlight);
 app.get('/api/db/getAllHighlights', serverAPI.getAllHighlights);
@@ -71,7 +75,15 @@ app.get('/api/db/getHighlight', serverAPI.getHighlight);
 app.post('/api/db/changeHighlightStatus', serverAPI.changeHighlightStatus);
 app.post('/api/db/deleteHighlight', serverAPI.deleteHighlight);
 
+//-- Users
+app.get('/api/db/getAllUsers', serverAPI.getAllUsers);
+app.post('/api/db/addUser', serverAPI.addUser);
+app.post('/api/db/editUser', serverAPI.editUser);
+app.post('/api/db/changeUserPassword', serverAPI.changeUserPassword);
+app.post('/api/db/deleteUser', serverAPI.deleteUser);
 
-app.listen(PORT, () => {
-    console.log(`Server gestartet auf Port ${PORT}`);
+const server = http.createServer(app);
+const port = process.env.PORT || 3000;
+server.listen(3000, () => {
+    console.log(`Server is listening on port ${port}`);
 });
