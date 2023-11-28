@@ -31,12 +31,12 @@
                 <div v-if="outputShows" class="col12 marg-top-m">
                     <div class="row">
                         <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-3-medium column">
-                            <a :href="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card">
+                            <router-link :to="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card">
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${show.title}`">
                                 </figure>
                                 <span class="title marg-no">{{ $truncate(show.title, 15) }}</span>
-                            </a>
+                            </router-link>
                         </div>
                     </div>
                 </div>

@@ -31,12 +31,12 @@
                 <div v-if="outputMovies" class="col12 marg-top-m">
                     <div class="row">
                         <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-3-medium column">
-                            <a :href="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card">
+                            <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card">
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${movie.title}`">
                                 </figure>
                                 <span class="title marg-no">{{ $truncate(movie.title, 15) }}</span>
-                            </a>
+                            </router-link>
                         </div>
                     </div>
                 </div>

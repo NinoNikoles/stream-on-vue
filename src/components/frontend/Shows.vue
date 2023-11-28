@@ -21,7 +21,7 @@
                                         <div class="link-wrapper">
                                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
                                             <a href="#" @click="selectMedia(media)" :title="langSnippet('more_informations')" class="info-trigger" data-modal :data-src="`${media.tmdbID}`"></a>
-                                            <a :href="`/backend/${media.media_type}/?id=${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
+                                            <router-link :to="`/backend/${media.media_type}/?id=${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                                         </div>
                                     </div>
                                 </div>

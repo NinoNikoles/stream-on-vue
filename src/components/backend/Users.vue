@@ -44,7 +44,7 @@
                         <td v-else></td>
 
                         <td v-if="user.role !== 'superadmin'">
-                            <button :data-src="`#delete-user-${user.id}`" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
+                            <button data-src="#delete-user" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
                         </td>
                         <td v-else></td>
                     </tr>
@@ -107,10 +107,10 @@
                 </form>
             </div>
             <!-- Delete user -->
-            <div v-for="(user, index) in users" :key="index" :id="`delete-user-${user.id}`" style="display:none;">
-                <p v-html="langSnippet('delete_user', user.username)"></p>
+            <div id="delete-user" style="display:none;">
+                <p v-html="langSnippet('delete_user', selectedUser.username)"></p>
                 <p class="text-right marg-no">
-                    <button type="submit" @click="deleteUser(user.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
+                    <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
                 </p>
             </div>
         </div>
@@ -122,9 +122,10 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
+import { Fancybox } from "@fancyapps/ui";
 
 export default {
-    name: 'BackendMovie',
+    name: 'BackendUsers',
     mixins: [tmdbAPI,langSnippet, mainFunctions],
     data() {
         return {
@@ -156,16 +157,15 @@ export default {
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
         },
-        async addUser() {
+        async addUser() {            
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/addUser?username=${this.newUser.name}&password=${this.newUser.password}&role=${this.newUser.role}`)
                 .then(() => {
-                    var popUp = document.getElementById(`add-user`);
-                    Fancybox.close(popUp);
-
                     this.newUser.name = null;
                     this.newUser.password = null;
                     this.newUser.role = null;
+
+                    Fancybox.close();
 
                     this.getUsers().then(users => {
                         this.users = users;
@@ -191,16 +191,15 @@ export default {
                 try {
                     await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${userID}&username=${username}&role=${role}`)
                     .then(() => {
-                        var popUp = document.getElementById(`edit-user`);
-                        Fancybox.close(popUp);
-
                         this.selectedUser.id = null;
                         this.selectedUser.username = null;
                         this.selectedUser.role = null;
 
+                        Fancybox.close();
+
                         this.getUsers().then(users => {
-                        this.users = users;
-                    });
+                            this.users = users;
+                        });
                     });
                 } catch (error) {
                     console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -216,15 +215,14 @@ export default {
                     try {
                         await axios.post(`${this.$mainURL}:3000/api/db/changeUserPassword?userID=${userID}&password=${this.newPassword}`)
                         .then(() => {
-                            var popUp = document.getElementById(`change-password`);
-                            Fancybox.close(popUp);
-
                             this.selectedUser.id = null;
                             this.selectedUser.username = null;
                             this.selectedUser.role = null;
 
                             this.newPassword = null;
                             this.newPasswordCheck = null;
+
+                            Fancybox.close();
                         });
                     } catch (error) {
                         console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -243,8 +241,11 @@ export default {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteUser?userID=${userID}`)
                 .then(() => {
-                    var popUp = document.getElementById(`delete-user-${userID}`);
-                    Fancybox.close(popUp);
+                    this.selectedUser.id = null;
+                    this.selectedUser.username = null;
+                    this.selectedUser.role = null;
+
+                    Fancybox.close();
 
                     this.getUsers().then(users => {
                         this.users = users;

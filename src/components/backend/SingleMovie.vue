@@ -268,9 +268,6 @@ export default {
                 console.log(err);
             }
         },
-
-
-
         async saveData(data) {
             this.loader.classList.remove('hidden');
             

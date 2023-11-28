@@ -38,7 +38,7 @@
                         <div class="link-wrapper">
                             <a v-if="movie.file_path" href="#" :title="`${movie.title}`" class="play-trigger"></a>
                             <a href="#" @click="popUpTrigger(movie)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
-                            <a :href="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
+                            <router-link :to="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
                 </div>

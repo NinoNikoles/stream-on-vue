@@ -12,9 +12,9 @@
 
                 <!-- Logo -->
                 <div class="header--logo">
-                    <a class="logo--small" title="Zur Startseite" href="/">
-                        <span class="bold"></span>
-                    </a>
+                    <router-link class="logo--small" title="Zur Startseite" to="/">
+                        <span class="bold">Stream On</span>
+                    </router-link>
                 </div>
             
                 <!-- Hauptnavigation -->
@@ -37,7 +37,7 @@
                             </div>
 
                             <li v-for="route in mainRoutes" :key="route.name" class="menu-item">
-                                <a :href="`${route.path}`" :title="`${route.name}`">{{ route.name }}</a>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
                             </li>
 
                             <div class="col12 mobile-only marg-top-m" v-if="this.role === 'superadmin' || this.role === 'admin'">
@@ -45,7 +45,7 @@
                             </div>
 
                             <li v-for="route in backendRoutes" :key="route.name" class="menu-item mobile-only">
-                                <a :href="`${route.path}`" :title="`${route.name}`">{{ route.name }}</a>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
                             </li>
                             <!-- <div class="col12 mobile-only marg-top-m">
                                 <li class="menu-item spacer"><span><?php echo lang_snippet('admin').' '.lang_snippet('menu');?></span></li>
@@ -65,7 +65,7 @@
                             <ul>
                                 <!-- <?php echo adminMenu('user-menu');?> -->
                                 
-                                <li class="menu-item"><a href="/user/?id=<?php echo getUserID(); ?>" :title="langSnippet('profile')">{{langSnippet('profile')}}</a></li>
+                                <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><a href="#" @click="logout()" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>
@@ -167,6 +167,7 @@ export default {
     mixins: [functions, langSnippet, tmdb],
     data() {
         return {
+            id: null,
             username: '',
             role: 'user',
             isLoggedIn: null,
@@ -251,6 +252,7 @@ export default {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
                 if ( response.data.user ) {
                     this.isLoggedIn = response.data.user.isLoggedIn;
+                    this.id = response.data.user.id;
                     this.username = response.data.user.name;
                     this.role = response.data.user.role;
                 }               
