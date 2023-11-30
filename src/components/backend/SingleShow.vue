@@ -48,7 +48,7 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
-import Mediabrowser from '../Test.vue';
+import Mediabrowser from '../Mediabrowser.vue';
 
 export default {
     name: 'BackendShow',

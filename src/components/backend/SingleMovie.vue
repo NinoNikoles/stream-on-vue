@@ -137,7 +137,7 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
-import Mediabrowser from '../Test.vue';
+import Mediabrowser from '../Mediabrowser.vue';
 
 export default {
     name: 'BackendMovie',
