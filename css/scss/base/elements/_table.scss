@@ -75,12 +75,30 @@ td, .td {
     }
 }
 
+th, .th {
+    a:not(.btn) {
+        color: var(--font-color);
+        text-decoration: underline;
+    }
+}
+
 td, .td {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     padding: {
         top: rem-calc($table-space-vertical);
         right: rem-calc($table-space-horizontal);
         bottom: rem-calc($table-space-vertical);
         left: rem-calc($table-space-horizontal);
+    }
+
+    span, a {
+        color: var(--dark);
+    }
+    
+    a:not(.btn) {
+        text-decoration: underline;
     }
 }
 
