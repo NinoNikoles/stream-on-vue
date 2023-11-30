@@ -18,7 +18,11 @@
             </div>
   
             <div class="col3 marg-left-col1">
-                <div v-if="isHighlight==null" class="col12">
+                <div class="col12">
+                    <a href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</a>
+                </div>
+
+                <div v-if="isHighlight===null" class="col12">
                     <button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
                 </div>
 
@@ -121,6 +125,10 @@
                 </div>
             </div>
         </div>
+
+        <div id="media-browser" style="display: none;">
+            <media-browser-component></media-browser-component>
+        </div>
     </div>    
 </template>
 
@@ -129,10 +137,14 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
+import Mediabrowser from '../Test.vue';
 
 export default {
     name: 'BackendMovie',
     mixins: [tmdbAPI, langSnippet, functions],
+    components: {
+        'media-browser-component': Mediabrowser,
+    },
     data() {
         return {
             movie: null,
@@ -224,12 +236,16 @@ export default {
             return isTrue;
         },
         async returnCollectionMovies(collectionID) {
-            try {
-                const response = await this.getCollectionMovies(collectionID);
-                var checkedCollection = await this.checkIfMediaIsInDB(response);
-                this.collection = checkedCollection;
-            } catch (err) {
-                console.log(err);
+            if ( collectionID !== null ) {
+                try {
+                    const response = await this.getCollectionMovies(collectionID);
+                    var checkedCollection = await this.checkIfMediaIsInDB(response);
+                    this.collection = checkedCollection;
+                } catch (err) {
+                    console.log(err);
+                }
+            } else {
+                this.collection = [];
             }   
         },
         async returnSimilarMovies(movieID) {
@@ -329,6 +345,9 @@ export default {
                 this.loader.classList.add('hidden');
             }
         },
+        async selectMedia(media) {
+            this.$route.params.media = media;
+        }
     },
     mounted() {
         const movieID = this.$route.params.id;

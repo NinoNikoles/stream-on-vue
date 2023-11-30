@@ -24,15 +24,22 @@
                 <div class="tabs-content" data-tabs-content="season-tabs">
                     <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
                         <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col4">
-                            <figure class="widescreen">
+                            <figure class="widescreen disabled" v-if="episode.file_path === null">
+                                <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
+                            </figure>
+                            <figure class="widescreen" v-else>
                                 <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
                             <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
-                            <a href="#" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</a>
+                            <a href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</a>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div id="media-browser" style="display: none;">
+            <media-browser-component></media-browser-component>
         </div>
     </div>   
 </template>
@@ -41,10 +48,14 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
+import Mediabrowser from '../Test.vue';
 
 export default {
     name: 'BackendShow',
     mixins: [tmdbAPI, language],
+    components: {
+        'media-browser-component': Mediabrowser,
+    },
     data() {
         return {
             show: null,
@@ -90,6 +101,10 @@ export default {
             } catch (err) {
                 console.log(err);
             }
+        },
+        async selectMedia(media, episodeID) {
+            this.$route.params.media = media;
+            this.$route.params.episodeID = episodeID;
         }
     },
     mounted() {
