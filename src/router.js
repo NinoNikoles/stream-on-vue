@@ -6,7 +6,7 @@ import Index from './components/Index.vue';
 import FrontendMovies from './components/frontend/Movies.vue';
 import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
-import Test from './components/Test.vue';
+import MediaBrowser from './components/Mediabrowser.vue';
 import BackendSettings from './components/backend/Settings.vue';
 import Users from './components/backend/Users.vue';
 import BackendGenre from './components/backend/Genre.vue';
@@ -41,7 +41,7 @@ const router = createRouter({
             path: '/shows',
             name: name('shows'),
             component: FrontendShows,
-            meta: { requiresAuth: false, main: true } // Diese Route erfordert eine Anmeldung
+            meta: { requiresAuth: true, main: true } // Diese Route erfordert eine Anmeldung
         },
         {
             path: '/login',
@@ -59,49 +59,49 @@ const router = createRouter({
             path: '/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('users'),
             component: Users,
-            meta: { requiresAuth: true, backend: true  }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin']  }
         },
         {
             path: '/backend/genre',
             name: name('genres'),
             component: BackendGenre,
-            meta: { requiresAuth: false, backend: true }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/movies',
             name: name('backend_movies'),
             component: BackendMovies,
-            meta: { requiresAuth: false, backend: true }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/shows',
             name: name('backend_shows'),
             component: BackendShows,
-            meta: { requiresAuth: false, backend: true }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/movie/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('movie'),
             component: BackendMovie,
-            meta: { requiresAuth: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/show/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('show'),
             component: BackendShow,
-            meta: { requiresAuth: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/highlights', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('highlights'),
             component: BackendHighlights,
-            meta: { requiresAuth: false, backend: true }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/media-library', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('media_library'),
             component: MediaLibrary,
-            meta: { requiresAuth: false, backend: true }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
 
         {
@@ -111,10 +111,10 @@ const router = createRouter({
             meta: { requiresAuth: true, backend: false  }
         },
         {
-            path: '/test', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
-            name: 'Test',
-            component: Test,
-            meta: { requiresAuth: false }
+            path: '/media-browser', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            name: 'Media Browser',
+            component: MediaBrowser,
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         }
     ]
 });
