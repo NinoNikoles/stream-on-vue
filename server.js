@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 
 const { dbSetup } = require('./js/db-setup');
 const serverAPI = require('./js/serverAPI');
+const mediabrowserAPI = require('./js/mediabrowserAPI');
 
 const resetColor = "\x1b[0m";
 const redColor = "\x1b[31m";
@@ -53,6 +54,7 @@ app.post('/api/db/show', serverAPI.addShow);
 app.get('/api/db/media', serverAPI.getMedia);
 app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
+app.post('/api/db/addVideoPathToMedia', serverAPI.addVideoPathToMedia);
 
 //--r Seasons
 app.get('/api/db/getSeasons', serverAPI.getSeasons);
@@ -87,7 +89,8 @@ app.post('/api/db/updateUserImg', serverAPI.updateUserImg);
 app.get('/api/db/getUploadedUserImages', serverAPI.getUploadedUserImages);
 app.post('/api/db/deleteUploadedUserImage', serverAPI.deleteUploadedUserImage);
 
-//-- User Img Upload
+//// -- Media browser -- ////
+app.get('/getFolderStructure', mediabrowserAPI.getFolderStructure);
 
 
 const server = http.createServer(app);

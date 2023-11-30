@@ -240,6 +240,20 @@ const getMediaFiltered = (req, res) => {
     });
 }
 
+const addVideoPathToMedia = (req, res) => {
+    const { mediaType, mediaID, videoPath } = req.body.params;
+
+    let query = `UPDATE ${mediaType} SET file_path = ? WHERE tmdbID = ?`;
+    
+    db.all(query, [`${videoPath}`, mediaID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json('Success');
+    });
+}
+
 //-- Seasons --
 const getSeasons = (req, res) => {
     const { showID } = req.query;
@@ -511,7 +525,7 @@ const editUser = (req, res) => {
 const changeUserPassword = (req, res) => {
     const { userID, password } = req.query;
     const hashed_password = bcrypt.hashSync(password, saltRounds);
-    
+
     let query = `UPDATE users SET password = ? WHERE id = ?`;
     db.all(query, [hashed_password, userID], (err) => {
         if (err) {
@@ -688,6 +702,7 @@ module.exports = {
     getMedia,
     getMediaByInput,
     getMediaFiltered,
+    addVideoPathToMedia,
 
     // Episodes
     getSeasons,
