@@ -123,7 +123,7 @@ router.beforeEach(async(to, from, next) => {
     try {
         const user = await isAuthenticated();
         const isLoggedIn = user && user.isLoggedIn;
-        console.log(user);
+
         if (to.matched.some((record) => record.meta.requiresAuth)) {
             
             if (!isLoggedIn) {

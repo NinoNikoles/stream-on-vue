@@ -38,8 +38,7 @@ export default {
             
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/login`, { username: username, password: password}, { withCredentials: true })
-                .then(async(response) => {
-                    console.log(response.data.message);
+                .then(async() => {
                     window.location.href = '/';               
                 })
                 .catch((error) => {

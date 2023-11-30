@@ -227,7 +227,6 @@ export default {
         async selectMedia(media) {
             this.selectedMedia = media;
             var mediaGenres = JSON.parse(this.selectedMedia.genres);
-
             const selectedMediaGenre = [];
 
             for ( var genre of mediaGenres ) {
@@ -247,8 +246,7 @@ export default {
             // Benutzeranmeldeinformationen            
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/logout`, { username: '', role: ''}, { withCredentials: true })
-                .then(async(response) => {
-                    console.log(response.data.message);
+                .then(async() => {
                     window.location.href = '/';               
                 })
                 .catch((error) => {
@@ -275,7 +273,6 @@ export default {
         async getCurrentUserInfo() {
             try {
                 var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.id}`);
-                console.log(response.data[0].user_img);
                 this.currentUser.username = response.data[0].username;
                 if ( response.data[0].user_img !== 'avatar' ) {
                     this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${response.data[0].user_img}`;
