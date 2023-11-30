@@ -8,6 +8,7 @@
 import Header from './components/Header.vue';
 import tmdbAPI from './components/mixins/tmdbAPI.vue';
 import langSnippet from './components/mixins/language.vue';
+import { Fancybox } from "@fancyapps/ui";
 
 export default {
     name: 'AppIndex',
@@ -24,6 +25,11 @@ export default {
         document.querySelectorAll('img[data-img]').forEach(function(el) {
             el.setAttribute('src', el.getAttribute('data-img'));
             el.removeAttribute('data-img');
+        });
+    },
+    mounted() {
+        Fancybox.bind('[data-fancybox]', {
+            dragToClose: false,
         });
     }
 };

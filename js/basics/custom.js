@@ -490,12 +490,6 @@ $(document).ready(function() {
     page.init();
 });
 
-function fancyLoad() {
-    Fancybox.bind('[data-fancybox]', {
-        dragToClose: false,
-    });
-}
-
 function scrollTrigger() {
     // Scroll Trigger
     const trigger = new ScrollTrigger.default({
@@ -663,7 +657,6 @@ function userMenuBtn() {
 
 
 function initCustomJS() {
-    fancyLoad();
     scrollTrigger();
     initSliders();
     initTabs();
