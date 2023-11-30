@@ -102,9 +102,13 @@ a.icon-right:hover {
     &-calender { &::before { content: $icon-calender; } }
     &-close { &::before { content: $icon-close; } }
     &-error { &::before { content: $icon-error; } }
+    &-eye { &::before { content: $icon-eye; } }
+    &-file { &::before { content: $icon-file; } }
+    &-folder { &::before { content: $icon-folder; } }
     &-globe { &::before { content: $icon-globe; } }
     &-help { &::before { content: $icon-help; } }
     &-home { &::before { content: $icon-home; } }
+    &-image { &::before { content: $icon-image; } }
     &-info { &::before { content: $icon-info; } }
     &-key { &::before { content: $icon-key; } }
     &-location { &::before { content: $icon-location; } }
@@ -112,6 +116,7 @@ a.icon-right:hover {
     &-media { &::before { content: $icon-media; } }
     &-moon { &::before { content: $icon-moon; } }
     &-multilayer { &::before { content: $icon-multilayer; } }
+    &-movie { &::before { content: $icon-movie; } }
     &-pause { &::before { content: $icon-pause; } }
     &-pen { &::before { content: $icon-pen; } }
     &-phone { &::before { content: $icon-phone; } }
