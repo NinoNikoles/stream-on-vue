@@ -1,0 +1,18 @@
+#media-browser {
+    padding: 0;
+
+    @include MQ(xsmall) {
+        min-height: unset;
+    }
+
+    @include MQ(medium) {
+        width: 80vw;
+    }
+
+    > table {
+        > tbody {
+            max-height: 40vh;
+            overflow-y: auto;
+        }
+    }
+}
