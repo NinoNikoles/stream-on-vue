@@ -10,40 +10,49 @@
                 </th>
             </thead>
             <tbody>
-                <template v-for="(media, index) in folderStructure.children" :key="index">
-                    <tr v-if="media.type === 'folder'">
-                        <td><span class="marg-no icon-left icon-folder"><a @click="changeDirectory(media.path, $event)" href="#" class="marg-no">{{ media.name }}</a> /</span></td>
-                    </tr>
-                    <tr v-else>
-                        <td>
-                            <div class="col6">
-                                <span class="marg-no icon-left icon-file">{{ media.name }}</span>
-                            </div>
-                            <div class="col6">
-                                <table class="marg-no">
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-right" style="display: block; padding:0;">
-                                                <a :href="`${$mainURL}/${media.path}`" data-fancybox class="btn btn-small btn-warning icon-only icon-eye marg-no"></a>
+                <template v-if="folderStructure.children && folderStructure.children.length > 0">
+                    <template v-for="(media, index) in folderStructure.children" :key="index">
+                        <tr v-if="media.type === 'folder'">
+                            <td><span class="marg-no icon-left icon-folder"><a @click="changeDirectory(media.path, $event)" href="#" class="marg-no">{{ media.name }}</a> /</span></td>
+                        </tr>
+                        <tr v-else>
+                            <td>
+                                <div class="col6">
+                                    <span class="marg-no icon-left icon-file">{{ media.name }}</span>
+                                </div>
+                                <div class="col6">
+                                    <table class="marg-no">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-right" style="display: block; padding:0;">
+                                                    <a :href="`${$mainURL}/${media.path}`" data-fancybox class="btn btn-small btn-warning icon-only icon-eye marg-no"></a>
 
-                                                <a v-if="$route.path !== '/media-browser'"
-                                                href="#"  
-                                                class="btn btn-small btn-success icon-only icon-check marg-bottom-no marg-left-xxs"
-                                                @click="saveMediaPath(`${media.path}`, $event)"></a> 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
+                                                    <a v-if="$route.path !== '/media-browser'"
+                                                    href="#"  
+                                                    class="btn btn-small btn-success icon-only icon-check marg-bottom-no marg-left-xxs"
+                                                    @click="saveMediaPath(`${media.path}`, $event)"></a> 
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    </template>
+                </template>
+                <template v-else>
+                    <tr>
+                        <td>...</td>
                     </tr>
                 </template>
             </tbody>
         </table>
     </div>
-    <div class="innerWrap marg-top-s">
-        <div class="col12">
-            <button class="btn btn-white hollow btn-small">Upload</button>
+    <div class="column marg-top-xs">
+        <div class="row">
+            <span class="column marg-no"><button class="btn btn-white hollow btn-small icon-left icon-folder">Create folder</button></span>
+            <span class="column marg-no"><button class="btn btn-white hollow btn-small">Upload</button></span>            
         </div>
     </div>
 </template>
@@ -70,6 +79,7 @@ export default {
                 var response = await axios.get(`${this.$mainURL}:3000/getFolderStructure`, { params: {folder}});
                 this.folderStructure = response.data;
                 var currentFolderPath = this.folderStructure.path;
+                console.log(this.folderStructure);
 
                 // Entferne den Basispfad
                 const relativePath = currentFolderPath.slice(this.mainFolder.length);

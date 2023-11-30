@@ -1,18 +1,23 @@
 #media-browser {
     padding: 0;
+    overflow-x: hidden;
 
     @include MQ(xsmall) {
         min-height: unset;
     }
 
     @include MQ(medium) {
-        width: 80vw;
+        width: 75vw;
     }
 
-    > table {
-        > tbody {
-            max-height: 40vh;
+    table {
+        tbody {
             overflow-y: auto;
+            max-height: calc(100vh - 125px);
+
+            @include MQ(xsmall) {
+                max-height: 50vh;
+            }
         }
     }
 }
