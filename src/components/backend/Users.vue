@@ -92,7 +92,7 @@
             <!-- Change password of user -->
             <div id="change-password" style="display:none;">
                 <p v-html="langSnippet('edit_user')"></p>
-                <form @submit.prevent="changeUserPassword(selectedUser)">
+                <form @submit.prevent="changeUserPassword(selectedUser.id)">
                     <p>
                         <label for="new-password">{{ langSnippet('password') }}
                         <input v-model="newPassword" type="password" id="new-password" name="new-password" :placeholder="langSnippet('password')" required></label>
