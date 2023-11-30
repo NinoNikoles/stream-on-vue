@@ -25,12 +25,24 @@
                             <div v-for="(media, index) in slider.mediaElements" :key="index" class="swiper-slide">
                                 <div class="media-card">
                                     <div class="media-card-wrapper">
-                                        <figure class="widescreen desktop-only">
-                                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
-                                        </figure>
-                                        <figure class="poster mobile-only">
-                                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
-                                        </figure>
+                                        <template v-if="media.file_path === null">
+                                            <figure class="widescreen desktop-only disabled">
+                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                            </figure>
+                                            <figure class="poster mobile-only disabled">
+                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                            </figure>
+                                        </template>
+
+                                        <template v-else>
+                                            <figure class="widescreen desktop-only">
+                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                            </figure>
+                                            <figure class="poster mobile-only">
+                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                            </figure>
+                                        </template>
+                                        
                                         <div class="link-wrapper">
                                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
                                             <a href="#" @click="popUpTrigger(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
@@ -170,9 +182,7 @@ export default {
 
             if ( this.selectedMedia.media_type === 'show' ) {
                 console.log('has seasons');
-            }
-
-            
+            }            
         },
         async getHighlight() {
             try {
