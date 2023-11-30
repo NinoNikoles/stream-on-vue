@@ -1,6 +1,6 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const axios = require('axios');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -22,6 +22,7 @@ const login = (req, res) => {
             bcrypt.compare(password, user[0].password, (err, result) => {
                 if (result) {
                     req.session.user = {
+                        id: user[0].id,
                         name: user[0].username,
                         role: user[0].role,
                         isLoggedIn: true
@@ -456,17 +457,32 @@ const getAllUsers = (req, res) => {
     });
 }
 
+const getUser = (req, res) => {
+    const { userID } = req.query;
+
+    let query = `SELECT * FROM users WHERE id = ?`;
+
+    db.all(query,  [userID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 const addUser = (req, res) => {
     const { username, password, role } = req.query;
 
     let query = `INSERT INTO users 
-    (username, password, role) VALUES (?, ?, ?)`;
+    (username, password, role, user_img) VALUES (?, ?, ?, ?)`;
 
     const hashed_password = bcrypt.hashSync(password, saltRounds);
     var stringRole = 'user';
     if ( role ===  'true' || role ===  true ) stringRole = 'admin';
+    const img = '/media/avatar.webp';
 
-    db.all(query,  [username, hashed_password, stringRole], (err, rows) => {
+    db.all(query,  [username, hashed_password, stringRole, img], (err, rows) => {
         if (err) {
             // res.status(500).send(err);
             return;
@@ -494,10 +510,9 @@ const editUser = (req, res) => {
 
 const changeUserPassword = (req, res) => {
     const { userID, password } = req.query;
-
-    let query = `UPDATE users SET password = ? WHERE id = ?`;
     const hashed_password = bcrypt.hashSync(password, saltRounds);
-
+    
+    let query = `UPDATE users SET password = ? WHERE id = ?`;
     db.all(query, [hashed_password, userID], (err) => {
         if (err) {
             res.status(500).send(err.message);
@@ -520,6 +535,142 @@ const deleteUser = (req, res) => {
         res.json(rows);
     });
 }
+
+const userIMGUpload = (req, res) => {
+    const { username } = req.query;
+
+    function createUserFolder(username) {
+        const userFolder = path.join(__dirname, '../public/media/user_uploads');
+        if (!fs.existsSync(userFolder)) {
+            fs.mkdirSync(userFolder);
+        }
+    
+        const userUploadFolder = path.join(userFolder, username);
+        if (!fs.existsSync(userUploadFolder)) {
+            fs.mkdirSync(userUploadFolder);
+        }
+
+        return userUploadFolder;
+    }
+
+    // Funktion zum Umbenennen der Datei bei Konflikt
+    const resolveFileNameConflict = (folder, fileName) => {
+        let index = 1;
+        let newFileName = fileName;
+        const fileBase = path.parse(fileName).name;
+        const fileExt = path.parse(fileName).ext;
+    
+        while (fs.existsSync(path.join(folder, newFileName))) {
+            newFileName = `${fileBase}_${index}${fileExt}`;
+            index++;
+        }
+    
+        return newFileName;
+    };
+
+    // Konfiguration für Multer (Dateiupload)
+    const storage = multer.diskStorage({
+        destination: function (_, file, cb) {
+            const userUploadFolder = createUserFolder(username);
+            cb(null, userUploadFolder);
+        },
+        filename: function (_, file, cb) {
+            const userUploadFolder = createUserFolder(username);
+            const resolvedFileName = resolveFileNameConflict(userUploadFolder, file.originalname);
+            cb(null, resolvedFileName);
+        },
+    });
+
+    const upload = multer({ storage: storage }).single('file');
+
+    // Dateiupload durchführen
+    upload(req, res, function (err) {
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+
+        res.send('Datei erfolgreich hochgeladen.');
+    });
+}
+
+const updateUserImg = (req, res) => {
+    const { userID, img } = req.query;
+
+    let query = `UPDATE users SET user_img = ? WHERE id = ?`;
+
+    db.all(query, [img, userID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+const getUploadedUserImages = (req, res) => {
+    const { username } = req.query;
+
+    const userFolder = path.join(__dirname, '../public/media/user_uploads');
+    if (!fs.existsSync(userFolder)) {
+        fs.mkdirSync(userFolder);
+    }
+
+    const imagesFolder = path.join(userFolder, username);
+    if (!fs.existsSync(imagesFolder)) {
+        fs.mkdirSync(imagesFolder);
+    }
+
+    try {
+        // Lies den Inhalt des 'images'-Ordners
+        fs.readdir(imagesFolder, (err, files) => {
+            if (err) {
+                console.error('Fehler beim Lesen des Bilderordners:', err);
+                res.status(500).json({ error: 'Interner Serverfehler' });
+                return;
+            }
+
+            // Filtere nur Dateien mit unterstützten Bildformaten (z.B., jpg, png)
+            const imagePaths = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+            // Erstelle die Bildinformationen
+            const imageList = imagePaths.map((file, index) => {
+                const filePath = path.join(imagesFolder, file);
+                const stats = fs.statSync(filePath);
+                return {
+                    path: file,
+                    date: stats.mtime // Änderungsdatum der Datei
+                };
+            });
+
+            imageList.sort((a, b) => b.date - a.date);
+
+            // Sende die Bildinformationen als JSON zurück
+            res.json(imageList);
+        });
+    } catch (error) {
+        console.error('Fehler beim Lesen des Bilderordners:', error);
+        res.status(500).json({ error: 'Interner Serverfehler' });
+    }
+}
+
+const deleteUploadedUserImage = (req, res) => {
+    const { img, username } = req.query; // Du könntest dies auch aus dem Anfragekörper (req.body) extrahieren
+
+    const imagePath = path.join(__dirname, `../public/media/user_uploads/${username}/${img}`);
+
+    try {
+        // Überprüfe, ob die Datei existiert
+        if (fs.existsSync(imagePath)) {
+            // Lösche die Datei
+            fs.unlinkSync(imagePath);
+            res.json({ message: 'Bild erfolgreich gelöscht.' });
+        } else {
+            res.status(404).json({ error: 'Bild nicht gefunden.' });
+        }
+    } catch (error) {
+        console.error('Fehler beim Löschen des Bildes:', error);
+        res.status(500).json({ error: 'Interner Serverfehler' });
+    }
+};
 
 module.exports = {
     getSession,
@@ -559,8 +710,13 @@ module.exports = {
 
     // Users
     getAllUsers,
+    getUser,
     addUser,
     editUser,
     changeUserPassword,
-    deleteUser
+    deleteUser,
+    userIMGUpload,
+    updateUserImg,
+    getUploadedUserImages,
+    deleteUploadedUserImage
 };

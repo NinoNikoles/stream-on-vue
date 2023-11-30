@@ -58,15 +58,19 @@
                     <!-- Profil -->
                     <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
                         <figure class="square">
-                            <img data-img="" loading="lazy" alt="">
+                            <img :data-img="`${this.currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
                             <ul>
-                                <!-- <?php echo adminMenu('user-menu');?> -->
+                                <template v-for="route in backendRoutes">
+                                    <li :key="route.name" class="menu-item" v-if="route.path === '/backend/settings'">
+                                        <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
+                                    </li>
+                                </template>
                                 
                                 <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
-                                <li class="menu-item"><a href="#" @click="logout()" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
+                                <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>
                     </button>
@@ -123,7 +127,7 @@
                 <div v-if="selectedMedia" class="info-popup" :id="`${selectedMedia.tmdbID}`">
                     <div class="col12 marg-bottom-xs mobile-only">
                         <figure class="widescreen">
-                            <img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
+                            <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
                         </figure>
                     </div>
                     <div class="innerWrap">
@@ -179,6 +183,14 @@ export default {
             searchResults: null,
             selectedMedia: null,
             selectedMediaGenre: null,
+            currentUser: {
+                id: null,
+                username: null,
+                activeImg: null,
+                images: [],
+            },
+            mediaPath: 'media',
+            userUploadPath: 'user_uploads',
         };
     },
     methods: {
@@ -260,6 +272,23 @@ export default {
                 console.error('Fehler beim Abrufen des Session-Status:', error);
             }
         },
+        async getCurrentUserInfo() {
+            try {
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.id}`);
+                console.log(response.data[0].user_img);
+                this.currentUser.username = response.data[0].username;
+                if ( response.data[0].user_img !== 'avatar' ) {
+                    this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${response.data[0].user_img}`;
+                } else {
+                    this.currentUser.activeImg = `/${this.mediaPath}/${response.data[0].user_img}.webp`;
+                }            
+                this.currentUser.uploads = JSON.parse(response.data[0].uploads);
+                this.selectedImg = this.currentUser.activeImg;
+            } catch (error) {
+                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
+                return [];
+            }
+        },
         async isAdminOrSuperadmin() {
             return this.role;
         },
@@ -293,6 +322,7 @@ export default {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.backendRoutes = routes;
                 });
+                this.getCurrentUserInfo();
             }
         });
     }

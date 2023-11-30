@@ -8,6 +8,7 @@ import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
 import Test from './components/Test.vue';
 import BackendSettings from './components/backend/Settings.vue';
+import Users from './components/backend/Users.vue';
 import BackendGenre from './components/backend/Genre.vue';
 import BackendMovies from './components/backend/Movies.vue';
 import BackendMovie from './components/backend/SingleMovie.vue';
@@ -15,7 +16,7 @@ import BackendShows from './components/backend/Shows.vue';
 import BackendShow from './components/backend/SingleShow.vue';
 import BackendHighlights from './components/backend/Highlights.vue';
 import MediaLibrary from './components/backend/MediaLibrary.vue';
-import Users from './components/backend/Users.vue';
+import User from './components/frontend/User.vue';
 
 function name(snippet) {
     return langSnippet.methods.langSnippet(snippet);
@@ -53,6 +54,12 @@ const router = createRouter({
             name: name('settings'),
             component: BackendSettings,
             meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
+        },
+        {
+            path: '/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            name: name('users'),
+            component: Users,
+            meta: { requiresAuth: true, backend: true  }
         },
         {
             path: '/backend/genre',
@@ -96,11 +103,12 @@ const router = createRouter({
             component: MediaLibrary,
             meta: { requiresAuth: false, backend: true }
         },
+
         {
-            path: '/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
-            name: 'Users',
-            component: Users,
-            meta: { requiresAuth: true, backend: true  }
+            path: '/user/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            name: name('profile'),
+            component: User,
+            meta: { requiresAuth: true, backend: false  }
         },
         {
             path: '/test', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt

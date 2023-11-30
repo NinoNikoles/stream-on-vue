@@ -77,10 +77,18 @@ app.post('/api/db/deleteHighlight', serverAPI.deleteHighlight);
 
 //-- Users
 app.get('/api/db/getAllUsers', serverAPI.getAllUsers);
+app.get('/api/db/getUser', serverAPI.getUser);
 app.post('/api/db/addUser', serverAPI.addUser);
 app.post('/api/db/editUser', serverAPI.editUser);
 app.post('/api/db/changeUserPassword', serverAPI.changeUserPassword);
 app.post('/api/db/deleteUser', serverAPI.deleteUser);
+app.post('/userIMGUpload', serverAPI.userIMGUpload);
+app.post('/api/db/updateUserImg', serverAPI.updateUserImg);
+app.get('/api/db/getUploadedUserImages', serverAPI.getUploadedUserImages);
+app.post('/api/db/deleteUploadedUserImage', serverAPI.deleteUploadedUserImage);
+
+//-- User Img Upload
+
 
 const server = http.createServer(app);
 const port = process.env.PORT || 3000;
