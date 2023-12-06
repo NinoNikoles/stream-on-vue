@@ -19,7 +19,7 @@
   
             <div class="col3 marg-left-col1">
                 <div class="col12">
-                    <a href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</a>
+                    <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media" name="addHighlight">{{ langSnippet('select_file') }}</button>
                 </div>
 
                 <div v-if="isHighlight===null" class="col12">
@@ -127,7 +127,12 @@
         </div>
 
         <div id="media-browser" style="display: none;">
-            <media-browser-component></media-browser-component>
+            <div class="row">
+                <media-browser-component></media-browser-component>
+            </div>
+            <div v-if="movie.file_path" class="col12 column marg-top-base">
+                <p>Current: {{ movie.file_path }}</p>
+            </div>
         </div>
     </div>    
 </template>
