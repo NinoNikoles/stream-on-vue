@@ -14,7 +14,7 @@
 
     <div v-if="availableSlider" class="marg-bottom-xl">
         <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index}`">
-            <div class="col12 marg-top-xl">
+            <div class="col12">
                 <div class="column column-space-2">
                     <h3>{{ slider.genre.genre_name }}</h3>
                 </div>
@@ -45,7 +45,7 @@
                                         
                                         <div class="link-wrapper">
                                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                            <a href="#" @click="popUpTrigger(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
+                                            <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media.tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media.tmdbID}`"></a>
                                             <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                                         </div>
                                     </div>
@@ -60,43 +60,49 @@
         </div>
     </div>
 
-    <div class="modal" id="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-wrap large">
-            <div class="modal-inner-wrap">
-                <div v-if="selectedMedia" class="info-popup" :id="`${selectedMedia.tmdbID}`">
-                    <div class="col12 marg-bottom-xs mobile-only">
-                        <figure class="widescreen">
-                            <img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
-                        </figure>
-                    </div>
-                    <div class="innerWrap">
-                        <div class="col7 marg-right-col1">
-                            <p class="h2">{{ selectedMedia.title }}</p>
-                            <p class="small tag-list marg-bottom-base">
-                                <span class="tag">{{ selectedMedia.release_date }}</span>
-                                <span class="tag">{{ selectedMedia.rating }}/10 ★</span>
-                                <!-- <span class="tag">'.$extraInfo.'</span> -->
-                            </p>
-                            <a v-if="selectedMedia.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                            <p class="small">{{ selectedMedia.overview }}</p>
-                            <p v-if="selectedMediaGenre" class="small tag-list marg-bottom-base">
-                                <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
-                                    {{ genre }}
-                                </span>
-                            </p>
+    <template v-if="availableSlider">
+        <template v-for="(slider, index) in availableSlider" :key="index">
+            <template v-for="(media, index) in slider.mediaElements" :key="index">
+                <div class="modal" :id="`${slider.genre.genre_name}-media-${media.tmdbID}`">
+                    <div class="modal-overlay"></div>
+                    <div class="modal-wrap large">
+                        <div class="modal-inner-wrap">
+                            <div class="info-popup" :id="`${media.tmdbID}`">
+                                <div class="col12 marg-bottom-xs mobile-only">
+                                    <figure class="widescreen">
+                                        <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
+                                    </figure>
+                                </div>
+                                <div class="innerWrap">
+                                    <div class="col7 marg-right-col1">
+                                        <p class="h2">{{ media.title }}</p>
+                                        <p class="small tag-list marg-bottom-base">
+                                            <span class="tag">{{ media.release_date }}</span>
+                                            <span class="tag">{{ media.rating }}/10 ★</span>
+                                            <!-- <span class="tag">'.$extraInfo.'</span> -->
+                                        </p>
+                                        <a v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                                        <p class="small">{{ media.overview }}</p>
+                                        <!-- <p v-if="media" class="small tag-list marg-bottom-base">
+                                            <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
+                                                {{ genre }}
+                                            </span>
+                                        </p> -->
+                                    </div>
+                                    <div class="col4 desktop-only">
+                                        <figure class="poster">
+                                            <img data-img="/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col4 desktop-only">
-                            <figure class="poster">
-                                <img data-img="http://localhost:8080/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
-                            </figure>
-                        </div>
+                        <a href="#" class="modal-close" @click="closePopUp(`${slider.genre.genre_name}-media-${media.tmdbID}`, $event)"></a>
                     </div>
                 </div>
-            </div>
-            <a href="#" class="modal-close" @click="closePopUp()"></a>
-        </div>
-    </div>
+            </template>
+        </template>
+    </template>
 
 </template>
 
@@ -155,12 +161,6 @@ export default {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                 console.log(error);
             }
-        },
-        async popUpTrigger(media) {
-            await this.selectMedia(media)
-            .then(() => {
-                this.openPopUp();
-            });
         },
         async selectMedia(media) {
             this.selectedMedia = media;
