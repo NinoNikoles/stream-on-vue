@@ -91,6 +91,10 @@ app.post('/api/db/deleteUploadedUserImage', serverAPI.deleteUploadedUserImage);
 
 //// -- Media browser -- ////
 app.get('/getFolderStructure', mediabrowserAPI.getFolderStructure);
+app.post('/createFolder', mediabrowserAPI.createFolder);
+app.post('/renameFolder', mediabrowserAPI.renameFolder);
+app.post('/deleteFolder', mediabrowserAPI.deleteFolder);
+app.post('/uploadVideo', mediabrowserAPI.uploadVideo);
 
 
 const server = http.createServer(app);
