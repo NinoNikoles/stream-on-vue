@@ -15,7 +15,6 @@ import BackendMovie from './components/backend/SingleMovie.vue';
 import BackendShows from './components/backend/Shows.vue';
 import BackendShow from './components/backend/SingleShow.vue';
 import BackendHighlights from './components/backend/Highlights.vue';
-import MediaLibrary from './components/backend/MediaLibrary.vue';
 import User from './components/frontend/User.vue';
 
 function name(snippet) {
@@ -32,6 +31,12 @@ const router = createRouter({
             meta: { requiresAuth: true, main: true } // Diese Route erfordert eine Anmeldung
         },
         {
+            path: '/login',
+            name: 'Login',
+            component: Login,
+            meta: { requiresAuth: false, main: false }
+        },
+        {
             path: '/movies',
             name: name('movies'),
             component: FrontendMovies,
@@ -42,12 +47,6 @@ const router = createRouter({
             name: name('shows'),
             component: FrontendShows,
             meta: { requiresAuth: true, main: true } // Diese Route erfordert eine Anmeldung
-        },
-        {
-            path: '/login',
-            name: 'Login',
-            component: Login,
-            meta: { requiresAuth: false, main: false }
         },
         {
             path: '/backend/settings',
@@ -83,13 +82,13 @@ const router = createRouter({
             path: '/backend/movie/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('movie'),
             component: BackendMovie,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
+            meta: { requiresAuth: true, backend: false, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/show/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('show'),
             component: BackendShow,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
+            meta: { requiresAuth: true, backend: false, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/highlights', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
@@ -97,13 +96,6 @@ const router = createRouter({
             component: BackendHighlights,
             meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
-        {
-            path: '/backend/media-library', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
-            name: name('media_library'),
-            component: MediaLibrary,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
-        },
-
         {
             path: '/user/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('profile'),
