@@ -138,6 +138,7 @@ a.icon-right:hover {
     &-sun { &::before { content: $icon-sun; } }
     &-trash { &::before { content: $icon-trash; } }
     &-update { &::before { content: $icon-update; } }
+    &-upload { &::before { content: $icon-upload; } }
     &-volume-down { &::before { content: $icon-volume-down; } }
     &-volume-mute { &::before { content: $icon-volume-mute; } }
     &-volume-off { &::before { content: $icon-volume-off; } }
