@@ -1,6 +1,6 @@
 <template>
     <div class="innerWrap">
-        <div class="col12 marg-top-xl marg-bottom-l">
+        <div class="col12">
             <div class="col12" v-if="!userDBcheck"></div>
 
             <div class="col12" v-if="userDBcheck === false">
@@ -144,7 +144,7 @@ export default {
 
                 // Iteriere durch jede hochgeladene Datei und lade sie hoch
                 for (const file of files) {
-                await this.uploadFile(username, file);
+                    await this.uploadFile(username, file);
                 }
 
                 console.log('Dateien erfolgreich hochgeladen.');
