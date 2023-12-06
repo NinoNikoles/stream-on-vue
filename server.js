@@ -14,6 +14,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.static(
+    '/build', {
+        type: 'text/css',
+        type: 'application/javascript',
+    }
+));
 app.use(express.json());
 app.use(session({
     secret: 'hh830476c753416c76xn915xnm76c4765',
