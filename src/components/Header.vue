@@ -63,11 +63,9 @@
 
                         <menu class="user-menu">
                             <ul>
-                                <template v-for="route in backendRoutes">
-                                    <li :key="route.name" class="menu-item" v-if="route.path === '/backend/settings'">
-                                        <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
-                                    </li>
-                                </template>
+                                <li v-for="route in backendRoutes" :key="route.name" class="desktop-only">
+                                    <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
+                                </li>
                                 
                                 <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
