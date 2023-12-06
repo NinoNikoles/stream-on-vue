@@ -267,8 +267,9 @@ function dbSetup() {
                             const username = 'admin';
                             const password = 'admin';
                             const role = 'superadmin';
+                            const img = 'avatar';
                             const hashed_password = bcrypt.hashSync(password, saltRounds);
-                            db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', [username, hashed_password, role], (err) => {
+                            db.run('INSERT INTO users (username, password, role, user_img) VALUES (?, ?, ?, ?)', [username, hashed_password, role, img], (err) => {
                                 if (err) {
                                     console.error('Fehler beim Erstellen des Admin-Benutzers:', err.message);
                                 } else {
