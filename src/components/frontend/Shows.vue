@@ -1,5 +1,5 @@
 <template>
-    <div v-if="availableSlider" class="marg-bottom-l">
+    <div v-if="availableSlider">
         <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index}`">
             <div class="col12 marg-top-l">
                 <div class="column">

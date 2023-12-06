@@ -1,6 +1,6 @@
 <template>
     <div class="innerWrap">
-        <div class="col12 marg-top-xl">
+        <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('settings') }}</h1>
             </div>

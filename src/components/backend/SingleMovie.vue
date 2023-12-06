@@ -1,5 +1,5 @@
 <template>
-    <div class="marg-top-xl marg-bottom-xl" v-if="movie">
+    <div v-if="movie" class="">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ movie.title }}</h1></div>
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div class="innerWrap marg-top-xl" v-if="similarMovies.length > 0">
+        <div class="innerWrap marg-top-xl" v-if="similarMovies > 0">
             <div class="col12">
                 <h2>Ähnliche</h2>
 

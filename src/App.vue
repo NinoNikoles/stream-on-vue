@@ -1,7 +1,9 @@
 <template>
     <header-component></header-component>
 
-    <router-view></router-view>
+    <div id="main" class="pad-top-xl pad-bottom-xl">
+        <router-view></router-view>
+    </div>
 </template>
   
 <script>

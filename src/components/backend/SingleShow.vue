@@ -1,5 +1,5 @@
 <template>
-    <div v-if="show" class="marg-top-xl marg-bottom-xl">
+    <div v-if="show">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ show.title }}</h1></div>

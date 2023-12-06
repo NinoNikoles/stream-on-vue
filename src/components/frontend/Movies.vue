@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap marg-top-xl marg-bottom-xl">
+    <div class="innerWrap">
         <h1>{{ langSnippet('movies') }}</h1>
 
         <div class="grid-row">
