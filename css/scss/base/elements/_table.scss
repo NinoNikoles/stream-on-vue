@@ -10,6 +10,10 @@ table, .table {
     &.has-fixed-layout {
         table-layout: fixed;
     }
+
+    &.not-fixed-layout {
+        table-layout: unset;
+    }
 }
 
 thead, .thead, tfoot, .tfoot {
@@ -46,12 +50,8 @@ thead, .thead {
 }
 
 tbody, .tbody {
-    display: block;
 
     tr, .tr {
-        display: block;
-        width: 100%;
-
         &:nth-child(odd) {
             background: {
                 color: var(--table-light);
@@ -88,9 +88,6 @@ th, .th {
 }
 
 td, .td {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     padding: {
         top: rem-calc($table-space-vertical);
         right: rem-calc($table-space-horizontal);
@@ -105,11 +102,6 @@ td, .td {
     a:not(.btn) {
         text-decoration: underline;
     }
-}
-
-.tr {
-    display: flex;
-    justify-content: flex-start;
 }
 
 .td {
