@@ -39,7 +39,7 @@ export default {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/login`, { username: username, password: password}, { withCredentials: true })
                 .then(async() => {
-                    window.location.href = '/';               
+                    window.location.href = this.$route.query.redirect;               
                 })
                 .catch((error) => {
                     // Fehler bei der Anmeldung
@@ -49,8 +49,7 @@ export default {
                 console.log(err);
             }            
         }
-    },
-
+    }
 };
 </script>
   
