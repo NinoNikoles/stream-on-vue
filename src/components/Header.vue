@@ -25,7 +25,7 @@
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
                             <input type="text" id="media-live-search" v-model="searchInput" @input="handleSearchInput" name="search" placeholder="Suchen">
-                            <button id="search-btn" @click="searchTrigger()" class="btn search-btn"></button>
+                            <button id="search-btn" @click="searchTrigger($event)" class="btn search-btn"></button>
                         </div>
                     </div>
 
@@ -37,7 +37,7 @@
                             </div>
 
                             <li v-for="route in mainRoutes" :key="route.name" class="menu-item">
-                                <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="toggleMainMenu($event)">{{ route.name }}</router-link>
                             </li>
 
                             <div class="col12 mobile-only marg-top-m" v-if="this.role === 'superadmin' || this.role === 'admin'">
@@ -45,7 +45,7 @@
                             </div>
 
                             <li v-for="route in backendRoutes" :key="route.name" class="menu-item mobile-only">
-                                <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="toggleMainMenu($event)">{{ route.name }}</router-link>
                             </li>
                             <!-- <div class="col12 mobile-only marg-top-m">
                                 <li class="menu-item spacer"><span><?php echo lang_snippet('admin').' '.lang_snippet('menu');?></span></li>
@@ -79,7 +79,7 @@
                     <!--<a href="#" id="theme-switch" class="icon"></a>-->
 
                     <!-- Mobile Menu Button -->
-                    <a href="#" @click="menuBtn()" id="menu-button" class="nav-trigger menu-button" title="Menü öffnen">
+                    <a href="#" @click="toggleMainMenu($event)" id="menu-button" class="nav-trigger menu-button" title="Menü öffnen">
                         <span class="tx">MENÜ</span>
                         <span class="trigger-bar bar-1"></span>
                         <span class="trigger-bar bar-2"></span>
@@ -102,14 +102,14 @@
                         <div class="media-card">
                             <div class="media-card-wrapper">
                                 <figure class="widescreen desktop-only">
-                                    <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                    <img src="" data-img="/build/css/images/img_preview.webp" :alt="`${media.title}`">
                                 </figure>
                                 <figure class="poster mobile-only">
-                                    <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                    <img src="" data-img="/build/css/images/img_preview.webp" :alt="`${media.title}`">
                                 </figure>
                                 <div class="link-wrapper">
                                     <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                    <a href="#" @click="popUpTrigger(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
+                                    <a href="#" @click="openPopUp(`searchresult-${media.tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
                                     <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
@@ -120,43 +120,46 @@
         </div>
     </header>
 
-    <div class="modal" id="modalHeader">
-        <div class="modal-overlay"></div>
-        <div class="modal-wrap large">
-            <div class="modal-inner-wrap">
-                <div v-if="selectedMedia" class="info-popup" :id="`${selectedMedia.tmdbID}`">
-                    <div class="col12 marg-bottom-xs mobile-only">
-                        <figure class="widescreen">
-                            <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
-                        </figure>
-                    </div>
-                    <div class="innerWrap">
-                        <div class="col7 marg-right-col1">
-                            <p class="h2">{{ selectedMedia.title }}</p>
-                            <p class="small tag-list marg-bottom-base">
-                                <span class="tag">{{ selectedMedia.release_date }}</span>
-                                <span class="tag">{{ selectedMedia.rating }}/10 ★</span>
-                                <!-- <span class="tag">'.$extraInfo.'</span> -->
-                            </p>
-                            <a v-if="selectedMedia.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                            <p class="small">{{ selectedMedia.overview }}</p>
-                            <p v-if="selectedMediaGenre" class="small tag-list marg-bottom-base">
-                                <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
-                                    {{ genre }}
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col4 desktop-only">
-                            <figure class="poster">
-                                <img data-img="http://localhost:8080/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+    <template v-for="(media, index) in searchResults" :key="index">
+        <div class="modal" :id="`searchresult-${media.tmdbID}`">
+            <div class="modal-overlay"></div>
+            <div class="modal-wrap large">
+                <div class="modal-inner-wrap">
+                    <div v-if="media" class="info-popup" :id="`${media.tmdbID}`">
+                        <div class="col12 marg-bottom-xs mobile-only">
+                            <figure class="widescreen">
+                                <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
                             </figure>
+                        </div>
+                        <div class="innerWrap">
+                            <div class="col7 marg-right-col1">
+                                <p class="h2">{{ media.title }}</p>
+                                <p class="small tag-list marg-bottom-base">
+                                    <span class="tag">{{ media.release_date }}</span>
+                                    <span class="tag">{{ media.rating }}/10 ★</span>
+                                    <!-- <span class="tag">'.$extraInfo.'</span> -->
+                                </p>
+                                <a v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                                <p class="small">{{ media.overview }}</p>
+                                <!-- <p v-if="selectedMediaGenre" class="small tag-list marg-bottom-base">
+                                    <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
+                                        {{ genre }}
+                                    </span>
+                                </p> -->
+                            </div>
+                            <div class="col4 desktop-only">
+                                <figure class="poster">
+                                    <img data-img="/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+                                </figure>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <a href="#" class="modal-close" @click="closePopUp(`searchresult-${media.tmdbID}`, $event)"></a>
             </div>
-            <a href="#" class="modal-close" @click="closePopUpHeader()"></a>
         </div>
-    </div>
+    </template>
+
 </template>
   
 <script>
@@ -289,8 +292,8 @@ export default {
         async isAdminOrSuperadmin() {
             return this.role;
         },
-        searchTrigger() {
-            // var searchBtn = document.getElementById('search-btn');
+        searchTrigger(event) {
+            event.preventDefault();
             var searchBar = document.getElementById('search-bar');
             var liveSearch = document.getElementById('media-live-search');
             var activeClass = 'active-search';            
@@ -298,14 +301,14 @@ export default {
             if ( !(searchBar.classList.contains(activeClass)) ) {
                 liveSearch.value = '';
                 searchBar.classList.add(activeClass);
-                document.body.classList.add(activeClass);
+                // document.body.classList.add(activeClass);
             } else {
                 liveSearch.value = '';
                 searchBar.classList.remove(activeClass);
-                document.body.classList.remove(activeClass);
+                // document.body.classList.remove(activeClass);
                 this.searchResults = null;
             }
-        }
+        },
     },
     mounted() {
         this.fetchSessionStatus()
@@ -322,6 +325,7 @@ export default {
                 this.getCurrentUserInfo();
             }
         });
+
     }
 };
 </script>
