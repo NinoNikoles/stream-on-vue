@@ -22,10 +22,10 @@ var checkPosition = function(e) {
 	var top = $(window).scrollTop();
 
 	if((top > 80) || (page.mobile && top > 50)) {
-		$h.addClass('fluid');
+		$('header').addClass('fluid');
 		$('#masterWrap').addClass('fluid');		
 	} else {
-		$h.removeClass('fluid');
+		$('header').removeClass('fluid');
 		$('#masterWrap').removeClass('fluid');
 	}
 };
@@ -51,28 +51,19 @@ $(document).ready(function() {
             var self = this;
 
             // self.initApp();
-            self.bindHandlers();
+            // self.bindHandlers();
             self.themeChange();
-            self.desktopViewportCheck();
-            self.fixedHeader();
-            self.navMobile();
-            // self.tabs();
-            // self.selectTabs();
-            //self.initScrolltrigger();
-            //self.userMenuBtn();
-            //self.initPlayer();
-            //self.fancyBox();
-            self.updateOverlay();
+            // self.desktopViewportCheck();
+            //self.fixedHeader();
+            //self.navMobile();
             self.pageReady();
-            //self.passwordChange();
-            //self.highlightIFrame();
         },
 
         bindHandlers: function () {
             var self = this;
 
-            window.addEventListener('resize', debounce);
-            window.addEventListener('scroll', debounceScroll);
+            //window.addEventListener('resize', debounce);
+            // window.addEventListener('scroll', debounceScroll);
         },
 
         pageReady: function() {
@@ -81,102 +72,6 @@ $(document).ready(function() {
             $("body").removeClass('loading');
             
             // self.fancyLoad();
-        },
-
-        desktopViewportCheck: function () {
-            var self = this;
-			extraMenuCtrl.init(true);
-
-            if ( window.innerWidth >= self.mobileSize ) {
-                self.mobile = false;
-				self.$masterWrap.removeClass('mobile-state');
-            } else {
-                self.mobile = true;
-				self.$masterWrap.addClass('mobile-state');
-            }
-        },
-
-        lockScrollPosition: function () {
-            var self = this,
-                scrollPosition = [
-                    document.documentElement.scrollLeft,
-                    document.documentElement.scrollTop
-                ];
-            self.$html.data('scroll-position', scrollPosition);
-            self.$html.css('overflow-y', 'hidden');
-            window.scroll(scrollPosition[0], scrollPosition[1]);
-        },
-
-        unlockScrollPosition: function () {
-            var self = this,
-                scrollPosition = self.$html.data('scroll-position');
-            if ( scrollPosition === undefined ) return false;
-            self.$html.css('overflow-y', 'auto');
-            window.scroll(scrollPosition[0], scrollPosition[1]);
-        },
-
-        resizeHook: function () {
-            var self = this;
-
-            self.desktopViewportCheck();
-            self.fixedHeader();
-            self.navMobile();
-            // self.fancyLoad();
-            self.repositionPlayerButtons();
-        },
-
-        initScrolltrigger: function(){
-			const trigger = new ScrollTrigger.default({
-				trigger: {
-					once: true
-				},
-				offset: {
-					element: {
-						x: 0,
-						y: function(trigger, rect, direction) {
-							return 0.5;
-						}
-					},
-				}
-			});
-			trigger.add('[data-trigger]');
-			trigger.add('.card-slider');
-			trigger.add('.genre-slider');
-            trigger.add('#load-count');
-            trigger.add('.currentWatch-slider');
-		},
-
-        fixedHeader: function() {
-            var self = this;
-
-            headerHeight = self.$header.height();
-
-            if( self.$header.hasClass('fixed-header') ) {
-                self.$body.css('padding-top', headerHeight);
-            } else {
-                self.$body.css('padding-top', 0);
-            }
-        },
-
-        navMobile: function () {
-            var self = this,
-                $nav = $('#navMain');
-
-            headerHeight = self.$header.height();
-            $nav.css({
-                'top': headerHeight,
-                'height': 'calc(100vh - ' + headerHeight + 'px)'
-            });
-        },
-
-        fancyLoad: function() {
-            var self = this;
-            self.src = "data-img";
-
-            forEach(document.querySelectorAll('img[data-img]'), function(el){
-                el.setAttribute('src', el.getAttribute("data-img"));
-                $(el).removeAttr('data-img');
-            });
         },
 
         themeChange: function () {
@@ -203,63 +98,6 @@ $(document).ready(function() {
                     self.$html.attr('data-theme', 'light');
                 }
             })
-        },
-
-        tabs: function () {
-            var self = this,
-                $tabTitleLink = $('.tabs .tabs-title > a');
-
-            $tabTitleLink.on('click', function (e) {
-                e.preventDefault();
-
-                var $this = $(this),
-                    panelID = $this.attr('href'),
-                    $tabTitle = $this.parent(),
-                    $tab = $tabTitle.parent(),
-                    tabID = $tab.attr('id');
-
-                if ( !$tabTitle.hasClass(self.activeClass) ) {
-                    //-- Tabs --
-                    $tab.children('.tabs-title').removeClass(self.activeClass).children('a').attr('aria-selected', 'false');
-                    $tabTitle.addClass(self.activeClass);
-                    $this.attr('aria-selected', 'true');
-
-                    //-- Content --
-                    var $tabsContent = $('[data-tabs-content="' + tabID + '"]'),
-                        $tabPanel = $tabsContent.find(panelID);
-                    $tabsContent.find('.tabs-panel').removeClass(self.activeClass);
-                    $tabPanel.addClass(self.activeClass);
-                }
-            })
-        },
-
-        selectTabs: function () {
-            var self = this;
-
-            $(document).on('change', '.tab-select', function (e) {
-                e.preventDefault();
-
-                var $this = $(this),
-                    valAtr = $this.val();
-                    tabsClass = $this.attr('id');
-                    $currTab = $('.'+tabsClass+'[data-select-tab="'+valAtr+'"]');
-                
-                $('body select.'+tabsClass).each(function(index, e) {
-                    $(e).val(valAtr);                
-                });
-
-                $('body select.'+tabsClass).val(valAtr);
-                $('body select.'+tabsClass+' option[value="'+valAtr+'"]').prop('selected', true);
-                
-                $('.'+tabsClass+'.is-active').toggleClass('is-active');
-                $currTab.toggleClass('is-active');
-            })
-        },
-
-        fancyBox: function() {
-            Fancybox.bind('[data-fancybox]', {
-                dragToClose: false,
-            });
         },
 
         initPlayer: function() {
@@ -376,83 +214,6 @@ $(document).ready(function() {
             $currTime.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth + $duration.outerWidth() + $divider.outerWidth() ));
         },
 
-        userMenuBtn: function() {
-            $menuBtn = $('#user-menu-btn');
-
-            $menuBtn.on('click', function(e) {
-                var $this = $(this);
-
-                if ( $this.hasClass('active') && ! $(e.target).is('.user-menu') ) {
-                    $this.removeClass('active');
-                } else {
-                    $this.addClass('active');
-                }
-            });
-
-            $menuBtn.on('blur', function() {
-                var $this = $(this);
-
-                if ( !$this.is(':hover') && $this.hasClass('active') ) {
-                    $this.removeClass('active');
-                }
-            });
-        },     
-
-        updateOverlay: function () {
-            function loader() {
-                $('body').addClass('loading');
-                $('#loader').removeClass('hidden');
-                $('#loader span').addClass('visible');
-            }
-            
-            $(document).on('click', '#add-movie', loader);
-            $(document).on('click', '#delete-movie', loader);
-
-            $(document).on('click', '#add-show', loader);
-            $(document).on('click', '#update-show', loader);
-            $(document).on('click', '#delete-show', loader);
-
-            $(document).on('click', '#addHighlight', loader);            
-        },
-
-        passwordChange: function() {
-            var password = false;
-            var passwordCheck = false;
-            var inputCheckID = false;
-
-            $('input[name="password"]').on('input', function() {
-                $this = $(this);
-                inputCheckID = '#'+$this.attr('id')+'-check';
-                password = $this.val();
-
-                if ( password.length > 0) {
-                    $(inputCheckID).removeAttr('disabled');
-                } else {
-                    $(inputCheckID).attr('disabled', 'disabled');
-                }
-
-                if ( passwordCheck === password ) {
-                    $('.change-user-pw').removeClass('disabled').removeAttr('disabled');
-                } else {
-                    $('.change-user-pw').addClass('disabled').attr('disabled', 'disabled');
-                }
-            });
-
-            $('input[name="password-check"]').on('input', function() {
-                $this = $(this);
-
-                if ( ('#'+$this.attr('id')) === inputCheckID ) {
-                    passwordCheck = $this.val();
-                    
-                    if ( passwordCheck === password ) {
-                        $('.change-user-pw').removeClass('disabled').removeAttr('disabled');
-                    } else {
-                        $('.change-user-pw').addClass('disabled').attr('disabled', 'disabled');
-                    }
-                }                
-            });
-        },
-
         highlightIFrame: function() {
             var player;
 
@@ -489,29 +250,6 @@ $(document).ready(function() {
 
     page.init();
 });
-
-function scrollTrigger() {
-    // Scroll Trigger
-    const trigger = new ScrollTrigger.default({
-        trigger: {
-            once: true
-        },
-        offset: {
-            element: {
-                x: 0,
-                y: function(trigger, rect, direction) {
-                    return 0.5;
-                }
-            },
-        }
-    });
-
-    trigger.add('[data-trigger]');
-    trigger.add('.card-slider');
-    trigger.add('.genre-slider');
-    trigger.add('#load-count');
-    trigger.add('.currentWatch-slider');
-}
 
 function initSliders() {
     // Slider
@@ -657,10 +395,8 @@ function userMenuBtn() {
 
 
 function initCustomJS() {
-    scrollTrigger();
     initSliders();
-    initTabs();
-    //userMenuBtn();    
+    initTabs(); 
 }
 
 window.initCustomJS = initCustomJS;
