@@ -5,14 +5,11 @@ export default {
     name: 'MainFunctions',
     mixins: [langSnippet],
     methods: {
-        menuBtn() {
+        toggleMainMenu(event) {
+            event.preventDefault();
             var menuBtn = document.getElementById('menu-button');
-
-            if (menuBtn.classList.contains('active-button')) {
-                menuBtn.classList.remove('active-button');
-            } else {
-                menuBtn.classList.add('active-button');
-            }
+            document.body.classList.toggle('active-menu');
+            menuBtn.classList.toggle('active-button');
         },
         userBtnTrigger() {
             var userBtn = document.getElementById('user-menu-btn');
@@ -23,21 +20,19 @@ export default {
                 userBtn.classList.add('active');
             }
         },
-        openPopUp() {
-            var modal = document.getElementById('modal');
-            var activeModalClass = 'active-modal';
-            var activeClass = 'active';
+        async openPopUp(popUpID, event) {
+            event.preventDefault();
+            var modal = document.getElementById(popUpID);
 
-            document.body.classList.add(activeModalClass);
-            modal.classList.add(activeClass);
+            document.body.classList.add('active-modal');
+            modal.classList.add('active');
         },
-        closePopUp() {
-            var modal = document.getElementById('modal');
-            var activeModalClass = 'active-modal';
-            var activeClass = 'active';
+        closePopUp(popUpID, event) {
+            event.preventDefault();
+            var modal = document.getElementById(popUpID);
 
-            document.body.classList.remove(activeModalClass);
-            modal.classList.remove(activeClass);
+            // document.body.classList.remove('active-modal');
+            modal.classList.remove('active');
         },
 
         openPopUpHeader() {
@@ -101,6 +96,6 @@ export default {
 
             return finalRuntime;
         },
-    },
+    }
 };
 </script>
