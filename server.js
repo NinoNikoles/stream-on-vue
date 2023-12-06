@@ -31,9 +31,9 @@ app.use(session({
 }));
 app.use(bodyParser.json());
 
-const { dbSetup } = require('./js/db-setup');
-const serverAPI = require('./js/serverAPI');
-const mediabrowserAPI = require('./js/mediabrowserAPI');
+const { dbSetup } = require('./backend-api/db-setup');
+const serverAPI = require('./backend-api/serverAPI');
+const mediabrowserAPI = require('./backend-api/mediabrowserAPI');
 
 const resetColor = "\x1b[0m";
 const redColor = "\x1b[31m";
