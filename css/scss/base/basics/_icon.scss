@@ -105,6 +105,8 @@ a.icon-right:hover {
     &-eye { &::before { content: $icon-eye; } }
     &-file { &::before { content: $icon-file; } }
     &-folder { &::before { content: $icon-folder; } }
+    &-fullscreen { &::before { content: $icon-fullscreen; } }
+    &-fullscreen-exit { &::before { content: $icon-fullscreen-exit; } }
     &-globe { &::before { content: $icon-globe; } }
     &-help { &::before { content: $icon-help; } }
     &-home { &::before { content: $icon-home; } }
