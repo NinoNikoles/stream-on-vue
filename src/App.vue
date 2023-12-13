@@ -1,5 +1,7 @@
 <template>
-    <header-component></header-component>
+    <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
+        <header-component></header-component>
+    </template>    
 
     <div id="main" class="pad-top-xl pad-bottom-xl">
         <router-view></router-view>
