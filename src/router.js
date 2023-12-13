@@ -7,6 +7,8 @@ import FrontendMovies from './components/frontend/Movies.vue';
 import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
 import MediaBrowser from './components/Mediabrowser.vue';
+import MediaPlayer from './components/player/Player.vue';
+import MediaPlayerSession from './components/player/PlayerMulti.vue';
 import BackendSettings from './components/backend/Settings.vue';
 import Users from './components/backend/Users.vue';
 import BackendGenre from './components/backend/Genre.vue';
@@ -107,6 +109,18 @@ const router = createRouter({
             name: 'Media Browser',
             component: MediaBrowser,
             meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
+        },
+        {
+            path: '/watch',
+            name: 'Player',
+            component: MediaPlayer,
+            meta: { requiresAuth: true, backend: false }
+        },
+        {
+            path: '/watchTogether',
+            name: 'PlayerMulti',
+            component: MediaPlayerSession,
+            meta: { requiresAuth: true, backend: false }
         }
     ]
 });
