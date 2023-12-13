@@ -62,9 +62,12 @@ app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 app.post('/api/db/addVideoPathToMedia', serverAPI.addVideoPathToMedia);
 
-//--r Seasons
+//-- Seasons
 app.get('/api/db/getSeasons', serverAPI.getSeasons);
 app.get('/api/db/getEpisodes', serverAPI.getEpisodes);
+
+//-- Episodes
+app.get('/api/db/episode', serverAPI.getEpisode);
 
 //-- Genre
 app.post('/api/db/saveGenre', serverAPI.saveGenre);
@@ -104,6 +107,37 @@ app.post('/uploadVideo', mediabrowserAPI.uploadVideo);
 
 
 const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+const clients = {};
+
+wss.on('connection', (ws, req) => {
+    const urlParams = new URLSearchParams(req.url.slice(req.url.indexOf('?')));
+    const remotesessionID = urlParams.get('remotesessionID');
+
+    // Füge den WebSocket-Client zur Liste der Clients für diese remotesessionID hinzu
+    if (!clients[remotesessionID]) {
+        clients[remotesessionID] = [];
+    }
+    clients[remotesessionID].push(ws);
+
+    ws.on('message', (message) => {
+        // Hier empfängst du Nachrichten von einem Benutzer und sendest sie an alle anderen Benutzer
+        clients[remotesessionID].forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
+
+    ws.on('close', () => {
+        // Entferne den WebSocket-Client aus der Liste, wenn die Verbindung geschlossen wird
+        const index = clients[remotesessionID].indexOf(ws);
+        if (index !== -1) {
+            clients[remotesessionID].splice(index, 1);
+        }
+    });
+});
+
 const port = process.env.PORT || 3000;
 server.listen(3000, () => {
     console.log(`Server is listening on port ${port}`);
