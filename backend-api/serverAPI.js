@@ -280,6 +280,20 @@ const getEpisodes = (req, res) => {
     });
 }
 
+const getEpisode = (req, res) => {
+    const { tmdbID } = req.query;
+
+    let query = `SELECT * FROM episodes  WHERE tmdbID = ${tmdbID}`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            // res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 // Genre
 const saveGenre = (req, res) => {
     const { genres } = req.body;
@@ -707,6 +721,7 @@ module.exports = {
     // Episodes
     getSeasons,
     getEpisodes,
+    getEpisode,
 
     // Genre
     saveGenre,
