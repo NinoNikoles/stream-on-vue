@@ -44,7 +44,7 @@
                                         </template>
                                         
                                         <div class="link-wrapper">
-                                            <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
+                                            <router-link v-if="media.file_path" :to="`/watch?id=${media.tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
                                             <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media.tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media.tmdbID}`"></a>
                                             <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                                         </div>
