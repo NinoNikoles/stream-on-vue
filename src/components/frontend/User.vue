@@ -39,7 +39,7 @@
 
                 <div class="col6 text-right">
                     <a v-if="selectedImg !== currentUser.activeImg" @click="updateUserIMG(selectedImg)" href="#" class="btn btn-small btn-success icon-left icon-save loading marg-right-xxs" id="updateUserImg">{{ langSnippet('save') }}</a>
-                    <a href="#delete-user-image" class="btn btn-small btn-alert icon-left icon-trash loading" data-fancybox>{{ langSnippet('delete') }}</a>
+                    <button href="#delete-user-image" class="btn btn-small btn-alert icon-left icon-trash" data-fancybox>{{ langSnippet('delete') }}</button>
                 </div>
 
                 <div class="col12">
