@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap">
+    <div class="innerWrap pad-top-xl">
         <h1>{{ langSnippet('movies') }}</h1>
 
         <div class="grid-row">
@@ -30,14 +30,14 @@
                 <div class="media-card">
                     <div class="media-card-wrapper">
                         <figure class="widescreen desktop-only">
-                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${movie.title}`">
+                            <img src="" :data-img="$loadImg(movie.backdrop)" :alt="`${movie.title}`">
                         </figure>
                         <figure class="poster mobile-only">
-                            <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${movie.title}`">
+                            <img src="" :data-img="$loadImg(movie.poster)" :alt="`${movie.title}`">
                         </figure>
                         <div class="link-wrapper">
                             <a v-if="movie.file_path" href="#" :title="`${movie.title}`" class="play-trigger"></a>
-                            <a href="#" @click="popUpTrigger(movie)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
+                            <a href="#" @click="openPopUp(`${movie.tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie.tmdbID}`"></a>
                             <router-link :to="`/backend/${movie.media_type}/${movie.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
@@ -46,43 +46,45 @@
         </div>
     </div>
 
-    <div class="modal" id="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-wrap large">
-            <div class="modal-inner-wrap">
-                <div v-if="selectedMovie" class="info-popup" :id="`${selectedMovie.tmdbID}`">
-                    <div class="col12 marg-bottom-xs mobile-only">
-                        <figure class="widescreen">
-                            <img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
-                        </figure>
-                    </div>
-                    <div class="innerWrap">
-                        <div class="col7 marg-right-col1">
-                            <p class="h2">{{ selectedMovie.title }}</p>
-                            <p class="small tag-list marg-bottom-base">
-                                <span class="tag">{{ selectedMovie.release_date }}</span>
-                                <span class="tag">{{ selectedMovie.rating }}/10 ★</span>
-                                <!-- <span class="tag">'.$extraInfo.'</span> -->
-                            </p>
-                            <a v-if="selectedMovie.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                            <p class="small">{{ selectedMovie.overview }}</p>
-                            <p v-if="selectedMovieGenre" class="small tag-list marg-bottom-base">
-                                <span v-for="(genre, index) in selectedMovieGenre" :key="index" class="tag">
-                                    {{ genre }}
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col4 desktop-only">
-                            <figure class="poster">
-                                <img data-img="http://localhost:8080/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+    <template v-if="movies">
+        <div class="modal" :id="`${movie.tmdbID}`" v-for="(movie, index) in movies" :key="index">
+            <div class="modal-overlay"></div>
+            <div class="modal-wrap large">
+                <div class="modal-inner-wrap">
+                    <div class="info-popup">
+                        <div class="col12 marg-bottom-xs mobile-only">
+                            <figure class="widescreen">
+                                <img :data-img="$loadImg(movie.backdrop)" loading="lazy" importance="low" alt="">
                             </figure>
+                        </div>
+                        <div class="innerWrap">
+                            <div class="col7 marg-right-col1">
+                                <p class="h2">{{ movie.title }}</p>
+                                <p class="small tag-list marg-bottom-base">
+                                    <span class="tag">{{ movie.release_date }}</span>
+                                    <span class="tag">{{ movie.rating }}/10 ★</span>
+                                    <!-- <span class="tag">'.$extraInfo.'</span> -->
+                                </p>
+                                <a v-if="movie.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                                <p class="small">{{ movie.overview }}</p>
+                                <!-- <p v-if="media" class="small tag-list marg-bottom-base">
+                                    <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
+                                        {{ genre }}
+                                    </span>
+                                </p> -->
+                            </div>
+                            <div class="col4 desktop-only">
+                                <figure class="poster">
+                                    <img :data-img="$loadImg(movie.poster)" alt="" loading="lazy" importance="low">
+                                </figure>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <a href="#" class="modal-close" @click="closePopUp(`${movie.tmdbID}`, $event)"></a>
             </div>
-            <a href="#" class="modal-close" @click="closePopUp()"></a>
         </div>
-    </div>
+    </template>
 
 </template>
 
