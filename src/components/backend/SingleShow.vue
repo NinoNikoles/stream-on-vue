@@ -25,10 +25,10 @@
                     <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
                         <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col4">
                             <figure class="widescreen disabled" v-if="episode.file_path === null">
-                                <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
+                                <img :data-img="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
                             <figure class="widescreen" v-else>
-                                <img data-img="" loading="lazy" importance="low" :alt="`${episode.title}`">
+                                <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
                             <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
                             <a href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</a>

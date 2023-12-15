@@ -37,11 +37,11 @@
                                 <td>
                                     <span class="marg-no icon-left icon-file">{{ media.name }}</span>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <button :href="`${$mainURL}/${media.path}`" data-fancybox class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
                                 </td>
-                                <td>
-                                    <button v-if="$route.path !== '/media-browser'"
+                                <td v-if="$route.path !== '/media-browser'" class="text-right">
+                                    <button
                                     href="#"  
                                     class="btn btn-small btn-success icon-only icon-check marg-bottom-no marg-left-xxs"
                                     @click="saveMediaPath(`${media.path}`, $event)"></button>

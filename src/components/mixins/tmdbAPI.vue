@@ -168,7 +168,7 @@ export default {
             // Warte auf Abschluss aller Promises
             await Promise.all(promises);
             return newCheckedArray;
-        }
+        },
     },
     mounted() {
         this.getSettings().then(settings => {

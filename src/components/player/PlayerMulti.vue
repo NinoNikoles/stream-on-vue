@@ -558,13 +558,4 @@ export default {
 #app {
 
 }
-body {
-    padding-top: 0 !important;
-}
-
-#main {
-    padding: 0 !important;
-    height: unset !important;
-    overflow: unset !important;
-}
 </style>

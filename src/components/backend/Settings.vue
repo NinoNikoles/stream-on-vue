@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap">
+    <div class="innerWrap pad-top-xl">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('settings') }}</h1>

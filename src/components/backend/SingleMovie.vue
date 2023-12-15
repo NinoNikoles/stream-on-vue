@@ -1,5 +1,5 @@
 <template>
-    <div v-if="movie" class="">
+    <div v-if="movie" class="pad-top-xl">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ movie.title }}</h1></div>
@@ -30,7 +30,7 @@
                     <div class="col6 column">
                         <a href="#movie-poster" data-fancybox data-src="#movie-poster">
                             <figure class="poster">
-                                <img :data-img="$loadImg('original', movie.poster)" loading="lazy" alt="">
+                                <img :data-img="$loadImg(movie.poster)" loading="lazy" alt="">
                             </figure>
                         </a>
                         <div id="movie-poster" style="display:none;">
@@ -40,7 +40,7 @@
                                     <div class="poster-select">
                                         <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster}`">
                                         <figure class="poster">
-                                            <img :data-img="$loadImg('original', poster.file_path)" loading="lazy" alt="">
+                                            <img :data-img="$loadImg(poster.file_path)" loading="lazy" alt="">
                                         </figure>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
                     <div class="col6 column">
                         <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
                             <figure class="widescreen">
-                                <img :data-img="$loadImg('original', movie.backdrop)" loading="lazy" alt="">
+                                <img :data-img="$loadImg(movie.backdrop)" loading="lazy" alt="">
                             </figure>
                         </a>
                         <div id="movie-backdrop" style="display:none;">
@@ -64,7 +64,7 @@
                                     <div class="poster-select">
                                         <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop}`">
                                         <figure class="original">
-                                            <img :data-img="$loadImg('original', backdrop.file_path)" loading="lazy" alt="">
+                                            <img :data-img="$loadImg(backdrop.file_path)" loading="lazy" alt="">
                                         </figure>
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                     <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium column">
                         <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card">
                             <figure class="poster">
-                                <img :src="$loadImg()" loading="lazy" :alt="`${kMovie.title}`">
+                                <img :src="$loadImg(kMovie.poster)" loading="lazy" :alt="`${kMovie.title}`">
                             </figure>
                             <span class="title marg-no">{{ $truncate(kMovie.title, 15) }}</span>
                         </a>
@@ -110,7 +110,7 @@
                     <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium column">
                         <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card">
                             <figure class="poster">
-                                <img :src="$loadImg()" loading="lazy" :alt="`${sMovie.title}`">
+                                <img :src="$loadImg(sMovie.poster)" loading="lazy" :alt="`${sMovie.title}`">
                             </figure>
                             <span class="title marg-no">{{ $truncate(sMovie.title, 15) }}</span>
                         </a>

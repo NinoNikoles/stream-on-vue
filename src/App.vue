@@ -3,7 +3,7 @@
         <header-component></header-component>
     </template>    
 
-    <div id="main" class="pad-top-xl pad-bottom-xl">
+    <div id="main" class="pad-bottom-xl">
         <router-view></router-view>
     </div>
 </template>

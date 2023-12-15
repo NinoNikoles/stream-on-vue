@@ -1,7 +1,7 @@
 <template>
     <div v-if="highlight" class="highlight-wrapper">
-        <figure class="widescreen"><img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" :alt="`${highlight.title}`"></figure>
-        <figure class="poster"><img data-img="http://localhost:8080/build/css/images/img_preview.webp" loading="lazy" :alt="`${highlight.title}`"></figure>
+        <figure class="widescreen"><img :data-img="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
+        <figure class="poster"><img :data-img="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
         <div class='content-wrap mobile-only'>
             <h1 class="h1 text-center">{{  highlight.title }}</h1>
             <p class="small">{{  highlight.overview }}</p>
@@ -12,8 +12,8 @@
         </div>
     </div>
 
-    <div v-if="availableSlider" class="marg-bottom-xl">
-        <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index}`">
+    <div v-if="availableSlider">
+        <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
             <div class="col12">
                 <div class="column column-space-2">
                     <h3>{{ slider.genre.genre_name }}</h3>
@@ -27,19 +27,19 @@
                                     <div class="media-card-wrapper">
                                         <template v-if="media.file_path === null">
                                             <figure class="widescreen desktop-only disabled">
-                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                                             </figure>
                                             <figure class="poster mobile-only disabled">
-                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                                             </figure>
                                         </template>
 
                                         <template v-else>
                                             <figure class="widescreen desktop-only">
-                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                                             </figure>
                                             <figure class="poster mobile-only">
-                                                <img src="" data-img="http://localhost:8080/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                                             </figure>
                                         </template>
                                         
@@ -70,7 +70,7 @@
                             <div class="info-popup" :id="`${media.tmdbID}`">
                                 <div class="col12 marg-bottom-xs mobile-only">
                                     <figure class="widescreen">
-                                        <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
+                                        <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
                                     </figure>
                                 </div>
                                 <div class="innerWrap">
@@ -91,7 +91,7 @@
                                     </div>
                                     <div class="col4 desktop-only">
                                         <figure class="poster">
-                                            <img data-img="/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+                                            <img :data-img="$loadImg(media.poster)" alt="" loading="lazy" importance="low">
                                         </figure>
                                     </div>
                                 </div>
@@ -110,7 +110,6 @@
 import axios from 'axios';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
-//import { Swiper, SwiperSlide } from 'swiper/vue';
 
 export default {
     name: 'AppIndex',

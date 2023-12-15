@@ -14,7 +14,7 @@
                     <div v-if="shows" id="showsearchResults">
                         <a v-for="(show, index) in shows" :key="index" :href="`#add-show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox>
                             <figure class="poster" style="width:20%;max-width:100px;">
-                                <img :data-img="$loadImg()" loading="lazy" :alt="`${show.name}`">
+                                <img :data-img="$loadImg(show.poster)" loading="lazy" :alt="`${show.name}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ show.name }}</span>
 

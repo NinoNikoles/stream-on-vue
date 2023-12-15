@@ -100,10 +100,10 @@
                         <div class="media-card">
                             <div class="media-card-wrapper">
                                 <figure class="widescreen desktop-only">
-                                    <img src="" data-img="/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                    <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                                 </figure>
                                 <figure class="poster mobile-only">
-                                    <img src="" data-img="/build/css/images/img_preview.webp" :alt="`${media.title}`">
+                                    <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                                 </figure>
                                 <div class="link-wrapper">
                                     <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
@@ -126,7 +126,7 @@
                     <div v-if="media" class="info-popup" :id="`${media.tmdbID}`">
                         <div class="col12 marg-bottom-xs mobile-only">
                             <figure class="widescreen">
-                                <img data-img="/build/css/images/img_preview.webp" loading="lazy" importance="low" alt="">
+                                <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
                             </figure>
                         </div>
                         <div class="innerWrap">
@@ -147,7 +147,7 @@
                             </div>
                             <div class="col4 desktop-only">
                                 <figure class="poster">
-                                    <img data-img="/build/css/images/img_preview.webp" alt="" loading="lazy" importance="low">
+                                    <img :data-img="$loadImg(media.poster)" alt="" loading="lazy" importance="low">
                                 </figure>
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap">
+    <div class="innerWrap pad-top-xl">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('movies') }}</h1>
@@ -14,7 +14,7 @@
                     <div v-if="movies" id="movieSearchResults">
                         <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.id}`" data-fancybox class="display-flex flex-row marg-no">
                             <figure class="poster" style="width:20%;max-width:100px;">
-                                <img :data-img="$loadImg()" loading="lazy" :alt="`${movie.title}`">
+                                <img :data-img="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ movie.title }}</span>
 
