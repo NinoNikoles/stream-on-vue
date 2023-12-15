@@ -17,7 +17,9 @@
     },
     data() {
         return {
-            player: null
+            player: null,
+            volume: 1,
+            currentTime: 0,
         }
     },
     methods: {
@@ -31,18 +33,13 @@
                 var chatBtn = document.getElementById('chat-open');
                 player.appendChild(chatBtn);
             }
-        }
+        },
     },
     mounted() {
         this.player = videojs(this.$refs.videoPlayer, this.options, () => {
-            //this.player.log('onPlayerReady', this);
-
-            if ( this.$route.query.t ) {
-                var startTime = parseInt(this.$route.query.t);
-                this.player.currentTime(startTime);
-            }
-
-            this.moveButtons(this.player.id_);
+            this.player.ready(() => {
+                this.moveButtons(this.player.id_);
+            });            
         });
     },
     beforeUnmount() {

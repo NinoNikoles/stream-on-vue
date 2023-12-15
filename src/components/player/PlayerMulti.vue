@@ -49,10 +49,6 @@ export default {
             show: null,
             type: null,
             player: null,
-            user: {
-                id: null,
-                username: null,
-            },
             videoOptions: {
                 controls: true,
                 duration: true,
@@ -76,7 +72,15 @@ export default {
                 userActions: {
                     click: true
                 }
-            }
+            },
+            user: {
+                id: null,
+                username: null,
+                volume: null,
+            },
+            currentTime: null,
+            duration: null,
+            isVideoEnded: false
         };
     },
     methods: {
@@ -118,9 +122,13 @@ export default {
         async fetchSessionStatus() {
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                
                 if ( response.data.user ) {
-                    this.user.id = response.data.user.id;
-                    this.user.username = response.data.user.name;
+                    const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${response.data.user.id}`);
+                    const user = newResponse.data[0];
+                    this.user.id = user.id;
+                    this.user.username = user.username;
+                    this.user.volume = user.media_volume;
                 }               
             } catch (error) {
                 console.error('Fehler beim Abrufen des Session-Status:', error);
@@ -141,6 +149,24 @@ export default {
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
                 return [];
+            }
+        },
+        async setStartTime() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.mediaID}&userID=${this.user.id}`);
+                var data = response.data[0]
+
+                if ( data > 0 ) {
+                    this.currentTime = data.watched_seconds;
+                    this.duration = data.total_length;
+                    this.player.currentTime(this.currentTime);
+                } else {
+                    this.currentTime = 0;
+                    this.player.currentTime(0);
+                }
+                
+            } catch(err) {
+                console.log(err);
             }
         },
     },

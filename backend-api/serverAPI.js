@@ -700,6 +700,76 @@ const deleteUploadedUserImage = (req, res) => {
     }
 };
 
+const getMediaWatched = (req, res) => {
+    const { mediaID, userID } = req.query;
+
+    let query = `SELECT * FROM media_watched WHERE user_id = ? AND media_id = ?`;
+
+    db.get(query, [userID, mediaID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
+const safeWatchTime = (req, res) => {
+    const {
+        userID,
+        mediaID,
+        nextMediaID,
+        showID,
+        currentTime,
+        nextTime,
+        watched,
+        nextWatched,
+        totalLength,
+        nextTotalLength
+    } = req.body;
+
+    var currentDate = new Date();
+    var formattetDate = currentDate.toISOString();
+
+    let query = `INSERT OR REPLACE INTO media_watched(user_id, media_id, show_id, watched_seconds, total_length, watched, last_watched)
+    VALUES
+        (?, ?, ?, ?, ?, ?, ?);`;
+
+    db.all(query, [userID, mediaID, showID, currentTime, totalLength, watched, formattetDate], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        if (showID !== null) {
+            let query = `INSERT OR REPLACE INTO media_watched(user_id, media_id, show_id, watched_seconds, total_length, watched, last_watched)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?);`;
+
+            db.all(query, [userID, nextMediaID, showID, nextTime, nextTotalLength, nextWatched, formattetDate], (err) => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+            });
+        }
+        res.json(rows);
+    });
+}
+
+const saveUserVolume = (req, res) => {
+    const { userID, volume } = req.query;
+
+    let query = `UPDATE users SET media_volume = ? WHERE id = ?`;
+
+    db.all(query, [volume, userID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(rows);
+    });
+}
+
 module.exports = {
     getSession,
     login,
@@ -748,5 +818,9 @@ module.exports = {
     userIMGUpload,
     updateUserImg,
     getUploadedUserImages,
-    deleteUploadedUserImage
+    deleteUploadedUserImage,
+    saveUserVolume,
+
+    getMediaWatched,
+    safeWatchTime
 };

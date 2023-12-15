@@ -97,6 +97,10 @@ app.post('/userIMGUpload', serverAPI.userIMGUpload);
 app.post('/api/db/updateUserImg', serverAPI.updateUserImg);
 app.get('/api/db/getUploadedUserImages', serverAPI.getUploadedUserImages);
 app.post('/api/db/deleteUploadedUserImage', serverAPI.deleteUploadedUserImage);
+app.post('/api/db/saveUserVolume', serverAPI.saveUserVolume);
+
+app.get('/api/db/getMediaWatched', serverAPI.getMediaWatched);
+app.post('/api/db/safeWatchTime', serverAPI.safeWatchTime);
 
 //// -- Media browser -- ////
 app.get('/getFolderStructure', mediabrowserAPI.getFolderStructure);
