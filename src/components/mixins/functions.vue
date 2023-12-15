@@ -20,7 +20,7 @@ export default {
                 userBtn.classList.add('active');
             }
         },
-        async openPopUp(popUpID, event) {
+        openPopUp(popUpID, event) {
             event.preventDefault();
             var modal = document.getElementById(popUpID);
 
@@ -31,7 +31,7 @@ export default {
             event.preventDefault();
             var modal = document.getElementById(popUpID);
 
-            // document.body.classList.remove('active-modal');
+            document.body.classList.remove('active-modal');
             modal.classList.remove('active');
         },
 
