@@ -1,11 +1,4 @@
 <template>
-    <div id="loader" class="hidden">
-        <div class="content-wrap">
-            <i></i>
-            <span></span>
-        </div>
-    </div>
-
     <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="isLoggedIn">
         <div class="row header--content">
             <div class="col12 column header--content--nav">
