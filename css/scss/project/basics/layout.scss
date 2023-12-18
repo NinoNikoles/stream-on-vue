@@ -31,3 +31,14 @@ table,
         max-width: rem-calc(100);
     }
 }
+
+label {
+    &.select {
+        &::before {
+            background: {
+                color: var(--body-bg);
+            }
+            right: rem-calc(10) !important;
+        }
+    }
+}
