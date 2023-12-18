@@ -48,7 +48,7 @@ const router = createRouter({
             path: '/shows',
             name: name('shows'),
             component: FrontendShows,
-            meta: { requiresAuth: true, main: false } // Diese Route erfordert eine Anmeldung
+            meta: { requiresAuth: true, main: true } // Diese Route erfordert eine Anmeldung
         },
         {
             path: '/backend/settings',
@@ -78,7 +78,7 @@ const router = createRouter({
             path: '/backend/shows',
             name: name('backend_shows'),
             component: BackendShows,
-            meta: { requiresAuth: true, backend: false, roles: ['superadmin', 'admin'] }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
         },
         {
             path: '/backend/movie/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
