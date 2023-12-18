@@ -68,7 +68,7 @@ $(document).ready(function() {
 
         pageReady: function() {
             var self = this;
-            $('#loader').addClass('hidden');
+            // $('#loader').addClass('hidden');
             $("body").removeClass('loading');
             
             // self.fancyLoad();
