@@ -96,6 +96,13 @@ export default {
 
             return finalRuntime;
         },
+        SelectTabs(event) {
+            event.preventDefault();
+            var selectID = event.target.id;
+            var selectValue = event.target.value;
+            document.querySelectorAll(`.${selectID}.is-active`)[0].classList.remove('is-active');
+            document.querySelectorAll(`.${selectID}[data-select-tab="${selectValue}`)[0].classList.add('is-active');
+        }
     }
 };
 </script>
