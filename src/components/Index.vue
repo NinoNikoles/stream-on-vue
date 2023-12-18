@@ -51,7 +51,11 @@
                                         </template>
                                         
                                         <div class="link-wrapper">
-                                            <router-link v-if="media['mediaDetails'].file_path" :to="`/watch?id=${media['mediaDetails'].tmdbID}`" :title="`${media['mediaDetails'].title}`" class="play-trigger"></router-link>
+                                            <router-link v-if="media['mediaDetails'].file_path && media['mediaDetails'].media_type === 'movie'" :to="`/watch?id=${media['mediaDetails'].tmdbID}`" :title="`${media['mediaDetails'].title}`" class="play-trigger"></router-link>
+                                            <router-link v-else-if="media['mediaDetails'].media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
+                                            
+                                            
+                                            
                                             <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`"></a>
                                             <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                                         </div>
@@ -232,6 +236,7 @@ export default {
                         }
 
                         currSlider['mediaElements'] = media;
+                        console.log(currSlider['mediaElements']);
 
                     } catch(err) {
                         console.log(err);
