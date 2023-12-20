@@ -1,6 +1,13 @@
 .callout {
     width: 100%;
-    position: relative;
+    min-height: rem-calc(50);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateY(50px);
+    -webkit-box-shadow: 0px 0px 20px 5px #000000; 
+    box-shadow: 0px 0px 20px 5px #000000;
+    @include transition(transform 1s ease-in-out);
 
     &::before {
         content: "";
@@ -25,10 +32,15 @@
         transform: translate(-50%, -50%);
     }
 
+    &.hidden {
+        transform: translateY(calc(-100% - 20px));
+    }
+
     p {
         color: var(--dark);
         width: calc(100% - 50px);
         margin: {
+            bottom: 0;
             left: rem-calc(50);
         }
         padding: {
