@@ -3,9 +3,13 @@
         <header-component></header-component>
     </template>    
 
-    <div id="main" class="pad-bottom-xl">
+    <div id="main">
         <router-view></router-view>
     </div>
+
+    <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
+        <div id="callout" class="callout hidden"></div>
+    </template>
 </template>
   
 <script>
