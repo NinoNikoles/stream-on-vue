@@ -1,5 +1,12 @@
 <template>
-    <div v-if="show">
+    <div id="loader" class="hidden">
+        <div class="content-wrap">
+            <i></i>
+            <span class="visible">{{ langSnippet('please_wait_adding_show') }}</span>
+        </div>
+    </div>
+
+    <div v-if="show" class="pad-top-xl">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ show.title }}</h1></div>
@@ -15,6 +22,12 @@
                 </div>
             </div>
 
+            <div class="col5">
+                <p class="text-right">
+                    <button href="#deleteShow" data-fancybox class="btn btn-small btn-alert icon-left icon-trash" >{{ langSnippet('delete')  }}</button>
+                </p>
+            </div>
+
             <div class="col12 marg-top-s" v-if="seasons">
                 <ul class="tabs" data-tabs id="season-tabs">
                     <li v-for="(season, index) in seasons" :key="index" class="tabs-title">
@@ -23,7 +36,12 @@
                 </ul>
                 <div class="tabs-content" data-tabs-content="season-tabs">
                     <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
-                        <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col4">
+                        <div class="col12 text-right">
+                            <p>
+                                <button :href="`#deleteSeason-${season.season_number}`" data-fancybox class="btn btn-small btn-alert icon-left icon-trash marg-bottom-no">{{ langSnippet('delete') }}</button>
+                            </p>
+                        </div>
+                        <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col-6-xxsmall col-4-medium">
                             <figure class="widescreen disabled" v-if="episode.file_path === null">
                                 <img :data-img="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
@@ -31,7 +49,14 @@
                                 <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                             </figure>
                             <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
-                            <a href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</a>
+                            <button href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
+                        </div>
+
+                        <div :id="`deleteSeason-${season.season_number}`" style="display: none;">
+                            <p>Delete Season?</p>
+                            <p class="text-right marg-no">
+                                <button @click="deleteSeason(season.season_number)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -41,6 +66,13 @@
         <div id="media-browser" style="display: none;">
             <media-browser-component></media-browser-component>
         </div>
+
+        <div id="deleteShow" style="display: none;">
+            <p>Delete Show?</p>
+            <p class="text-right marg-no">
+                <button @click="deleteShow()" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+            </p>
+        </div>
     </div>   
 </template>
 
@@ -49,6 +81,7 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
 import Mediabrowser from '../Mediabrowser.vue';
+import { Fancybox } from '@fancyapps/ui';
 
 export default {
     name: 'BackendShow',
@@ -105,6 +138,43 @@ export default {
         async selectMedia(media, episodeID) {
             this.$route.params.media = media;
             this.$route.params.episodeID = episodeID;
+        },
+        async deleteShow() {
+            document.getElementById('loader').classList.remove('hidden');
+            Fancybox.close();
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/deleteShow?mediaID=${this.show.tmdbID}`);
+                console.log('Done');
+                this.$router.push('/backend/shows');
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        async deleteSeason(seasonNumber) {
+            const tmdbID = this.show.tmdbID;
+            document.getElementById('loader').classList.remove('hidden');
+            this.show = null;
+            Fancybox.close();
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/deleteSeason?mediaID=${tmdbID}&seasonNumber=${seasonNumber}`);
+                console.log(tmdbID);
+                await this.outPutShow(tmdbID).then(async(show) => {
+                    // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
+                    this.show = show[0];
+                    const genres = JSON.parse(this.show.genres);
+
+                    await this.getGenre(genres);
+                    await this.getSeasons(tmdbID);
+                    await this.getEpisodes(tmdbID).then(() => {
+                        document.querySelector('.tabs .tabs-title a').setAttribute('aria-selected', 'true');
+                        document.querySelector('.tabs-content .tabs-panel').classList.add('is-active');
+                    });
+
+                    document.getElementById('loader').classList.add('hidden');
+                });
+            } catch (err) {
+                console.log(err);
+            }
         }
     },
     mounted() {
