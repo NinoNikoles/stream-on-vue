@@ -6,65 +6,67 @@
         </div>
     </div>
 
-    <div v-if="highlight" class="highlight-wrapper">
-        <figure class="widescreen"><img :data-img="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
-        <figure class="poster"><img :data-img="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
-        <div class='content-wrap mobile-only'>
-            <h1 class="h1 text-center">{{  highlight.title }}</h1>
-            <p class="small">{{  highlight.overview }}</p>
+    <div class="col12 pad-bottom-xl">
+        <div v-if="highlight" class="highlight-wrapper">
+            <figure class="widescreen"><img :data-img="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
+            <figure class="poster"><img :data-img="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
+            <div class='content-wrap mobile-only'>
+                <h1 class="h1 text-center">{{  highlight.title }}</h1>
+                <p class="small">{{  highlight.overview }}</p>
+            </div>
+            <div class='content-wrap desktop-only'>
+                <h1 class="h2 text-center">{{  highlight.title }}</h1>
+                <p>{{  highlight.overview }}</p>
+            </div>
         </div>
-        <div class='content-wrap desktop-only'>
-            <h1 class="h2 text-center">{{  highlight.title }}</h1>
-            <p>{{  highlight.overview }}</p>
-        </div>
-    </div>
 
-    <div v-if="availableSlider">
-        <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
-            <div class="col12">
-                <div class="column column-space-2">
-                    <h3>{{ slider.genre.genre_name }}</h3>
-                </div>
-
+        <div v-if="availableSlider">
+            <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
-                    <div class="swiper card-slider column column-space-2">
-                        <div class="swiper-wrapper">
-                            <div v-for="(media, index) in slider.mediaElements" :key="index" class="swiper-slide">
-                                <div class="media-card">
-                                    <div class="media-card-wrapper">
-                                        <template v-if="media['mediaDetails'].file_path === null">
-                                            <figure class="widescreen desktop-only disabled">
-                                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
-                                            </figure>
-                                            <figure class="poster mobile-only disabled">
-                                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
-                                            </figure>
-                                        </template>
+                    <div class="column column-space-2">
+                        <h3>{{ slider.genre.genre_name }}</h3>
+                    </div>
 
-                                        <template v-else>
-                                            <figure class="widescreen desktop-only">
-                                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
-                                            </figure>
-                                            <figure class="poster mobile-only">
-                                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
-                                            </figure>
-                                        </template>
-                                        
-                                        <div class="link-wrapper">
-                                            <router-link v-if="media['mediaDetails'].file_path && media['mediaDetails'].media_type === 'movie'" :to="`/watch?id=${media['mediaDetails'].tmdbID}`" :title="`${media['mediaDetails'].title}`" class="play-trigger"></router-link>
-                                            <router-link v-else-if="media['mediaDetails'].media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
+                    <div class="col12">
+                        <div class="swiper card-slider column column-space-2">
+                            <div class="swiper-wrapper">
+                                <div v-for="(media, index) in slider.mediaElements" :key="index" class="swiper-slide">
+                                    <div class="media-card">
+                                        <div class="media-card-wrapper">
+                                            <template v-if="media['mediaDetails'].file_path === null">
+                                                <figure class="widescreen desktop-only disabled">
+                                                    <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                                                </figure>
+                                                <figure class="poster mobile-only disabled">
+                                                    <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                                                </figure>
+                                            </template>
+
+                                            <template v-else>
+                                                <figure class="widescreen desktop-only">
+                                                    <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                                                </figure>
+                                                <figure class="poster mobile-only">
+                                                    <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                                                </figure>
+                                            </template>
                                             
-                                            
-                                            
-                                            <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`"></a>
-                                            <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                                            <div class="link-wrapper">
+                                                <router-link v-if="media['mediaDetails'].file_path && media['mediaDetails'].media_type === 'movie'" :to="`/watch?id=${media['mediaDetails'].tmdbID}`" :title="`${media['mediaDetails'].title}`" class="play-trigger"></router-link>
+                                                <router-link v-else-if="media['mediaDetails'].media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
+                                                
+                                                
+                                                
+                                                <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`"></a>
+                                                <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
                         </div>
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
                     </div>
                 </div>
             </div>
@@ -130,6 +132,14 @@
                                                                 <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
                                                                 <p class="small">{{ $truncate(episode.overview, 100) }}</p>
                                                             </div>
+
+                                                            <div v-if="episode.file_path" class="link-wrapper">
+                                                                <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
+                                                                    <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
+                                                                        <i class="icon-play"></i>
+                                                                    </span>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -144,6 +154,14 @@
                                                             <div class="col-7 col-9-medium pad-left-xs">
                                                                 <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
                                                                 <p class="small">{{ $truncate(episode.overview, 100) }}</p>
+                                                            </div>
+
+                                                            <div v-if="episode.file_path" class="link-wrapper">
+                                                                <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
+                                                                    <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
+                                                                        <i class="icon-play"></i>
+                                                                    </span>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </template>
