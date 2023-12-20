@@ -1,4 +1,11 @@
 <template>
+    <div id="loader" class="hidden">
+        <div class="content-wrap">
+            <i></i>
+            <span></span>
+        </div>
+    </div>
+
     <div class="innerWrap pad-top-xl">
         <div class="col12">
             <div class="col12">
@@ -30,7 +37,7 @@
 
                 <div v-if="outputMovies" class="col12 marg-top-m">
                     <div class="row">
-                        <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-3-medium column">
+                        <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium column">
                             <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card">
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${movie.title}`">
@@ -110,7 +117,7 @@ export default {
             }
         },
         async saveData(data) {
-            this.loader.classList.remove('hidden');
+            document.getElementById('loader').classList.remove('hidden');
             const movie = await this.searchMovieByID(data.id);
             const genres = movie.genres.map(genre => genre.id);
 
@@ -167,10 +174,14 @@ export default {
             });
         },
         async sendMedia(media) {
-            var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
+            try {
+                var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
 
-            if ( response.data.message === true ) {
-                this.loader.classList.add('hidden');
+                if ( response.data.message === true ) {
+                    document.getElementById('loader').classList.add('hidden');
+                }
+            } catch (err) {
+                console.log(err);
             }
         },
         async outPutMovies() {
