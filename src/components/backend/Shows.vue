@@ -1,4 +1,11 @@
 <template>
+    <div id="loader" class="hidden">
+        <div class="content-wrap">
+            <i></i>
+            <span class="visible">{{ langSnippet('please_wait_adding_show') }}</span>
+        </div>
+    </div>
+
     <div class="innerWrap pad-top-xl">
         <div class="col12">
             <div class="col12">
@@ -30,7 +37,7 @@
 
                 <div v-if="outputShows" class="col12 marg-top-m">
                     <div class="row">
-                        <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-3-medium column">
+                        <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium column">
                             <router-link :to="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card">
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${show.title}`">
@@ -60,7 +67,8 @@ export default {
             shows: null,
             outputShows: null,
             genre: null,
-            loader: document.getElementById('loader')
+            showProgressBar: false,
+            progressBarWidth: '0%',
         };
     },
     methods: {
@@ -107,7 +115,8 @@ export default {
             }
         },
         async saveData(data) {
-            this.loader.classList.remove('hidden');
+            document.getElementById('loader').classList.remove('hidden');
+            this.showProgressBar = true;
             const show = await this.searchShowByID(data.id);
             const genres = show.genres.map(genre => genre.id);
 
@@ -137,16 +146,17 @@ export default {
                 var seasons = await this.saveSeasons(show.seasons, show.id);
                 var episodes = await this.saveEpisodes(show.id, show.seasons);
                 await this.sendMedia(media, seasons, episodes);
+
+                this.clearSearch();
+                this.outPutShows().then(outputShows => {
+                    // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
+                    this.outputShows = outputShows;
+                    this.searchAndDisplayShows(this.outputText);
+                });
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
-
-            this.outPutShows().then(outputShows => {
-                // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
-                this.outputShows = outputShows;
-                this.searchAndDisplayShows(this.outputText);
-            });
         },
         async saveSeasons(seasons, showID) {
             var dataSeasons = [];
@@ -206,10 +216,17 @@ export default {
             return dataEpisodes;
         },
         async sendMedia(media, seasons, episodes) {
-            var response = await axios.post(`${this.$mainURL}:3000/api/db/show?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media, seasons: seasons, episodes: episodes, });
-            
-            if ( response.data.message === true ) {
-                this.loader.classList.add('hidden');
+            try {
+                var response = await axios.post(`${this.$mainURL}:3000/api/db/show?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media, seasons: seasons, episodes: episodes, });
+                
+                if ( response.data.message === true ) {
+                    document.getElementById('loader').classList.add('hidden');
+                }
+            } catch (err) {
+                console.error('Fehler beim Speichern der Daten:', err);
+            } finally {
+                this.showProgressBar = false;
+                this.progressBarWidth = '0%';
             }
         },
         async outPutShows() {
@@ -221,7 +238,11 @@ export default {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
-        }
+        },
+        clearSearch() {
+            this.inputText = "";
+            this.outputText = this.inputText;
+        },
     },
     mounted() {
         this.outPutShows().then(outputShows => {
@@ -235,5 +256,18 @@ export default {
 <style>
 #app {
 
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    margin-top: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
 }
 </style>
