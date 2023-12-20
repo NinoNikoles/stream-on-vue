@@ -99,6 +99,7 @@ const langs = [
             'pls_wait_for_admin_setup': 'No content has been added yet. Please be patient a little longer.',
             'select_file': 'Select a file',
             'upload_new_img': 'Upload new profile image',
+            'please_wait_adding_show': 'Please wait. This could take a while.',
 
             //Add
             'add_movie_to_library': 'Do you want to add the movie "<strong>$content</strong>" to your library?',
@@ -207,6 +208,7 @@ const langs = [
             'pls_wait_for_admin_setup': 'Es wurden noch keine Inhalte hinzugfügt. Bitte hab noch etwas Gedult.',
             'select_file': 'Datei auswählen',
             'upload_new_img': 'Neues Profilbild hochladen',
+            'please_wait_adding_show': 'Bitte warten. Dies könnte einige Zeit in Anpsruch nehmen.',
 
             //Add
             'add_movie_to_library': 'Möchtest du den Film "<strong>$content</strong>" deiner Bibliothek hinzufügen?',
