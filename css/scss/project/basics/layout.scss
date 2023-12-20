@@ -6,13 +6,13 @@ body {
     padding: {
         top: rem-calc(50) !important;
     }
-    overflow: hidden;
+    overflow: unset;
 }
 
-#main {
-    height: calc(100vh - 50px);
-    overflow: hidden auto;
-}
+// #main {
+//     height: calc(100vh - 50px);
+//     overflow: hidden auto;
+// }
 
 table,
 .table {
@@ -40,5 +40,20 @@ label {
             }
             right: rem-calc(10) !important;
         }
+    }
+}
+
+#loginWrap {
+    height: calc(100vh - 100px);
+
+    .loginCol {
+        background: {
+            color: var(--black-50);
+        }
+        padding: rem-calc(20);
+        position: relative;
+        top: 40%;
+        left: 0;
+        transform: translateY(-50%);
     }
 }
