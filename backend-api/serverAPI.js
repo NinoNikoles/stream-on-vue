@@ -193,34 +193,32 @@ const addShow = (req, res) => {
 
     const genres = JSON.parse(dataGenres);
 
-    db.run(`INSERT INTO media (${columns}) VALUES (${placeholders})`, values, function(err) {
+    db.run(`INSERT INTO media (${columns}) VALUES (${placeholders})`, values, async function(err) {
         if (err) {
             console.error(`Error - Failed to add data: `, err.message);
             res.status(500).json({ error: 'Failed to add data.' });
         } else {
             console.log(`Data added successfully - Media`);
+            try {
+                for (const genre of genres) {
+                    await sendGenre(mediaID, genre);
+                    console.log(`Data added successfully - Genre`);
+                }
 
-            for (const genre of genres) {
-                db.run(`INSERT INTO media_genre (media_id, genre_id) VALUES(?, ?)`, [mediaID, genre], (err) => {
-                    if (err) {
-                        console.error(`Error - Failed to add genre: `, err.message);
-                    } else {
-                        console.log(`Data added successfully - Genre`);
-                    }
-                });
+                for (const season of seasons) {
+                    await sendSeason(season);
+                    console.log(`Data added successfully - Season`);
+                }
+
+                for (const episode of episodes) {
+                    await sendEpisode(episode);
+                    console.log(`Data added successfully - Episode`);
+                }
+
+                res.json({ message: true });
+            } catch (err) {
+                console.log(err);
             }
-
-            for (const season of seasons) {
-                sendSeason(season);
-                console.log(`Data added successfully - Season`);
-            }
-
-            for (const episode of episodes) {
-                sendEpisode(episode);
-                console.log(`Data added successfully - Episode`);
-            }
-
-            res.json({ message: true });
         }
     });
 };
@@ -336,20 +334,197 @@ const getGenreNameByID = (req, res) => {
 }
 
 function sendSeason(season) {
-    const columns = Object.keys(season).join(', ');
-    const placeholders = Object.keys(season).map(() => '?').join(', ');
-    const values = Object.values(season);
+    return new Promise((resolve, reject) => {
+        const columns = Object.keys(season).join(', ');
+        const placeholders = Object.keys(season).map(() => '?').join(', ');
+        const values = Object.values(season);
 
-    db.run(`INSERT INTO seasons (${columns}) VALUES (${placeholders})`, values);
+        db.run(`INSERT INTO seasons (${columns}) VALUES (${placeholders})`, values, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this);
+            }
+        });
+    });
 };
 
 function sendEpisode(episode) {
-    const columns = Object.keys(episode).join(', ');
-    const placeholders = Object.keys(episode).map(() => '?').join(', ');
-    const values = Object.values(episode);
+    return new Promise((resolve, reject) => {
+        const columns = Object.keys(episode).join(', ');
+        const placeholders = Object.keys(episode).map(() => '?').join(', ');
+        const values = Object.values(episode);
 
-    db.run(`INSERT INTO episodes (${columns}) VALUES (${placeholders})`, values);
+        db.run(`INSERT INTO episodes (${columns}) VALUES (${placeholders})`, values, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this);
+            }
+        });
+    });
 };
+
+function sendGenre(mediaID, genre) {
+    return new Promise((resolve, reject) => {
+        db.run(`INSERT INTO media_genre (media_id, genre_id) VALUES(?, ?)`, [mediaID, genre], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this);
+            }
+        });
+    });
+};
+
+// Deleting Media Data
+const deleteMovie = async (req, res) => {
+    const { mediaID } = req.query;
+
+    try {
+        await deleteFromAllWatchLists(mediaID);
+        await deleteFromHighlights(mediaID);
+        await deleteMediaGenre(mediaID);
+        await deleteMediaComplete(mediaID);
+
+        res.json('Done');
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+const deleteShow = async (req, res) => {
+    const { mediaID } = req.query;
+
+    try {
+        await deleteFromAllWatchLists(mediaID);
+        await deleteFromHighlights(mediaID);
+        await deleteAllEpisodes(mediaID);
+        await deleteAllSeasons(mediaID);
+        await deleteMediaGenre(mediaID);
+        await deleteMediaComplete(mediaID);
+
+        res.json('Done');
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+const deleteSeason = async (req, res) => {
+    const { mediaID, seasonNumber } = req.query;
+
+    try {
+        await deleteAllEpisodesFromSeason(mediaID, seasonNumber);
+        await deleteSingleSeason(mediaID, seasonNumber);
+        res.json('Done');
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+function deleteMediaComplete(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM media WHERE tmdbID = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Media deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteMediaGenre(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM media_genre WHERE media_id = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Genre deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteAllSeasons(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM seasons WHERE show_tmdbID = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Seasons deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteSingleSeason(mediaID, seasonNumber) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM seasons WHERE show_tmdbID = ? AND season_number = ?`, [mediaID, seasonNumber], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Season deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteAllEpisodes(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM episodes WHERE show_id = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Episodes deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteAllEpisodesFromSeason(mediaID, seasonNumber) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM episodes WHERE show_id = ? AND season_number = ?`, [mediaID, seasonNumber], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Episodes deleted.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteFromHighlights(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM highlights WHERE highlight_id = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Deleted from Highlights.');
+                resolve(this);
+            }
+        });
+    });
+}
+
+function deleteFromAllWatchLists(mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM watchlist WHERE media_id = ?`, [mediaID], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Deleted from Watchlists.');
+                resolve(this);
+            }
+        });
+    });
+}
 
 const genreSlider = (req, res) => {
     let query = `SELECT DISTINCT genre.genre_id, genre.genre_name
@@ -787,6 +962,8 @@ module.exports = {
     getMediaByInput,
     getMediaFiltered,
     addVideoPathToMedia,
+    deleteShow,
+    deleteSeason,
 
     // Episodes
     getSeasons,
