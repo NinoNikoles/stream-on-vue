@@ -20,7 +20,7 @@ app.use(express.static(
         type: 'application/javascript',
     }
 ));
-app.use(express.json());
+app.use(express.json({ limit: '10000mb'}));
 app.use(session({
     secret: 'hh830476c753416c76xn915xnm76c4765',
     resave: true,
@@ -61,6 +61,8 @@ app.get('/api/db/media', serverAPI.getMedia);
 app.get('/api/db/mediaByInput', serverAPI.getMediaByInput);
 app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 app.post('/api/db/addVideoPathToMedia', serverAPI.addVideoPathToMedia);
+app.post('/api/db/deleteShow', serverAPI.deleteShow);
+app.post('/api/db/deleteSeason', serverAPI.deleteSeason);
 
 //-- Seasons
 app.get('/api/db/getSeasons', serverAPI.getSeasons);
