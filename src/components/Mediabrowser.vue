@@ -22,10 +22,10 @@
                                         <a @click="changeDirectory(media.path, $event)" class="marg-no">{{ media.name }}</a> /
                                     </span>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <button href="#renameFolder" data-fancybox @click="setOldFolder(media.name)" class="btn btn-small btn-warning icon-only icon-pen marg-no" :title="langSnippet('rename_folder')"></button>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <button href="#deleteFolder"
                                     data-fancybox
                                     class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
@@ -43,8 +43,15 @@
                                 <td v-if="$route.path !== '/media-browser'" class="text-right">
                                     <button
                                     href="#"  
-                                    class="btn btn-small btn-success icon-only icon-check marg-bottom-no marg-left-xxs"
+                                    class="btn btn-small btn-success icon-only icon-check marg-bottom-no"
                                     @click="saveMediaPath(`${media.path}`, $event)"></button>
+                                </td>
+                                <td v-else class="text-right">
+                                    <button href="#deleteFile"
+                                    data-fancybox
+                                    class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
+                                    :title="langSnippet('delete')"
+                                    @click="selectFile(media.path, media.name)"></button>
                                 </td>
                             </tr>
                             
@@ -134,6 +141,7 @@ export default {
             folderExists: null,
             oldFolderName: null,
             renameFolderName: null,
+            selectedFile: null,
         };
     },
     methods: {
@@ -296,10 +304,10 @@ export default {
             const fileInput = this.$refs.fileInput;
             const file = fileInput.files[0];
 
-            if (file) {
+            if (file && file.type === 'video/mp4') {
                 const formData = new FormData();
                 formData.append('mp4File', file);
-                console.log(formData);
+
                 try {
                     await axios.post(`${this.$mainURL}:3000/uploadVideo?folder=${folder}`, formData, {
                         headers: {
@@ -313,8 +321,15 @@ export default {
                     console.log(err.response.data);
                     this.folderExists = err.response.data;
                 }
+            } else {
+                alert('No Video');
             }
         },
+        selectFile(mediaPath, filename) {
+            this.selectedFile = [
+                mediaPath, filename
+            ]
+        }
     },
     mounted() {
         this.getFileStructure(this.mainFolder);
