@@ -1,6 +1,6 @@
 <template>
-    <div class="innerWrap">
-        <div class="col6 marg-left-col3">
+    <div class="innerWrap" id="loginWrap">
+        <div class="col4 marg-left-col4 loginCol">
             <form @submit.prevent="login">
                 <h2>{{ langSnippet('login')}}</h2>
                 <p>
@@ -9,8 +9,8 @@
                 <p>
                     <input type="password" v-model="password" :placeholder="langSnippet('password')">
                 </p>
-                <p class="text-right">
-                    <button type="submit" class="btn btn-small btn-success">{{ langSnippet('login')}}</button>
+                <p class="text-right marg-no">
+                    <button type="submit" class="btn btn-small btn-success marg-no">{{ langSnippet('login')}}</button>
                 </p>
             </form>
         </div>
