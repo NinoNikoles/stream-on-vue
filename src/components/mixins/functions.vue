@@ -102,6 +102,49 @@ export default {
             var selectValue = event.target.value;
             document.querySelectorAll(`.${selectID}.is-active`)[0].classList.remove('is-active');
             document.querySelectorAll(`.${selectID}[data-select-tab="${selectValue}`)[0].classList.add('is-active');
+        },
+        callout(type, message) {
+            const callout = document.getElementById('callout'),
+                success = 'success',
+                warning = 'warning',
+                alert = 'alert';
+
+            function clearCallout() {
+                if ( !callout.classList.contains('hidden') ) {
+                    callout.classList.add('hidden');
+
+                    setTimeout(() => {
+                        if ( callout.classList.contains(success) ) callout.classList.remove(success);
+                        if ( callout.classList.contains(warning) ) callout.classList.remove(warning);
+                        if ( callout.classList.contains(alert) ) callout.classList.remove(alert);
+                        callout.innerHTML = "";
+                    }, 1000);
+                } else {
+                    if ( callout.classList.contains(success) ) callout.classList.remove(success);
+                    if ( callout.classList.contains(warning) ) callout.classList.remove(warning);
+                    if ( callout.classList.contains(alert) ) callout.classList.remove(alert);
+                    callout.innerHTML = "";
+                }
+            }
+
+            function setCallout() {
+                callout.classList.add(type);
+                callout.innerHTML = '<p id="callout-content">'+message+'</p>';
+                callout.classList.remove('hidden');
+            }
+
+            clearCallout();
+
+            setTimeout(() => {
+                if ( type === success ) {
+                    setCallout();
+                    setTimeout(() => {
+                        clearCallout();
+                    }, 5000);
+                } else {
+                    setCallout();
+                }
+            }, 500);
         }
     }
 };
