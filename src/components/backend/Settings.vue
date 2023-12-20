@@ -102,10 +102,12 @@ export default {
                         console.log(err);
                     }
                 }
+
+                this.callout('success', this.langSnippet('save'));
             } else {
                 this.keyError = "API Key is not valid!";
             }
-
+            
             this.enableButton(saveButton);
         },
         async getSettings() {
