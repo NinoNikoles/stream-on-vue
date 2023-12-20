@@ -58,12 +58,13 @@
 
 <script>
 import axios from 'axios';
+import functions from '../mixins/functions.vue';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 
 export default {
     name: 'BackendMovie',
-    mixins: [tmdbAPI, langSnippet],
+    mixins: [functions, tmdbAPI, langSnippet],
     data() {
         return {
             inputText: '',
@@ -171,6 +172,7 @@ export default {
                 // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
                 this.outputMovies = outputMovies;
                 this.searchAndDisplayMovies(this.outputText);
+                this.callout('success', 'Movie added successfully');
             });
         },
         async sendMedia(media) {
