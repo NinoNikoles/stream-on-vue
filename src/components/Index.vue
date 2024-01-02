@@ -73,8 +73,8 @@
         </div>
     </div>
 
-    <template v-if="availableSlider">
-        <template v-for="(slider, index) in availableSlider" :key="index">
+    <template v-if="availableSliderContent">
+        <template v-for="(slider, index) in availableSliderContent" :key="index">
             <template v-for="(media, index) in slider.mediaElements" :key="index">
                 <div class="modal" :id="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`">
                     <div class="modal-overlay"></div>
@@ -201,6 +201,7 @@ export default {
             highlight: null,
             availableGenre: null,
             availableSlider: null,
+            availableSliderContent: null,
             url: window.location.protocol + '//' + window.location.hostname
         };
     },
@@ -316,6 +317,7 @@ export default {
         this.getHighlight();
         this.genreSlider().then(() => {
             document.getElementById('loader').classList.add('hidden');
+            this.availableSliderContent = this.availableSlider;
         });
     }
 };
