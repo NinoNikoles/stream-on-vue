@@ -202,6 +202,8 @@ export default {
             let input = this.searchInput;
 
             if ( input !== '' ) {
+                if ( !document.body.classList.contains('active-search') ) document.body.classList.add('active-search');
+
                 try {
                     var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
                     this.searchResults = response.data;
@@ -209,6 +211,7 @@ export default {
                     console.log(err);
                 }
             } else {
+                document.body.classList.remove('active-search');
                 this.searchResults = null;
             }            
         },
@@ -292,11 +295,10 @@ export default {
             if ( !(searchBar.classList.contains(activeClass)) ) {
                 liveSearch.value = '';
                 searchBar.classList.add(activeClass);
-                // document.body.classList.add(activeClass);
             } else {
                 liveSearch.value = '';
                 searchBar.classList.remove(activeClass);
-                // document.body.classList.remove(activeClass);
+                document.body.classList.remove(activeClass);
                 this.searchResults = null;
             }
         },
