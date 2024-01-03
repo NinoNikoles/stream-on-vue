@@ -18,6 +18,7 @@ import BackendShows from './components/backend/Shows.vue';
 import BackendShow from './components/backend/SingleShow.vue';
 import BackendHighlights from './components/backend/Highlights.vue';
 import User from './components/frontend/User.vue';
+import MyList from './components/frontend/MyList.vue';
 
 function name(snippet) {
     return langSnippet.methods.langSnippet(snippet);
@@ -97,6 +98,12 @@ const router = createRouter({
             name: name('highlights'),
             component: BackendHighlights,
             meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'] }
+        },
+        {
+            path: '/my-list',
+            name: name('my_list'),
+            component: MyList,
+            meta: { requiresAuth: true, main: true, backend: false }
         },
         {
             path: '/user/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
