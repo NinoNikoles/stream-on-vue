@@ -24,6 +24,13 @@
 
         .modal-wrap {
             opacity: 1;
+            
+            @include MQ(xsmall) {
+                border: {
+                    radius: rem-calc($border-radius);
+                }
+                overflow: hidden;
+            }
         }
     }
 

@@ -2,10 +2,14 @@
     &-card {
         display: flex;
         flex-direction: column;
+        border: {
+            radius: rem-calc($border-radius);
+        }
         margin: {
             bottom: rem-calc($space-base);
         }
         position: relative;
+        overflow: hidden;
 
         &:hover {
             img {
@@ -181,6 +185,9 @@
 .tag {
     background: {
         color: var(--grey);
+    }
+    border: {
+        radius: rem-calc($border-radius);
     }
     color: var(--font-color-invert);
     margin: {

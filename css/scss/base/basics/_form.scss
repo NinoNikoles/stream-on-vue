@@ -181,7 +181,7 @@ input[type="checkbox"] {
             color: var(--input-border-color-focus);
         }
         border: {
-            radius: rem-calc($border-radius);
+            radius: rem-calc($input-border-radius);
         }
         content: "";
         height: rem-calc(20);

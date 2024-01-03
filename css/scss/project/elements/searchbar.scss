@@ -38,8 +38,8 @@
                 color: var(--header-bg);
             }
             padding: {
-                right: rem-calc($grid-padding);
-                left: rem-calc($grid-padding);
+                right: rem-calc($input-space-horizontal);
+                left: rem-calc($input-space-horizontal);
             }
             width: 100%;
             height: rem-calc(50);
@@ -56,7 +56,7 @@
                 }
                 padding: {
                     right: rem-calc(48);
-                    left: rem-calc($grid-padding/2);
+                    //left: rem-calc($grid-padding/2);
                 }
                 width: rem-calc(300);
                 height: rem-calc(40);
@@ -71,6 +71,7 @@
             @include maxMQ(medium) {
                 border: {
                     color: transparent !important;
+                    radius: 0 !important
                 }
             }
         }
@@ -89,6 +90,11 @@
             position: absolute;
             top: 0;
             right: 0;
+            @include transition(right $transition-default);
+
+            @include MQ(medium) {
+                right: rem-calc(4);
+            }
 
             &:hover {
                 background: {
@@ -129,6 +135,12 @@
                     padding: {
                         right: rem-calc(28);
                     }
+                }
+            }
+
+            .search-btn {
+                @include MQ(medium) {
+                    right: rem-calc(4);
                 }
             }
         }

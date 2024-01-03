@@ -3,15 +3,30 @@
 //$grid-max-width: 		grid(max-width) !default;
 $grid-padding: 			16;
 
+//-- Global --
+$border-radius: 12;
+
 //-- Buttons --
-$button-border-radius:      0;
+$button-border-radius:      300;
 $button-border-width:       2;
 
-$button-padding-top:        14;
-$button-padding-right:      20;
-$button-padding-bottom:     14;
-$button-padding-left:       20;
+$button-padding-top:        8;
+$button-padding-right:      24;
+$button-padding-bottom:     8;
+$button-padding-left:       24;
 
 $button-font-size: 20;
+
+//-- Form Settings --
+$input-border-radius: 		300;
+// $input-border-style: 		form(border-style) !default;
+// $input-border-width: 		form(border-width) !default;
+// $input-font-family:	        form(font-family) !default;
+// $input-font-size:	        form(font-size) !default;
+// $input-font-weight:	        form(font-weight) !default;
+// $input-label-font-family:	form(font-family) !default;
+// $input-label-font-size:	    form(font-size) !default;
+$input-space-horizontal:    16;
+$input-space-vertical:      8;
 
 $transition-default: 0.25s ease;
