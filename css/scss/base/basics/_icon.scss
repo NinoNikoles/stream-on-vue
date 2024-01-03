@@ -108,6 +108,8 @@ a.icon-right:hover {
     &-fullscreen { &::before { content: $icon-fullscreen; } }
     &-fullscreen-exit { &::before { content: $icon-fullscreen-exit; } }
     &-globe { &::before { content: $icon-globe; } }
+    &-heart { &::before { content: $icon-heart; } }
+    &-heart-empty { &::before { content: $icon-heart-empty; } }
     &-help { &::before { content: $icon-help; } }
     &-home { &::before { content: $icon-home; } }
     &-image { &::before { content: $icon-image; } }
