@@ -72,6 +72,11 @@
                                     <span class="tag">{{ show['mediaDetails'].rating }}/10 ★</span>
                                 </p>
                                 <a v-if="show.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                                
+                                <!--- Like button --->
+                                <button v-if="show['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
+                                <button v-else @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
+                                
                                 <p class="small">{{ show['mediaDetails'].overview }}</p>
                                 <p v-if="show['genre']" class="small tag-list marg-bottom-base">
                                     <span v-for="(genre, index) in show['genre']" :key="index" class="tag">
@@ -153,6 +158,7 @@ export default {
     mixins: [functions, langSnippet],
     data() {
         return {
+            userID: null,
             shows: null,
             url: window.location.protocol + '//' + window.location.hostname,
             genres: null,
@@ -211,6 +217,7 @@ export default {
 
                     allShowInfos['genre'] = mediaGenre;
                     allShowInfos['mediaDetails'] = shows[i];
+                    allShowInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(shows[i].tmdbID);
                     
                 } catch (err) {
                     console.log(err);
@@ -262,12 +269,19 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        async watchListAction(mediaID, buttonID) {
+            this.watchListTrigger(this.userID, mediaID, buttonID);
         }
     },
     mounted() {
-        this.getShows();
-        this.getGenre().then(() => {
-            document.getElementById('loader').classList.add('hidden');
+        this.sessionUser().then((userID) => {
+            this.userID = userID;
+
+            this.getShows();
+            this.getGenre().then(() => {
+                document.getElementById('loader').classList.add('hidden');
+            });
         });
     }
 };

@@ -95,6 +95,12 @@
                                             <!-- <span class="tag">'.$extraInfo.'</span> -->
                                         </p>
                                         <a v-if="media['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+
+                                        <!--- Like button --->
+                                        <button v-if="media['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
+                                        <button v-else @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
+                                        
+                                        
                                         <p class="small">{{ media['mediaDetails'].overview }}</p>
                                         <p v-if="media['genre']" class="small tag-list marg-bottom-base">
                                             <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
@@ -198,11 +204,12 @@ export default {
     mixins: [functions, langSnippet],
     data() {
         return {
+            userID: null,
             highlight: null,
             availableGenre: null,
             availableSlider: null,
             availableSliderContent: null,
-            url: window.location.protocol + '//' + window.location.hostname
+            url: window.location.protocol + '//' + window.location.hostname,
         };
     },
     methods: {
@@ -247,6 +254,7 @@ export default {
 
                                 mediaInfos['genre'] = mediaGenre;
                                 mediaInfos['mediaDetails'] = mediaResponse[i];
+                                mediaInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(mediaResponse[i].tmdbID);
                                 media[i] = mediaInfos;
                                 
                             } catch (error) {
@@ -255,7 +263,6 @@ export default {
                         }
 
                         currSlider['mediaElements'] = media;
-                        console.log(currSlider['mediaElements']);
 
                     } catch(err) {
                         console.log(err);
@@ -311,14 +318,21 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        async watchListAction(mediaID, buttonID) {
+            this.watchListTrigger(this.userID, mediaID, buttonID);
         }
     },
     mounted() {
-        this.getHighlight();
-        this.genreSlider().then(() => {
-            document.getElementById('loader').classList.add('hidden');
-            this.availableSliderContent = this.availableSlider;
-        });
+        this.sessionUser().then((userID) => {
+            this.userID = userID;
+
+            this.getHighlight();
+            this.genreSlider().then(() => {
+                document.getElementById('loader').classList.add('hidden');
+                this.availableSliderContent = this.availableSlider;
+            });
+        });       
     }
 };
 </script>

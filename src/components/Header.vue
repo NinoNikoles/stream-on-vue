@@ -93,15 +93,15 @@
                         <div class="media-card">
                             <div class="media-card-wrapper">
                                 <figure class="widescreen desktop-only">
-                                    <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
+                                    <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media.title}`">
                                 </figure>
                                 <figure class="poster mobile-only">
-                                    <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
+                                    <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
                                 </figure>
                                 <div class="link-wrapper">
-                                    <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                    <a href="#" @click="openPopUp(`searchresult-${media.tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
-                                    <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
+                                    <a v-if="media['mediaDetails'].file_path" href="#" :title="`${media['mediaDetails'].title}`" class="play-trigger"></a>
+                                    <a href="#" @click="openPopUp(`searchresult-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
+                                    <a :href="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
                         </div>
@@ -112,41 +112,46 @@
     </header>
 
     <template v-for="(media, index) in searchResults" :key="index">
-        <div class="modal" :id="`searchresult-${media.tmdbID}`">
+        <div class="modal" :id="`searchresult-${media['mediaDetails'].tmdbID}`">
             <div class="modal-overlay"></div>
             <div class="modal-wrap large">
                 <div class="modal-inner-wrap">
-                    <div v-if="media" class="info-popup" :id="`${media.tmdbID}`">
+                    <div v-if="media['mediaDetails']" class="info-popup" :id="`${media['mediaDetails'].tmdbID}`">
                         <div class="col12 marg-bottom-xs mobile-only">
                             <figure class="widescreen">
-                                <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
+                                <img :data-img="$loadImg(media['mediaDetails'].backdrop)" loading="lazy" importance="low" alt="">
                             </figure>
                         </div>
                         <div class="innerWrap">
                             <div class="col7 marg-right-col1">
-                                <p class="h2">{{ media.title }}</p>
+                                <p class="h2">{{ media['mediaDetails'].title }}</p>
                                 <p class="small tag-list marg-bottom-base">
-                                    <span class="tag">{{ media.release_date }}</span>
-                                    <span class="tag">{{ media.rating }}/10 ★</span>
+                                    <span class="tag">{{ media['mediaDetails'].release_date }}</span>
+                                    <span class="tag">{{ media['mediaDetails'].rating }}/10 ★</span>
                                     <!-- <span class="tag">'.$extraInfo.'</span> -->
                                 </p>
-                                <a v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                                <p class="small">{{ media.overview }}</p>
-                                <!-- <p v-if="selectedMediaGenre" class="small tag-list marg-bottom-base">
-                                    <span v-for="(genre, index) in selectedMediaGenre" :key="index" class="tag">
+                                <a v-if="media['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+                                
+                                <!--- Like button --->
+                                <button v-if="media['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
+                                <button v-else @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
+                                
+                                <p class="small">{{ media['mediaDetails'].overview }}</p>
+                                <p class="small tag-list marg-bottom-base">
+                                    <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
                                         {{ genre }}
-                                    </span>
-                                </p> -->
+                                    </span> 
+                                </p>
                             </div>
                             <div class="col4 desktop-only">
                                 <figure class="poster">
-                                    <img :data-img="$loadImg(media.poster)" alt="" loading="lazy" importance="low">
+                                    <img :data-img="$loadImg(media['mediaDetails'].poster)" alt="" loading="lazy" importance="low">
                                 </figure>
                             </div>
                         </div>
                     </div>
                 </div>
-                <a href="#" class="modal-close" @click="closePopUp(`searchresult-${media.tmdbID}`, $event)"></a>
+                <a href="#" class="modal-close" @click="closePopUp(`searchresult-${media['mediaDetails'].tmdbID}`, $event)"></a>
             </div>
         </div>
     </template>
@@ -177,6 +182,7 @@ export default {
             searchResults: null,
             selectedMedia: null,
             selectedMediaGenre: null,
+            selectMediaWatchlist: null,
             currentUser: {
                 id: null,
                 username: null,
@@ -200,13 +206,50 @@ export default {
         },
         async handleSearchInput() {
             let input = this.searchInput;
+            var media = [];
+            var mediaInfos = [];
+            var mediaGenre = [];
 
             if ( input !== '' ) {
                 if ( !document.body.classList.contains('active-search') ) document.body.classList.add('active-search');
 
                 try {
+                    media = [];
+
                     var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
-                    this.searchResults = response.data;
+                    var searchResults = response.data;
+
+                    for (let i = 0; i < searchResults.length; i++) {
+                        mediaInfos = [];
+                        mediaGenre = [];
+
+                        try {
+                            if ( searchResults[i].media_type === 'show' ) {
+                                mediaInfos['seasons'] = await this.getSeasons(searchResults[i].tmdbID);
+                                mediaInfos['episodes'] = await this.getEpisodes(searchResults[i].tmdbID);
+                            }
+
+                            var mediaGenreIDs = JSON.parse(searchResults[i].genres);
+                            for (let x = 0; x < mediaGenreIDs.length; x++) {
+                                try {
+                                    mediaGenre.push(await this.getGenre(mediaGenreIDs[x]));
+                                    
+                                } catch(e) {
+                                    console.log(e);
+                                }                                    
+                            }
+
+                            mediaInfos['genre'] = mediaGenre;
+                            mediaInfos['mediaDetails'] = searchResults[i];
+                            mediaInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(searchResults[i].tmdbID);
+                            media[i] = mediaInfos;
+                            
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+
+                    this.searchResults = media;
                 } catch (err) {
                     console.log(err);
                 }
@@ -215,30 +258,17 @@ export default {
                 this.searchResults = null;
             }            
         },
-        async popUpTrigger(media) {
-            await this.selectMedia(media)
-            .then(() => {
-                this.openPopUpHeader();
-            });
-        },
-        async selectMedia(media) {
-            this.selectedMedia = media;
-            var mediaGenres = JSON.parse(this.selectedMedia.genres);
-            const selectedMediaGenre = [];
-
-            for ( var genre of mediaGenres ) {
-                try {
-                    const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genre}`);
-                    var genreName  = response.data[0].genre_name;
-                    selectedMediaGenre.push(genreName);
-                } catch (error) {
-                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                    console.log(error);
-                }
+        async getGenre(genreID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
+                return response.data[0].genre_name;                
+            } catch (error) {
+                console.log(error);
             }
-
-            this.selectedMediaGenre = selectedMediaGenre;            
         },
+        // async popUpTrigger() {
+        //     this.openPopUpHeader();
+        // },
         async logout() {
             // Benutzeranmeldeinformationen            
             try {
@@ -302,6 +332,9 @@ export default {
                 this.searchResults = null;
             }
         },
+        async watchListAction(mediaID, buttonID) {
+            this.watchListTrigger(this.id, mediaID, buttonID);
+        }
     },
     mounted() {
         this.fetchSessionStatus()
@@ -315,7 +348,7 @@ export default {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.backendRoutes = routes;
                 });
-                this.getCurrentUserInfo();
+                this.getCurrentUserInfo();            
             }
         });
 
