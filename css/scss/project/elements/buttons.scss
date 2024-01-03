@@ -23,6 +23,7 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
         font: {
             size: rem-calc(26) !important;
         }
+        //@include transition(all $transition-default);
     }
 
     &.mylist-btn {
@@ -90,7 +91,9 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
     }
 
     &.like-btn {
-        @include transitions(background-color $transition-default, color 0s ease);
+        border-color: transparent !important;
+        @include transitions(background-color $transition-default, color $transition-default);
+
         &::before {
             content: $icon-heart-empty;
         }

@@ -1,7 +1,7 @@
 // Color, Color on Hover, Background, Background on Hover, (Border, Border on Hover)
 @mixin button() {
     // Standard Settings
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
