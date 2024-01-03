@@ -12,33 +12,49 @@ const getSession = (req, res) => {
     res.json(sessionData);
 }
 
-//-- Login --
-const login = (req, res) => {
-    const { username, password } = req.body;
-    // Finde den Benutzer in der Datenbank
-    db.all("SELECT * FROM users WHERE username = ?", username, (err, user) => {
-        if (user[0]) {
-            // Vergleiche das eingegebene Passwort mit dem gehashten Passwort
-            bcrypt.compare(password, user[0].password, (err, result) => {
-                if (result) {
-                    req.session.user = {
-                        id: user[0].id,
-                        name: user[0].username,
-                        role: user[0].role,
-                        isLoggedIn: true
+function loginFunction(username, password, request) {
+    return new Promise((resolve, reject) => {
+        // Finde den Benutzer in der Datenbank
+        db.all("SELECT * FROM users WHERE username = ?", username, (err, user) => {
+            if (user[0]) {
+                // Vergleiche das eingegebene Passwort mit dem gehashten Passwort
+                bcrypt.compare(password, user[0].password, (err, result) => {
+                    if (result) {
+                        request.session.user = {
+                            id: user[0].id,
+                            name: user[0].username,
+                            role: user[0].role,
+                            isLoggedIn: true
+                        }
+                        request.session.save();
+                        //res.json({message: 'login successful'});
+                        resolve(this);
+                    } else {
+                        // Falsches Passwort
+                        err = 'invalid_password';
+                        reject(err);
                     }
-                    req.session.save();
-                    res.json({message: 'login successful'});
-                } else {
-                    // Falsches Passwort
-                    res.status(401).json({ message: 'Invalid password' });
-                }
-            });
-        } else {
-            // Benutzer nicht gefunden
-            res.status(404).json({ message: 'User not found' });
-        }
+                });
+            } else {
+                // Benutzer nicht gefunden
+                err = 'user_not_found';
+                reject(err);
+            }
+        });
     });
+}
+
+//-- Login --
+const login = async(req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        await loginFunction(username, password, req);
+        res.json('Login');
+    } catch(err) {
+        console.log(err);
+        res.status(500).send({message: err});
+    }
 }
 
 const logout = (req, res) => {
@@ -50,7 +66,7 @@ const logout = (req, res) => {
         isLoggedIn: false
     }
     req.session.save();
-    res.json({message: 'logout successful'});
+    res.json({message: 'logout_successful'});
 }
 
 // Settings
@@ -945,6 +961,79 @@ const saveUserVolume = (req, res) => {
     });
 }
 
+function selectFromWatchList(userID, mediaID) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM watchlist WHERE user_id = ? AND media_id = ?`, [userID, mediaID], (err, rows) => {
+            if (rows) {
+                resolve(rows[0]);
+            } else {
+                reject(err);
+            }
+        });
+    });
+}
+
+function addToWatchlist(userID, mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`INSERT INTO watchlist(user_id, media_id) VALUES (?, ?)`, [userID, mediaID], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(1);
+            }
+        });
+    });
+}
+
+function removeFromWatchlist(userID, mediaID) {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM watchlist WHERE user_id = ? AND media_id = ?`, [userID, mediaID], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(0);
+            }
+        });
+    });
+}
+
+const getFromWatchlist = async(req, res) => {
+    const { mediaID, userID } = req.query;
+
+    try {
+        const response = await selectFromWatchList(userID, mediaID);
+        var status = null;
+
+        if ( response !== undefined ) {
+            status = 1;
+        } else {
+            status = 0;
+        }
+        res.json(status);
+    } catch(err) {
+        res.status(500).send('error_occured');
+    }
+}
+
+const updateWatchlist = async(req, res) => {
+    const { mediaID, userID } = req.query;
+
+    try {
+        const response = await selectFromWatchList(userID, mediaID);
+        var trigger = null;
+
+        if ( response !== undefined ) {
+            trigger = await removeFromWatchlist(userID, mediaID);
+        } else {
+            trigger = await addToWatchlist(userID, mediaID);
+        }
+
+        res.json(trigger);
+    } catch(err) {
+        res.status(500).send('error_occured');
+    }
+}
+
 module.exports = {
     getSession,
     login,
@@ -999,5 +1088,8 @@ module.exports = {
     saveUserVolume,
 
     getMediaWatched,
-    safeWatchTime
+    safeWatchTime,
+
+    getFromWatchlist,
+    updateWatchlist
 };

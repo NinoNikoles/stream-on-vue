@@ -1,5 +1,6 @@
 <script>
 import langSnippet from './language.vue';
+import axios from 'axios';
 
 export default {
     name: 'MainFunctions',
@@ -145,6 +146,44 @@ export default {
                     setCallout();
                 }
             }, 500);
+        },
+        async sessionUser() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                return new Promise((resolve) => {
+                    resolve(response.data.user.id);
+                });
+            } catch(err) {
+                console.log(err);
+                return 0;
+            }
+        },
+        async checkWatchlist(mediaID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                const userID = response.data.user.id;
+                const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/getFromWatchlist?userID=${userID}&mediaID=${mediaID}`);
+                const status = newResponse.data;
+                return status;
+            } catch(err) {
+                console.log(err);
+                return 0;
+            }
+        },
+        async watchListTrigger(userID, mediaID, buttonID) {
+            var button = document.getElementById(buttonID);
+
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
+                var trigger = response.data;
+                if (trigger === 1) {
+                    button.classList.add('liked');
+                } else {
+                    button.classList.remove('liked');
+                }
+            } catch(err) {
+                console.log(err);
+            }
         }
     }
 };

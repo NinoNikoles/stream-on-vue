@@ -103,6 +103,8 @@ app.post('/api/db/saveUserVolume', serverAPI.saveUserVolume);
 
 app.get('/api/db/getMediaWatched', serverAPI.getMediaWatched);
 app.post('/api/db/safeWatchTime', serverAPI.safeWatchTime);
+app.get('/api/db/getFromWatchlist', serverAPI.getFromWatchlist);
+app.get('/api/db/updateWatchlist', serverAPI.updateWatchlist);
 
 //// -- Media browser -- ////
 app.get('/getFolderStructure', mediabrowserAPI.getFolderStructure);
