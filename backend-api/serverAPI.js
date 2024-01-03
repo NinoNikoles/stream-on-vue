@@ -117,23 +117,23 @@ const updateSettings = (req, res) => {
 // Media
 const getMedia = (req, res) => {
     const { whereClause } = req.query;
-    const { orderBy, order } = req.query;
+    const { orderBy, order, userID } = req.query;
+    let query = ``;
 
-    let query = `SELECT * FROM media`;
+    if ( userID ) {
+        query += `SELECT * FROM watchlist JOIN media ON watchlist.media_id = media.tmdbID WHERE watchlist.user_id = ?`;
 
-    if (whereClause) {
-        query += ` WHERE ${whereClause}`;
-    }
+        if (whereClause) query += ` AND ${whereClause}`;
+    } else {
+        query += `SELECT * FROM media`;
 
-    if (orderBy) {
-        query += ` ORDER BY ${orderBy}`;
-    }
+        if (whereClause) query += ` WHERE ${whereClause}`;
+    }  
 
-    if (order) {
-        query += ` ${order}`;
-    }
+    if (orderBy) query += ` ORDER BY ${orderBy}`;
+    if (order) query += ` ${order}`;
 
-    db.all(query, [], (err, rows) => {
+    db.all(query, [userID], (err, rows) => {
         if (err) {
             // res.status(500).send(err);
             return;
@@ -240,10 +240,28 @@ const addShow = (req, res) => {
 };
 
 const getMediaFiltered = (req, res) => {
-    const { mediaType, orderBy, order, genreID } = req.query;
-    let query = `SELECT m.* FROM media AS m
-        JOIN media_genre AS mg ON m.tmdbID = mg.media_id
-        WHERE mg.genre_id = "${genreID}" AND m.media_type = "${mediaType}" ORDER BY ${orderBy} ${order}`;
+    const { mediaType, orderBy, order, genreID, userID } = req.query;
+    let query = `SELECT * FROM media`;
+    
+    if (genreID) query += ` JOIN media_genre ON media.tmdbID = media_genre.media_id`;
+    if (userID)  query += ` JOIN watchlist ON media.tmdbID = watchlist.media_id`;
+
+    query += ` WHERE`;
+
+    var i = 0;
+    if (genreID) { query += ` media_genre.genre_id = ${genreID}`; i++; }
+    if (mediaType) {
+        if ( i > 0) query += ` AND`;
+        query += ` media.media_type = "${mediaType}"`;
+        i++;
+    }
+    if (userID) {
+        if ( i > 0) query += ` AND`;
+        query += ` watchlist.user_id = ${userID}`;
+    }
+
+    if (orderBy) query += ` ORDER BY ${orderBy}`;
+    if (order) query += ` ${order}`;
 
     db.all(query, [], (err, rows) => {
         if (err) {
