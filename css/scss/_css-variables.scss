@@ -105,6 +105,7 @@
 
     //-- Form Settings --
     --input-bg:                         #{$input-bg};
+    --input-bg-focus:                   #{$input-bg-focus};
     --input-border-color:               #{$input-border-color};
     --input-border-color-focus:         #{$input-border-color-focus};
     --input-border-style:               #{$input-border-style};
@@ -283,6 +284,7 @@ html[data-theme="dark"] {
 
     //-- Form Settings --
     --input-bg:                         #{$dark-input-bg};
+    --input-bg-focus:                   #{$dark-input-bg-focus};
     --input-border-color:               #{$dark-input-border-color};
     --input-border-color-focus:         #{$dark-input-border-color-focus};
     --input-color:                      #{$dark-input-color};

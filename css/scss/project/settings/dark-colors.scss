@@ -1,3 +1,27 @@
+////-- Colors --
+$dark-primary: #00cae2;
+$dark-secondary: #A2D729;
+$dark-tertiary: #ff3604;
+$dark-quaternary: #5448C8;
+$dark-quinary: #ede407;
+
+$grey: #aaaaaa;
+$dark: #121212;
+$offwhite: #f8f8f8;
+
+$dark-success: #3adb76;
+$dark-warning: #ffae00;
+$dark-alert: #cc4b37;
+
+//-- Form Settings --
+$dark-input-bg:					#2a2a2a;
+$dark-input-bg-focus:			#4d4d4d;
+$dark-input-border-color: 		transparent;//rgba(255,255,255,0.1);
+$dark-input-border-color-focus: transparent;
+// $input-color:				form(color) !default;
+// $input-color-placeholder:	form(place-holder-color) !default;
+// $input-label-color:		    form(label-color) !default;
+
 $dark-header-bg: #000000;
 //$dark-body-bg: $dp0 !default;
 //$dark-footer-bg: $dp8 !default;

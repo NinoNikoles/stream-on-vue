@@ -7,7 +7,7 @@
 
             <div class="col12 marg-bottom-m">
                 <div v-if="highlights">
-                    <table>
+                    <table class="rounded">
                         <thead>
                             <th class="desktop-only">{{ langSnippet('thumbnail') }}</th>
                             <th>{{ langSnippet('name') }}</th>

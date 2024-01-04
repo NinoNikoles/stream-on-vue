@@ -1,6 +1,6 @@
 <template>
     <div class="innerWrap" id="loginWrap">
-        <div class="col4 marg-left-col4 loginCol">
+        <div class="col4 marg-left-col4 loginCol rounded">
             <form @submit.prevent="login">
                 <h2>{{ langSnippet('login')}}</h2>
                 <p>

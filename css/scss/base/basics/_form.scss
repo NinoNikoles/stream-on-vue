@@ -106,9 +106,12 @@ textarea {
     }
     width: 100%;
     max-width: 100%;
-    @include transitions(border-color $transition-default);
+    @include transitions(background-color $transition-default, border-color $transition-default, color $transition-default);
 
     &:focus {
+        background: {
+            color: var(--input-bg-focus);
+        }
         border: {
             color: var(--input-border-color-focus);
         }
@@ -178,7 +181,7 @@ input[type="checkbox"] {
 
     &::before {
         background: {
-            color: var(--input-border-color-focus);
+            color: var(--font-color);
         }
         border: {
             radius: rem-calc($input-border-radius);
@@ -197,7 +200,7 @@ input[type="checkbox"] {
     &::after {
         content: "";
         background: {
-            color: var(--body-bg);
+            color: var(--input-bg);
         }
         border: {
             color: var(--input-border-color-focus);
@@ -332,7 +335,7 @@ select {
     position: relative;
 
     &::after {
-        content: "\e917";
+        content: $icon-chevron-down;
         font: {
             family: $icon-font;
             size: rem-calc(20);

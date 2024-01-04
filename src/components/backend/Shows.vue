@@ -36,8 +36,8 @@
                 </div>
 
                 <div v-if="outputShows" class="col12 marg-top-m">
-                    <div class="row">
-                        <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium column">
+                    <div class="grid-row">
+                        <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
                             <router-link :to="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card">
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${show.title}`">

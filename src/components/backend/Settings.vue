@@ -9,26 +9,29 @@
                 <div class="row">
                     <div class="col5 column marg-right-col7">
                         <p>
-                            <label for="site_title">{{ langSnippet('page_title') }}*
-                                <input type="text" v-model="title" id="site_title" placeholder="" required>
+                            <label for="site_title">
+                                <input type="text" v-model="title" id="site_title" :placeholder="langSnippet('page_title')" required>
                             </label>
                         </p>
                     </div>
 
                     <div class="col5 column">
                         <p>
-                            <label for="apikey">{{ langSnippet('api_key') }}*
-                                <input type="text" v-model="apikey" id="apikey" placeholder="" required>
+                            <label for="apikey">
+                                <input type="text" v-model="apikey" id="apikey" :placeholder="langSnippet('api_key')" required>
                             </label>
-                            <span v-if="keyError" class="text-alert italic">{{ keyError }}</span>
-                            <span class="smaller" v-html="langSnippet('apikey_info')"></span>
                         </p>
+                        <p v-if="keyError"><span class="text-alert italic">{{ keyError }}</span></p>
+                        <p>
+                            <span class="smaller" v-html="langSnippet('apikey_info')"></span>
+                        </p>                        
                     </div>
 
                     <div class="col5 column marg-right-col7">
                         <p>
-                            <label for="language">{{ langSnippet('language') }}*
+                            <label for="language" data-form="select">
                                 <select v-model="language" id="language">
+                                    <option value="" disabled hidden>- {{ langSnippet('language') }} -</option>
                                     <option value="de-DE">Deutsch</option>
                                     <option value="en-US" selected>English</option>
                                 </select>
@@ -38,7 +41,7 @@
 
                     <div class="col12 column">
                         <p>
-                            <label for="language">{{ langSnippet('enable_edit_btn') }}*
+                            <label for="enable-edit">{{ langSnippet('enable_edit_btn') }}*
                                 <input type="checkbox" id="enable-edit" v-model="edit">
                             </label>
                         </p>

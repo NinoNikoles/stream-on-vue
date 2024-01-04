@@ -11,7 +11,7 @@
 
         <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('genres') }}
+                <label class="select">
                     <select id="genre-filter" v-model="genreFilter" @change="getMedia()">
                         <option value="all">{{ langSnippet('all') }}</option>
                         <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
@@ -19,7 +19,7 @@
                 </label>
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('sorting') }}
+                <label class="select">
                     <select id="title-filter" v-model="orderFilter" @change="getMedia()">
                         <option value="title,ASC">A - Z</option>
                         <option value="title,DESC">Z - A</option>
@@ -261,8 +261,8 @@ export default {
         this.sessionUser().then((userID) => {
             this.userID = userID;
 
-            this.getMedia();
-            this.getGenreAll().then(() => {
+            this.getGenreAll();
+            this.getMedia().then(() => {
                 document.getElementById('loader').classList.add('hidden');
             });
         });

@@ -7,7 +7,7 @@
 
             <div class="col12 marg-bottom-m">
                 <div v-if="genre">  
-                    <table>
+                    <table class="rounded">
                         <thead>
                             <th class="desktop-only">ID</th>
                             <th>TMDB ID</th>

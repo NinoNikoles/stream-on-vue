@@ -1,3 +1,14 @@
+.fancybox__container .fancybox__content {
+    background: {
+        color: var(--body-bg);
+    }
+    @include MQ(XS) {
+        border: {
+            radius: rem-calc($border-radius);
+        }
+    }
+}
+
 .fancybox__content {
     min-height:  unset;
     
@@ -41,6 +52,12 @@
         width: 70%;
         height: auto;
         max-height: 90%;
+    }
+}
+
+.modal-wrap {
+    background: {
+        color: var(--body-bg);
     }
 }
 

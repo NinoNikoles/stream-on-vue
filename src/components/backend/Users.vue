@@ -9,7 +9,7 @@
                 <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
             </div>
 
-            <table v-if="users">
+            <table v-if="users" class="rounded">
                 <thead>
                     <th class="desktop-only">{{ langSnippet('user_img') }}</th>
                     <th>{{ langSnippet('username') }}</th>

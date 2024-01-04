@@ -14,11 +14,11 @@
 
             <div v-if="genreAvailable" class="col12 marg-bottom-m">
                 <div id="searchbar">
-                    <label for="movie-api-search">{{ langSnippet('movie_title') }}*
-                        <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" placeholder="" required>
+                    <label for="movie-api-search">
+                        <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('movie_title')" required>
                     </label>
 
-                    <div v-if="movies" id="movieSearchResults">
+                    <div v-if="movies" id="movieSearchResults" class="rounded">
                         <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.id}`" data-fancybox class="display-flex flex-row marg-no">
                             <figure class="poster" style="width:20%;max-width:100px;">
                                 <img :data-img="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
@@ -36,13 +36,13 @@
                 </div>
 
                 <div v-if="outputMovies" class="col12 marg-top-m">
-                    <div class="row">
-                        <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium column">
-                            <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card">
-                                <figure class="poster">
+                    <div class="grid-row">
+                        <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
+                            <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card-wrap">
+                                <figure class="media-card poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${movie.title}`">
                                 </figure>
-                                <span class="title marg-no">{{ $truncate(movie.title, 15) }}</span>
+                                <span class="title">{{ $truncate(movie.title, 15) }}</span>
                             </router-link>
                         </div>
                     </div>
