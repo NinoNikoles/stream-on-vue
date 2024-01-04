@@ -82,13 +82,13 @@
             <div class="col12">
                 <h2>Kollektion</h2>
 
-                <div class="row">
-                    <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium column">
-                        <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card">
-                            <figure class="poster">
+                <div class="grid-row">
+                    <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
+                        <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card-wrap">
+                            <figure class="media-card poster">
                                 <img :src="$loadImg(kMovie.poster)" loading="lazy" :alt="`${kMovie.title}`">
                             </figure>
-                            <span class="title marg-no">{{ $truncate(kMovie.title, 15) }}</span>
+                            <span class="title">{{ $truncate(kMovie.title, 15) }}</span>
                         </a>
 
                         <div :id="`add-movie-${kMovie.id}`" style="display:none;">
@@ -102,17 +102,17 @@
             </div>
         </div>
 
-        <div class="innerWrap marg-top-xl" v-if="similarMovies > 0">
+        <div class="innerWrap marg-top-xl" v-if="similarMovies.length > 0">
             <div class="col12">
                 <h2>Ähnliche</h2>
 
-                <div class="row">
-                    <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium column">
-                        <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card">
-                            <figure class="poster">
+                <div class="grid-row">
+                    <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
+                        <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card-wrap">
+                            <figure class="media-card poster">
                                 <img :src="$loadImg(sMovie.poster)" loading="lazy" :alt="`${sMovie.title}`">
                             </figure>
-                            <span class="title marg-no">{{ $truncate(sMovie.title, 15) }}</span>
+                            <span class="title">{{ $truncate(sMovie.title, 15) }}</span>
                         </a>
 
                         <div :id="`add-movie-${sMovie.id}`" style="display:none;">
