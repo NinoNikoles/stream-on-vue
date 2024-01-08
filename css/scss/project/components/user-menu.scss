@@ -48,13 +48,17 @@
     background: {
         color: var(--header-bg);
     }
+    border: {
+        radius: rem-calc($border-radius);
+    }
     padding: 0;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     right: 0;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    overflow: hidden;
     @include transition(opacity $transition-default);
 
     ul {
@@ -62,16 +66,22 @@
         margin: 0;
 
         li {
+
             a {
                 display: block;
                 color: var(--font-color);
-                min-width: max-content;
+                width: 100%;
+                min-width: rem-calc(150);
                 margin: 0;
                 padding: {
                     top: rem-calc(5);
                     right: rem-calc(10);
                     bottom: rem-calc(5);
                     left: rem-calc(10);
+                }
+
+                @include MQ(medium) {
+                    min-width: rem-calc(250);
                 }
 
                 &:hover {
