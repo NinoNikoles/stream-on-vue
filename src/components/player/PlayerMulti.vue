@@ -8,12 +8,14 @@
         <div id="chat">    
             <div class="chat-wrap grid-padding">
                 <p id="chat-headline" class="text-center pad-top-xs pad-bottom-xs"><button id="chat-close" class="icon icon-close" @click="toggleChat($event)"></button>Chat</p>
-                <div id="message-wrap">
+                
+                <!--- Messages will be displayed here --->
+                <div id="message-wrap"></div>
+                <!--- --->
 
-                </div>
                 <div id="input-wrap" class="pad-top-xs marg-top-xs marg-bottom-xs">
-                    <label for="message-input" class="marg-right-xs">{{ langSnippet('message') }}
-                        <input type="text" id="message-input" name="message-input" class="marg-no">
+                    <label for="message-input" class="marg-right-xs">
+                        <input type="text" id="message-input" name="message-input" class="marg-no" :placeholder="langSnippet('message')">
                     </label>
                     <input type="number" style="display:none;" id="message-use-id" name="message-use-id" :value="user.id">
                     <input type="text" style="display:none;" id="message-use-name" name="message-use-name" :value="user.username">
@@ -144,8 +146,8 @@ export default {
                 var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${userID}`);
                 var user = response.data[0];
 
-                if ( user.user_img !== 'avatar' ) return `${this.$mainURL}/public/media/user_uploads/${user.username}/${user.user_img}`;
-                return `${this.$mainURL}/public/media/${user.user_img}.webp`;
+                if ( user.img !== 'avatar' ) return `${this.$mainURL}/public/media/user_uploads/${user.id}/${user.img}`;
+                return `${this.$mainURL}/public/media/${user.img}.webp`;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
                 return [];
