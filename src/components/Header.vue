@@ -145,6 +145,7 @@ export default {
             },
             mediaPath: 'media',
             userUploadPath: 'user_uploads',
+            delayTimer: null,
         };
     },
     methods: {
@@ -159,7 +160,9 @@ export default {
             });
         },
         async handleSearchInput() {
-            setTimeout(async() => {
+            clearTimeout(this.delayTimer);
+
+            this.delayTimer = setTimeout(async() => {
                 let input = this.searchInput;
                 var media = [];
                 var mediaInfos = [];
@@ -212,7 +215,7 @@ export default {
                     document.body.classList.remove('active-search');
                     this.searchResults = null;
                 }
-            }, 500);
+            }, 1000);
         },
         async getSeasons(showID) {
             try {
@@ -269,13 +272,12 @@ export default {
         async getCurrentUserInfo() {
             try {
                 var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.id}`);
-                this.currentUser.username = response.data[0].username;
-                if ( response.data[0].user_img !== 'avatar' ) {
-                    this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${response.data[0].user_img}`;
-                } else {
-                    this.currentUser.activeImg = `/${this.mediaPath}/${response.data[0].user_img}.webp`;
-                }            
-                this.currentUser.uploads = JSON.parse(response.data[0].uploads);
+                const user = response.data[0];
+
+                this.currentUser.id = user.id;
+                this.currentUser.username = user.username;
+                this.currentUser.activeImg = `/${this.mediaPath}/avatar.webp`;
+                if ( user.img !== '-1' ) this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${user.img}`;
                 this.selectedImg = this.currentUser.activeImg;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);

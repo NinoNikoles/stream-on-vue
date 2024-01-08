@@ -44,12 +44,11 @@ async function dbSetup() {
                 firstname varchar(255),
                 lastname varchar(255),
                 password TEXT,
-                img INTEGER,
+                img TEXT,
                 uploads TEXT,
                 role VARCHAR(10),
                 media_volume FLOAT,
-                created TIMESTAMP,
-                FOREIGN KEY (img) REFERENCES uploads(id)
+                created TIMESTAMP
             )`, async function(err) {
                 if (err) {
                     reject(err);
@@ -237,22 +236,6 @@ async function dbSetup() {
         });
     };
 
-    async function createUploadsTable() {
-        return new Promise((resolve, reject) => {
-            db.run(`CREATE TABLE IF NOT EXISTS uploads (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                img TEXT,
-                upload_date TIMESTAMP
-            )`, async function(err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    };
-
     async function initSettings() {
         return new Promise((resolve, reject) => {
             const settingsData = [
@@ -310,7 +293,6 @@ async function dbSetup() {
     try {
         await createSettingsTable().then(() => { console.log(`Tabelle "Settings" ${greenColor}erstellt${resetColor}.`);});
         await initSettings();
-        await createUploadsTable().then(() => { console.log(`Tabelle "Uploads" ${greenColor}erstellt${resetColor}.`); });
         await createUsersTable().then(() => { console.log(`Tabelle "Users" ${greenColor}erstellt.${resetColor}`); });
         await createAdmin();
         await createGenreTable().then(() => { console.log(`Tabelle "Genre" ${greenColor}erstellt${resetColor}.`); });

@@ -774,15 +774,15 @@ const deleteUser = (req, res) => {
 }
 
 const userIMGUpload = (req, res) => {
-    const { username } = req.query;
+    const { userID } = req.query;
 
-    function createUserFolder(username) {
+    function createUserFolder(userID) {
         const userFolder = path.join(__dirname, '../public/media/user_uploads');
         if (!fs.existsSync(userFolder)) {
             fs.mkdirSync(userFolder);
         }
     
-        const userUploadFolder = path.join(userFolder, username);
+        const userUploadFolder = path.join(userFolder, userID);
         if (!fs.existsSync(userUploadFolder)) {
             fs.mkdirSync(userUploadFolder);
         }
@@ -808,11 +808,11 @@ const userIMGUpload = (req, res) => {
     // Konfiguration für Multer (Dateiupload)
     const storage = multer.diskStorage({
         destination: function (_, file, cb) {
-            const userUploadFolder = createUserFolder(username);
+            const userUploadFolder = createUserFolder(userID);
             cb(null, userUploadFolder);
         },
         filename: function (_, file, cb) {
-            const userUploadFolder = createUserFolder(username);
+            const userUploadFolder = createUserFolder(userID);
             const resolvedFileName = resolveFileNameConflict(userUploadFolder, file.originalname);
             cb(null, resolvedFileName);
         },
@@ -825,7 +825,6 @@ const userIMGUpload = (req, res) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-
         res.send('Datei erfolgreich hochgeladen.');
     });
 }
@@ -833,7 +832,7 @@ const userIMGUpload = (req, res) => {
 const updateUserImg = (req, res) => {
     const { userID, img } = req.query;
 
-    let query = `UPDATE users SET user_img = ? WHERE id = ?`;
+    let query = `UPDATE users SET img = ? WHERE id = ?`;
 
     db.all(query, [img, userID], (err, rows) => {
         if (err) {
@@ -845,14 +844,14 @@ const updateUserImg = (req, res) => {
 }
 
 const getUploadedUserImages = (req, res) => {
-    const { username } = req.query;
+    const { userID } = req.query;
 
     const userFolder = path.join(__dirname, '../public/media/user_uploads');
     if (!fs.existsSync(userFolder)) {
         fs.mkdirSync(userFolder);
     }
 
-    const imagesFolder = path.join(userFolder, username);
+    const imagesFolder = path.join(userFolder, `${userID}`);
     if (!fs.existsSync(imagesFolder)) {
         fs.mkdirSync(imagesFolder);
     }
@@ -881,6 +880,7 @@ const getUploadedUserImages = (req, res) => {
             imageList.sort((a, b) => b.date - a.date);
 
             // Sende die Bildinformationen als JSON zurück
+            console.log(imageList);
             res.json(imageList);
         });
     } catch (error) {
@@ -890,9 +890,9 @@ const getUploadedUserImages = (req, res) => {
 }
 
 const deleteUploadedUserImage = (req, res) => {
-    const { img, username } = req.query; // Du könntest dies auch aus dem Anfragekörper (req.body) extrahieren
+    const { img, userID } = req.query; // Du könntest dies auch aus dem Anfragekörper (req.body) extrahieren
 
-    const imagePath = path.join(__dirname, `../public/media/user_uploads/${username}/${img}`);
+    const imagePath = path.join(__dirname, `../public/media/user_uploads/${userID}/${img}`);
 
     try {
         // Überprüfe, ob die Datei existiert
