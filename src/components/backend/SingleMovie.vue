@@ -1,4 +1,11 @@
 <template>
+    <div id="loader" class="hidden">
+        <div class="content-wrap">
+            <i></i>
+            <span></span>
+        </div>
+    </div>
+
     <div v-if="movie" class="pad-top-xl">
         <div class="innerWrap">
             <div class="col7">
@@ -290,7 +297,7 @@ export default {
             }
         },
         async saveData(data) {
-            this.loader.classList.remove('hidden');
+            document.getElementById('loader').classList.remove('hidden');
             
             const movie = await this.searchMovieByID(data.id);
             const genres = movie.genres.map(genre => genre.id);
@@ -341,14 +348,12 @@ export default {
             }
             
             this.returnCollectionMovies(this.movie.collection);
-            this.returnSimilarMovies(this.$route.params.id);
+            this.returnSimilarMovies(this.$route.params.id).then(() => {
+                document.getElementById('loader').classList.add('hidden');
+            });
         },
         async sendMedia(media) {
-            var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
-
-            if ( response.data.message === true ) {
-                this.loader.classList.add('hidden');
-            }
+            axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
         },
         async selectMedia(media) {
             this.$route.params.media = media;

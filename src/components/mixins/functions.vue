@@ -5,6 +5,7 @@ import axios from 'axios';
 export default {
     name: 'MainFunctions',
     mixins: [langSnippet],
+    emits: ['data-fetched'],
     methods: {
         toggleMainMenu(event) {
             event.preventDefault();
@@ -21,38 +22,61 @@ export default {
                 userBtn.classList.add('active');
             }
         },
+
+        async createContent(media) {
+            var newMedia = {
+                'genre': [],
+                'mediaDetails': {},
+                'seasons': [],
+                'episodes': []
+            }
+
+            var genre = null;
+
+            for (let x = 0; x < media['genre'].length; x++) {
+                genre = media['genre'][x];
+                newMedia['genre'].push(genre);
+            }
+
+            Object.entries(media['mediaDetails']).forEach(([key, value]) => {
+                newMedia['mediaDetails'][key] = value;
+            });
+
+            if (media['seasons']) {
+                Object.entries(media['seasons']).forEach(([key, value]) => {
+                    newMedia['seasons'][key] = value;
+                });
+            }
+            if (media['episodes']) {
+                Object.entries(media['episodes']).forEach(([key, value]) => {
+                    newMedia['episodes'][key] = value;
+                });
+            }
+            
+            return newMedia;
+        },
+        async openMediaPopUp(media, event) {
+            this.createContent(media).then((newMedia) => {
+                this.$emit('data-fetched', newMedia);
+                this.openPopUp('media-content', event); 
+            });                       
+        },
+
         openPopUp(popUpID, event) {
             event.preventDefault();
             var modal = document.getElementById(popUpID);
-
+            
             document.body.classList.add('active-modal');
             modal.classList.add('active');
         },
         closePopUp(popUpID, event) {
             event.preventDefault();
+            this.$emit('data-fetched', null);
             var modal = document.getElementById(popUpID);
 
             document.body.classList.remove('active-modal');
             modal.classList.remove('active');
         },
-
-        openPopUpHeader() {
-            var modal = document.getElementById('modalHeader');
-            var activeModalClass = 'active-modal';
-            var activeClass = 'active';
-
-            document.body.classList.add(activeModalClass);
-            modal.classList.add(activeClass);
-        },
-        closePopUpHeader() {
-            var modal = document.getElementById('modalHeader');
-            var activeModalClass = 'active-modal';
-            var activeClass = 'active';
-
-            document.body.classList.remove(activeModalClass);
-            modal.classList.remove(activeClass);
-        },
-
         disableButton(button) {
             button.disabled = true;
             button.classList.add('is-loading');

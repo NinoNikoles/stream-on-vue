@@ -46,10 +46,10 @@
                     <div class="col12 grid-row" id="allUserUploads">
                         <div v-for="(image, index) in currentUser.images" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding marg-bottom-base select-item">
                             <div class="user-img-select">
-                                <input v-if="`/${mediaPath}/${userUploadPath}/${currentUser.username}/${image.path}` === this.currentUser.activeImg" v-model="selectedImg" type="radio" name="userImg" :value="`${image.path}`" checked>
-                                <input v-else type="radio" v-model="selectedImg" name="userImg" :value="`${image.path}`">
+                                <input v-if="`/${mediaPath}/${userUploadPath}/${currentUser.id}/${image.img}` === this.currentUser.activeImg" v-model="selectedImg" type="radio" name="userImg" :value="`${image.id}`" checked>
+                                <input v-else type="radio" v-model="selectedImg" name="userImg" :value="`${image.id}`">
                                 <figure class="square">
-                                    <img :data-img="`/${mediaPath}/${userUploadPath}/${this.currentUser.username}/${image.path}`" loading="lazy" alt="">
+                                    <img :data-img="`/${mediaPath}/${userUploadPath}/${this.currentUser.id}/${image.img}`" loading="lazy" alt="">
                                 </figure>
                             </div>
                         </div>
@@ -87,7 +87,8 @@ export default {
                 id: null,
                 username: null,
                 activeImg: null,
-                images: [],
+                uploads: [],
+                images: []
             },
             uploadIMG: null,
             mediaPath: 'media',
@@ -115,14 +116,18 @@ export default {
         },
         async getCurrentUserInfo() {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.currentUser.id}`);
-                this.currentUser.username = response.data[0].username;
-                if ( response.data[0].user_img !== 'avatar' ) {
-                    this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${response.data[0].user_img}`;
-                } else {
-                    this.currentUser.activeImg = `/${this.mediaPath}/${response.data[0].user_img}.webp`;
-                }
-                this.currentUser.uploads = JSON.parse(response.data[0].uploads);
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.currentUser.id}`);
+                const user = response.data[0];
+                const userImg = JSON.parse(user.img);
+
+                this.currentUser.id = user.id;
+                this.currentUser.username = user.username;
+                this.currentUser.activeImg = { 
+                    id: userImg.id,
+                    path: `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${userImg.path}`
+                };
+                
+                this.currentUser.uploads = JSON.parse(user.uploads);
                 this.selectedImg = this.currentUser.activeImg;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -137,14 +142,14 @@ export default {
             // Annahme: Du verwendest z.B. axios, um die Dateien an den Server zu senden
             // Hier müsstest du die Logik für das Hochladen implementieren
             try {
-                const username = this.currentUser.username; // Hier musst du die Benutzer-ID erhalten oder setzen
+                const userID = this.currentUser.id; // Hier musst du die Benutzer-ID erhalten oder setzen
 
                 // Erstelle einen Ordner für den Benutzer, wenn nicht vorhanden
-                await this.createFolder(username);
+                await this.createFolder(userID);
 
                 // Iteriere durch jede hochgeladene Datei und lade sie hoch
                 for (const file of files) {
-                    await this.uploadFile(username, file);
+                    await this.uploadFile(userID, file);
                 }
 
                 console.log('Dateien erfolgreich hochgeladen.');
@@ -157,13 +162,13 @@ export default {
             // Dies könnte z.B. ein API-Aufruf an den Server sein, um den Ordner zu erstellen
             console.log('Ordner für Benutzer erstellt:', userId);
         },
-        async uploadFile(username, file) {
+        async uploadFile(userID, file) {
             try {
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('username', username);
+                formData.append('userID', userID);
 
-                await axios.post(`${this.$mainURL}:3000/userIMGUpload?username=${username}`, formData, {
+                await axios.post(`${this.$mainURL}:3000/userIMGUpload?userID=${userID}`, formData, {
                     headers: {
                         'Conent-Type': 'multipart/form-data',
                     }
@@ -180,14 +185,14 @@ export default {
         async updateUserIMG(imgName) {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/updateUserImg?userID=${this.currentUser.id}&img=${imgName}`).then(() => {
-                    if ( imgName !== 'avatar' ) {
-                        this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${imgName}`;
+                    if ( imgName !== -1 ) {
+                        this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${imgName}`;
                         this.selectedImg = this.currentUser.activeImg;
-                        document.getElementById('userIcon').src = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.username}/${imgName}`;
+                        document.getElementById('userIcon').src = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${imgName}`;
                     } else {
-                        this.currentUser.activeImg = `/${this.mediaPath}/${imgName}.webp`;
+                        this.currentUser.activeImg = `/${this.mediaPath}/avatar.webp`;
                         this.selectedImg = this.currentUser.activeImg;
-                        document.getElementById('userIcon').src = `/${this.mediaPath}/${imgName}.webp`;
+                        document.getElementById('userIcon').src = `/${this.mediaPath}/avatar.webp`;
                     }
                     
                 });
@@ -197,16 +202,17 @@ export default {
         },
         async getUploads() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getUploadedUserImages?username=${this.currentUser.username}`);
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getUploadedUserImages?userUploads=${JSON.stringify(this.currentUser.uploads)}`);
                 this.currentUser.images = response.data;
             } catch (err) {
                 console.log(err);
             }
         },
-        async deleteUploadedUserImg() {
-            var img = this.selectedImg.split('/');
+        async deleteUploadedUserImg(imgID) {
+            var img = this.selectedImg;
+ 
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/deleteUploadedUserImage?img=${img[4]}&username=${this.currentUser.username}`)
+                await axios.post(`${this.$mainURL}:3000/api/db/deleteUploadedUserImage?img=${img[4]}&userID=${this.currentUser.userID}`)
                 .then(() => {
                     if ( this.selectedImg === this.currentUser.activeImg ) {
                         this.updateUserIMG('avatar').then(() => {

@@ -11,7 +11,7 @@
 
         <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('genres') }}
+                <label class="select">
                     <select id="genre-filter" v-model="genreFilter" @change="getShows()">
                         <option value="all">{{ langSnippet('all') }}</option>
                         <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
@@ -19,7 +19,7 @@
                 </label>
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('sorting') }}
+                <label class="select">
                     <select id="title-filter" v-model="orderFilter" @change="getShows()">
                         <option value="title,ASC">A - Z</option>
                         <option value="title,DESC">Z - A</option>
@@ -36,12 +36,24 @@
             <div v-for="(show, index) in shows" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
                 <div class="media-card">
                     <div class="media-card-wrapper">
-                        <figure class="widescreen desktop-only">
-                            <img src="" :data-img="$loadImg(show['mediaDetails'].backdrop)" :alt="`${show['mediaDetails'].title}`">
-                        </figure>
-                        <figure class="poster mobile-only">
-                            <img src="" :data-img="$loadImg(show['mediaDetails'].poster)" :alt="`${show['mediaDetails'].title}`">
-                        </figure>
+                        <template v-if="show['mediaDetails'].file_path === null">
+                            <figure class="widescreen desktop-only disabled">
+                                <img src="" :data-img="$loadImg(show['mediaDetails'].backdrop)" :alt="`${show['mediaDetails'].title}`">
+                            </figure>
+                            <figure class="poster mobile-only disabled">
+                                <img src="" :data-img="$loadImg(show['mediaDetails'].poster)" :alt="`${show['mediaDetails'].title}`">
+                            </figure>
+                        </template>
+
+                        <template v-else>
+                            <figure class="widescreen desktop-only">
+                                <img src="" :data-img="$loadImg(show['mediaDetails'].backdrop)" :alt="`${show['mediaDetails'].title}`">
+                            </figure>
+                            <figure class="poster mobile-only">
+                                <img src="" :data-img="$loadImg(show['mediaDetails'].poster)" :alt="`${show['mediaDetails'].title}`">
+                            </figure>
+                        </template>
+
                         <div class="link-wrapper">
                             <a v-if="show['mediaDetails'].file_path" href="#" :title="`${show['mediaDetails'].title}`" class="play-trigger"></a>
                             <a href="#" @click="openPopUp(`${show['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show['mediaDetails'].tmdbID}`"></a>
@@ -71,11 +83,21 @@
                                     <span class="tag">{{ show['mediaDetails'].release_date }}</span>
                                     <span class="tag">{{ show['mediaDetails'].rating }}/10 ★</span>
                                 </p>
-                                <a v-if="show.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
+
+                                <div class="col12">
+                                    <div class="col-9">
+                                        <!-- Play button -->
+                                        <button v-if="show['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
+                                    </div>                                    
                                 
-                                <!--- Like button --->
-                                <button v-if="show['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
-                                <button v-else @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
+                                    <div class="col-3">
+                                        <p class="text-right">
+                                            <!-- Like button -->
+                                            <button v-if="show['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
+                                            <button v-else @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn liked marg-no"></button>
+                                        </p>
+                                    </div>
+                                </div>
                                 
                                 <p class="small">{{ show['mediaDetails'].overview }}</p>
                                 <p v-if="show['genre']" class="small tag-list marg-bottom-base">
@@ -278,8 +300,8 @@ export default {
         this.sessionUser().then((userID) => {
             this.userID = userID;
 
-            this.getShows();
-            this.getGenre().then(() => {
+            this.getGenre();
+            this.getShows().then(() => {
                 document.getElementById('loader').classList.add('hidden');
             });
         });

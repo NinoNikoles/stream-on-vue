@@ -80,12 +80,13 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
+import functions from '../mixins/functions.vue';
 import Mediabrowser from '../Mediabrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
 
 export default {
     name: 'BackendShow',
-    mixins: [tmdbAPI, language],
+    mixins: [functions, tmdbAPI, language],
     components: {
         'media-browser-component': Mediabrowser,
     },

@@ -1,33 +1,52 @@
 <template>
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
-        <header-component></header-component>
+        <header-component @data-fetched="updateVariable"></header-component>
     </template>    
 
     <div id="main">
-        <router-view></router-view>
+        <router-view @data-fetched="updateVariable"></router-view>
     </div>
 
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
         <div id="callout" class="callout hidden"></div>
     </template>
+
+    <div class="modal" :id="`media-content`">
+        <div class="modal-overlay"></div>
+        <div class="modal-wrap large">
+            <div class="modal-inner-wrap">
+                <media-content-popup :media="media"></media-content-popup>
+            </div>
+            <a href="#" class="modal-close" @click="closePopUp(`media-content`, $event)"></a>
+        </div>
+    </div>
 </template>
   
 <script>
 import Header from './components/Header.vue';
 import tmdbAPI from './components/mixins/tmdbAPI.vue';
+import functions from './components/mixins/functions.vue';
 import langSnippet from './components/mixins/language.vue';
 import { Fancybox } from "@fancyapps/ui";
+import MediaContentPopupComponent from './components/includes/MediaContentPopup.vue';
 
 export default {
     name: 'AppIndex',
-    mixins: [tmdbAPI, langSnippet],
+    mixins: [functions, tmdbAPI, langSnippet],
     components: {
         'header-component': Header,
+        'media-content-popup': MediaContentPopupComponent,
     },
     data() {
         return {
-            modalActive: false
+            modalActive: false,
+            media: null,
         };
+    },
+    methods: {
+        updateVariable(value) {
+            this.media = value;
+        },
     },
     updated() {
         document.querySelectorAll('img[data-img]').forEach(function(el) {

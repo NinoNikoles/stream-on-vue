@@ -56,10 +56,11 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
+import functions from '../mixins/functions.vue';
 
 export default {
     name: 'BackendShows',
-    mixins: [tmdbAPI, language],
+    mixins: [functions, tmdbAPI, language],
     data() {
         return {
             inputText: '',

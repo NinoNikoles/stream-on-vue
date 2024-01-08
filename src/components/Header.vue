@@ -100,7 +100,7 @@
                                 </figure>
                                 <div class="link-wrapper">
                                     <a v-if="media['mediaDetails'].file_path" href="#" :title="`${media['mediaDetails'].title}`" class="play-trigger"></a>
-                                    <a href="#" @click="openPopUp(`searchresult-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
+                                    <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
                                     <a :href="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
@@ -110,52 +110,6 @@
             </div>
         </div>
     </header>
-
-    <template v-for="(media, index) in searchResults" :key="index">
-        <div class="modal" :id="`searchresult-${media['mediaDetails'].tmdbID}`">
-            <div class="modal-overlay"></div>
-            <div class="modal-wrap large">
-                <div class="modal-inner-wrap">
-                    <div v-if="media['mediaDetails']" class="info-popup" :id="`${media['mediaDetails'].tmdbID}`">
-                        <div class="col12 marg-bottom-xs mobile-only">
-                            <figure class="widescreen">
-                                <img :data-img="$loadImg(media['mediaDetails'].backdrop)" loading="lazy" importance="low" alt="">
-                            </figure>
-                        </div>
-                        <div class="innerWrap">
-                            <div class="col7 marg-right-col1">
-                                <p class="h2">{{ media['mediaDetails'].title }}</p>
-                                <p class="small tag-list marg-bottom-base">
-                                    <span class="tag">{{ media['mediaDetails'].release_date }}</span>
-                                    <span class="tag">{{ media['mediaDetails'].rating }}/10 ★</span>
-                                    <!-- <span class="tag">'.$extraInfo.'</span> -->
-                                </p>
-                                <a v-if="media['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                                
-                                <!--- Like button --->
-                                <button v-if="media['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
-                                <button v-else @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
-                                
-                                <p class="small">{{ media['mediaDetails'].overview }}</p>
-                                <p class="small tag-list marg-bottom-base">
-                                    <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
-                                        {{ genre }}
-                                    </span> 
-                                </p>
-                            </div>
-                            <div class="col4 desktop-only">
-                                <figure class="poster">
-                                    <img :data-img="$loadImg(media['mediaDetails'].poster)" alt="" loading="lazy" importance="low">
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="modal-close" @click="closePopUp(`searchresult-${media['mediaDetails'].tmdbID}`, $event)"></a>
-            </div>
-        </div>
-    </template>
-
 </template>
   
 <script>
@@ -205,58 +159,76 @@ export default {
             });
         },
         async handleSearchInput() {
-            let input = this.searchInput;
-            var media = [];
-            var mediaInfos = [];
-            var mediaGenre = [];
+            setTimeout(async() => {
+                let input = this.searchInput;
+                var media = [];
+                var mediaInfos = [];
+                var mediaGenre = [];
 
-            if ( input !== '' ) {
-                if ( !document.body.classList.contains('active-search') ) document.body.classList.add('active-search');
+                if ( input !== '' ) {
+                    if ( !document.body.classList.contains('active-search') ) document.body.classList.add('active-search');
 
-                try {
-                    media = [];
+                    try {
+                        media = [];
 
-                    var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
-                    var searchResults = response.data;
+                        var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
+                        var searchResults = response.data;
 
-                    for (let i = 0; i < searchResults.length; i++) {
-                        mediaInfos = [];
-                        mediaGenre = [];
+                        for (let i = 0; i < searchResults.length; i++) {
+                            mediaInfos = [];
+                            mediaGenre = [];
 
-                        try {
-                            if ( searchResults[i].media_type === 'show' ) {
-                                mediaInfos['seasons'] = await this.getSeasons(searchResults[i].tmdbID);
-                                mediaInfos['episodes'] = await this.getEpisodes(searchResults[i].tmdbID);
+                            try {
+                                if ( searchResults[i].media_type === 'show' ) {
+                                    mediaInfos['seasons'] = await this.getSeasons(searchResults[i].tmdbID);
+                                    mediaInfos['episodes'] = await this.getEpisodes(searchResults[i].tmdbID);
+                                }
+
+                                var mediaGenreIDs = JSON.parse(searchResults[i].genres);
+                                for (let x = 0; x < mediaGenreIDs.length; x++) {
+                                    try {
+                                        mediaGenre.push(await this.getGenre(mediaGenreIDs[x]));
+                                        
+                                    } catch(e) {
+                                        console.log(e);
+                                    }                                    
+                                }
+
+                                mediaInfos['genre'] = mediaGenre;
+                                mediaInfos['mediaDetails'] = searchResults[i];
+                                mediaInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(searchResults[i].tmdbID);
+                                media[i] = mediaInfos;
+                                
+                            } catch (error) {
+                                console.log(error);
                             }
-
-                            var mediaGenreIDs = JSON.parse(searchResults[i].genres);
-                            for (let x = 0; x < mediaGenreIDs.length; x++) {
-                                try {
-                                    mediaGenre.push(await this.getGenre(mediaGenreIDs[x]));
-                                    
-                                } catch(e) {
-                                    console.log(e);
-                                }                                    
-                            }
-
-                            mediaInfos['genre'] = mediaGenre;
-                            mediaInfos['mediaDetails'] = searchResults[i];
-                            mediaInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(searchResults[i].tmdbID);
-                            media[i] = mediaInfos;
-                            
-                        } catch (error) {
-                            console.log(error);
                         }
-                    }
 
-                    this.searchResults = media;
-                } catch (err) {
-                    console.log(err);
+                        this.searchResults = media;
+                    } catch (err) {
+                        console.log(err);
+                    }
+                } else {
+                    document.body.classList.remove('active-search');
+                    this.searchResults = null;
                 }
-            } else {
-                document.body.classList.remove('active-search');
-                this.searchResults = null;
-            }            
+            }, 500);
+        },
+        async getSeasons(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
+                return response.data;                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getEpisodes(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
+                return response.data;                
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getGenre(genreID) {
             try {
@@ -266,9 +238,6 @@ export default {
                 console.log(error);
             }
         },
-        // async popUpTrigger() {
-        //     this.openPopUpHeader();
-        // },
         async logout() {
             // Benutzeranmeldeinformationen            
             try {
@@ -323,6 +292,7 @@ export default {
             var activeClass = 'active-search';            
 
             if ( !(searchBar.classList.contains(activeClass)) ) {
+                document.body.classList.add(activeClass);
                 liveSearch.value = '';
                 searchBar.classList.add(activeClass);
             } else {
@@ -331,10 +301,8 @@ export default {
                 document.body.classList.remove(activeClass);
                 this.searchResults = null;
             }
-        },
-        async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.id, mediaID, buttonID);
-        }
+        },        
+
     },
     mounted() {
         this.fetchSessionStatus()

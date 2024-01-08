@@ -55,9 +55,7 @@
                                                 <router-link v-if="media['mediaDetails'].file_path && media['mediaDetails'].media_type === 'movie'" :to="`/watch?id=${media['mediaDetails'].tmdbID}`" :title="`${media['mediaDetails'].title}`" class="play-trigger"></router-link>
                                                 <router-link v-else-if="media['mediaDetails'].media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
                                                 
-                                                
-                                                
-                                                <a href="#" @click="openPopUp(`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`"></a>
+                                                <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`"></a>
                                                 <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                                             </div>
                                         </div>
@@ -72,126 +70,6 @@
             </div>
         </div>
     </div>
-
-    <template v-if="availableSliderContent">
-        <template v-for="(slider, index) in availableSliderContent" :key="index">
-            <template v-for="(media, index) in slider.mediaElements" :key="index">
-                <div class="modal" :id="`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`">
-                    <div class="modal-overlay"></div>
-                    <div class="modal-wrap large">
-                        <div class="modal-inner-wrap">
-                            <div class="info-popup" :id="`${media['mediaDetails'].tmdbID}`">
-                                <div class="col12 marg-bottom-xs mobile-only">
-                                    <figure class="widescreen">
-                                        <img :data-img="$loadImg(media['mediaDetails'].backdrop)" loading="lazy" importance="low" alt="">
-                                    </figure>
-                                </div>
-                                <div class="innerWrap">
-                                    <div class="col7 marg-right-col1">
-                                        <p class="h2">{{ media['mediaDetails'].title }}</p>
-                                        <p class="small tag-list marg-bottom-base">
-                                            <span class="tag">{{ media['mediaDetails'].release_date }}</span>
-                                            <span class="tag">{{ media['mediaDetails'].rating }}/10 ★</span>
-                                            <!-- <span class="tag">'.$extraInfo.'</span> -->
-                                        </p>
-                                        <a v-if="media['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-
-                                        <!--- Like button --->
-                                        <button v-if="media['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
-                                        <button v-else @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`)" href="#" :id="`btn-${media['mediaDetails'].tmdbID}-${slider.genre.genre_name}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
-                                        
-                                        
-                                        <p class="small">{{ media['mediaDetails'].overview }}</p>
-                                        <p v-if="media['genre']" class="small tag-list marg-bottom-base">
-                                            <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
-                                                {{ genre }}
-                                            </span>
-                                        </p>
-
-                                        <template v-if="media['mediaDetails'].media_type === 'show'">
-                                            <p>
-                                                <label>{{ langSnippet('seasons') }}
-                                                    <select :class="`tab-select season-select-${media['mediaDetails'].tmdbID}`" :id="`${slider.genre.genre_name}-season-select-${media['mediaDetails'].tmdbID}`" @change="SelectTabs($event)">
-                                                        <template v-for="(season, index) in media['seasons']" :key="index">
-                                                            <option v-if="season.title !== 'Extras'" :value="`${season.season_number}`">
-                                                                {{ season.title }}
-                                                            </option>
-                                                        </template>
-                                                        <!-- Extras always get shown at the end  -->
-                                                        <option v-if="media['seasons'][0].title === 'Extras'" :value="`${media['seasons'][0].season_number}`">
-                                                            {{ media['seasons'][0].title }}
-                                                        </option>
-                                                    </select>
-                                                </label>
-                                            </p>
-
-                                            <template v-for="(season, index) in media['seasons']" :key="index">
-                                                <div v-if="season.season_number === 1" :class="`col12 select-tab-content ${slider.genre.genre_name}-season-select-${media['mediaDetails'].tmdbID} is-active marg-bottom-base`" :data-select-tab="`${season.season_number}`">
-                                                    <template v-for="(episode, index) in media['episodes']" :key="index">
-                                                        <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
-                                                            <div class="col-5 col-3-medium">
-                                                                <figure class="widescreen">
-                                                                    <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
-                                                                </figure>
-                                                            </div>
-                                                            <div class="col-7 col-9-medium pad-left-xs">
-                                                                <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                                                <p class="small">{{ $truncate(episode.overview, 100) }}</p>
-                                                            </div>
-
-                                                            <div v-if="episode.file_path" class="link-wrapper">
-                                                                <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
-                                                                    <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
-                                                                        <i class="icon-play"></i>
-                                                                    </span>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                                <div v-else :class="`col12 select-tab-content ${slider.genre.genre_name}-season-select-${media['mediaDetails'].tmdbID} marg-bottom-base`" :data-select-tab="`${season.season_number}`">
-                                                    <template v-for="(episode, index) in media['episodes']" :key="index">
-                                                        <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
-                                                            <div class="col-5 col-3-medium">
-                                                                <figure class="widescreen">
-                                                                    <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
-                                                                </figure>
-                                                            </div>
-                                                            <div class="col-7 col-9-medium pad-left-xs">
-                                                                <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                                                <p class="small">{{ $truncate(episode.overview, 100) }}</p>
-                                                            </div>
-
-                                                            <div v-if="episode.file_path" class="link-wrapper">
-                                                                <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
-                                                                    <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
-                                                                        <i class="icon-play"></i>
-                                                                    </span>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                        </template>
-
-
-                                    </div>
-                                    <div class="col4 desktop-only">
-                                        <figure class="poster">
-                                            <img :data-img="$loadImg(media['mediaDetails'].poster)" alt="" loading="lazy" importance="low">
-                                        </figure>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#" class="modal-close" @click="closePopUp(`${slider.genre.genre_name}-media-${media['mediaDetails'].tmdbID}`, $event)"></a>
-                    </div>
-                </div>
-            </template>
-        </template>
-    </template>
-
 </template>
 
 <script>
@@ -210,6 +88,7 @@ export default {
             availableSlider: null,
             availableSliderContent: null,
             url: window.location.protocol + '//' + window.location.hostname,
+            popUpMediaContent: null,
         };
     },
     methods: {
@@ -241,6 +120,8 @@ export default {
                                     mediaInfos['seasons'] = await this.getSeasons(mediaResponse[i].tmdbID);
                                     mediaInfos['episodes'] = await this.getEpisodes(mediaResponse[i].tmdbID);
                                 }
+                                console.log(mediaInfos['seasons']);
+                                console.log(mediaInfos['episodes']);
 
                                 var mediaGenreIDs = JSON.parse(mediaResponse[i].genres);
                                 for (let x = 0; x < mediaGenreIDs.length; x++) {
@@ -319,9 +200,6 @@ export default {
                 console.log(error);
             }
         },
-        async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.userID, mediaID, buttonID);
-        }
     },
     mounted() {
         this.sessionUser().then((userID) => {
@@ -329,8 +207,8 @@ export default {
 
             this.getHighlight();
             this.genreSlider().then(() => {
-                document.getElementById('loader').classList.add('hidden');
                 this.availableSliderContent = this.availableSlider;
+                document.getElementById('loader').classList.add('hidden');
             });
         });       
     }

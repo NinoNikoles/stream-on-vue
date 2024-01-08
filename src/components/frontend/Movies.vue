@@ -11,7 +11,7 @@
 
         <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('genres') }}
+                <label class="select">
                     <select id="genre-filter" v-model="genreFilter" @change="getMovies()">
                         <option value="all">{{ langSnippet('all') }}</option>
                         <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
@@ -19,7 +19,7 @@
                 </label>
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
-                <label class="select">{{ langSnippet('sorting') }}
+                <label class="select">
                     <select id="title-filter" v-model="orderFilter" @change="getMovies()">
                         <option value="title,ASC">A - Z</option>
                         <option value="title,DESC">Z - A</option>
@@ -32,71 +32,39 @@
             </div>
         </div>
 
+        <!--- Movies --->
         <div v-if="movies" class="grid-row" id="media-list">
-            <div v-for="(movie, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
+            <div v-for="(media, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
                 <div class="media-card">
                     <div class="media-card-wrapper">
-                        <figure class="widescreen desktop-only">
-                            <img src="" :data-img="$loadImg(movie['movieDetails'].backdrop)" :alt="`${movie['movieDetails'].title}`">
-                        </figure>
-                        <figure class="poster mobile-only">
-                            <img src="" :data-img="$loadImg(movie['movieDetails'].poster)" :alt="`${movie['movieDetails'].title}`">
-                        </figure>
+                        <template v-if="media['mediaDetails'].file_path === null">
+                            <figure class="widescreen desktop-only disabled">
+                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                            </figure>
+                            <figure class="poster mobile-only disabled">
+                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                            </figure>
+                        </template>
+
+                        <template v-else>
+                            <figure class="widescreen desktop-only">
+                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                            </figure>
+                            <figure class="poster mobile-only">
+                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                            </figure>
+                        </template>
+
                         <div class="link-wrapper">
-                            <a v-if="movie.file_path" href="#" :title="`${movie['movieDetails'].title}`" class="play-trigger"></a>
-                            <a href="#" @click="openPopUp(`${movie['movieDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${movie['movieDetails'].tmdbID}`"></a>
-                            <router-link :to="`/backend/${movie['movieDetails'].media_type}/${movie['movieDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                            <a v-if="media['mediaDetails'].file_path" href="#" :title="`${media['mediaDetails'].title}`" class="play-trigger"></a>
+                            <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
+                            <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <template v-if="movies">
-        <div class="modal" :id="`${movie['movieDetails'].tmdbID}`" v-for="(movie, index) in movies" :key="index">
-            <div class="modal-overlay"></div>
-            <div class="modal-wrap large">
-                <div class="modal-inner-wrap">
-                    <div class="info-popup">
-                        <div class="col12 marg-bottom-xs mobile-only">
-                            <figure class="widescreen">
-                                <img :data-img="$loadImg(movie['movieDetails'].backdrop)" loading="lazy" importance="low" alt="">
-                            </figure>
-                        </div>
-                        <div class="innerWrap">
-                            <div class="col7 marg-right-col1">
-                                <p class="h2">{{ movie['movieDetails'].title }}</p>
-                                <p class="small tag-list marg-bottom-base">
-                                    <span class="tag">{{ movie['movieDetails'].release_date }}</span>
-                                    <span class="tag">{{ movie['movieDetails'].rating }}/10 ★</span>
-                                </p>
-                                <a v-if="movie['movieDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-xs">{{ langSnippet('watch_now') }}</a>
-                                
-                                <!--- Like button --->
-                                <button v-if="movie['movieDetails']['watchlist_status'] === 0" @click="watchListAction(movie['movieDetails'].tmdbID, `btn-${movie['movieDetails'].tmdbID}`)" href="#" :id="`btn-${movie['movieDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn marg-right-xs"></button>
-                                <button v-else @click="watchListAction(movie['movieDetails'].tmdbID, `btn-${movie['movieDetails'].tmdbID}`)" href="#" :id="`btn-${movie['movieDetails'].tmdbID}`" class="btn btn-small btn-white icon-only like-btn liked marg-right-xs"></button>
-
-                                <p class="small">{{ movie['movieDetails'].overview }}</p>
-                                <p v-if="movie['genre']" class="small tag-list marg-bottom-base">
-                                    <span v-for="(genre, index) in movie['genre']" :key="index" class="tag">
-                                        {{ genre }}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="col4 desktop-only">
-                                <figure class="poster">
-                                    <img :data-img="$loadImg(movie['movieDetails'].poster)" alt="" loading="lazy" importance="low">
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="modal-close" @click="closePopUp(`${movie['movieDetails'].tmdbID}`, $event)"></a>
-            </div>
-        </div>
-    </template>
-
 </template>
 
 <script>
@@ -164,8 +132,9 @@ export default {
                     }
 
                     movieInfos['genre'] = movieGenre;
-                    movieInfos['movieDetails'] = allMovies[i];
-                    movieInfos['movieDetails']['watchlist_status'] = await this.checkWatchlist(allMovies[i].tmdbID);
+                    movieInfos['mediaDetails'] = allMovies[i];
+                    movieInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(allMovies[i].tmdbID);
+                    console.log(movieInfos['mediaDetails']['watchlist_status']);
                     
                 } catch (err) {
                     console.log(err);
@@ -208,8 +177,8 @@ export default {
         this.sessionUser().then((userID) => {
             this.userID = userID;
 
-            this.getMovies();
-            this.getGenre().then(() => {
+            this.getGenre();
+            this.getMovies().then(() => {
                 document.getElementById('loader').classList.add('hidden');
             });
         });

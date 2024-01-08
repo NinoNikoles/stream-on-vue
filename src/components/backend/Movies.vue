@@ -85,7 +85,7 @@ export default {
         async searchAndDisplayMovies(title) {
             const query = title;
             try {
-                if ( query.length > 0 ) {
+                if ( query.length > 0 && query !== '' && query !== null && query !== undefined ) {
                     const movies = await this.searchMovies(query);
                     this.movies = await this.filterMoviesWithExistingIDs(movies);
                 } else {
