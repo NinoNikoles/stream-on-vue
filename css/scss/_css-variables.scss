@@ -139,32 +139,32 @@
         --tertiary-light-#{$i}:         #{background-opacity($tertiary-light, $i)};
         --tertiary-dark-#{$i}:          #{background-opacity($tertiary-dark, $i)};
 
-        --quaternary-#{$i}:             #{background-opacity($quaternary, $i)};
-        --quaternary-light-#{$i}:       #{background-opacity($quaternary-light, $i)};
-        --quaternary-dark-#{$i}:        #{background-opacity($quaternary-dark, $i)};
+        // --quaternary-#{$i}:             #{background-opacity($quaternary, $i)};
+        // --quaternary-light-#{$i}:       #{background-opacity($quaternary-light, $i)};
+        // --quaternary-dark-#{$i}:        #{background-opacity($quaternary-dark, $i)};
 
-        --quinary-#{$i}:                #{background-opacity($quinary, $i)};
-        --quinary-light-#{$i}:          #{background-opacity($quinary-light, $i)};
-        --quinary-dark-#{$i}:           #{background-opacity($quinary-dark, $i)};
+        // --quinary-#{$i}:                #{background-opacity($quinary, $i)};
+        // --quinary-light-#{$i}:          #{background-opacity($quinary-light, $i)};
+        // --quinary-dark-#{$i}:           #{background-opacity($quinary-dark, $i)};
 
-        --senary-#{$i}:                 #{background-opacity($senary, $i)};
-        --senary-light-#{$i}:           #{background-opacity($senary-light, $i)};
-        --senary-dark-#{$i}:            #{background-opacity($senary-dark, $i)};
+        // --senary-#{$i}:                 #{background-opacity($senary, $i)};
+        // --senary-light-#{$i}:           #{background-opacity($senary-light, $i)};
+        // --senary-dark-#{$i}:            #{background-opacity($senary-dark, $i)};
         
         --black-#{$i}:                  #{background-opacity($black, $i)};
         --white-#{$i}:                  #{background-opacity($white, $i)};
 
-        --success-#{$i}:                #{background-opacity($success, $i)};
-        --success-light-#{$i}:          #{background-opacity($success-light, $i)};
-        --success-dark-#{$i}:           #{background-opacity($success-dark, $i)};
+        // --success-#{$i}:                #{background-opacity($success, $i)};
+        // --success-light-#{$i}:          #{background-opacity($success-light, $i)};
+        // --success-dark-#{$i}:           #{background-opacity($success-dark, $i)};
 
-        --warning-#{$i}:                #{background-opacity($warning, $i)};
-        --warning-light-#{$i}:          #{background-opacity($warning-light, $i)};
-        --warning-dark-#{$i}:           #{background-opacity($warning-dark, $i)};
+        // --warning-#{$i}:                #{background-opacity($warning, $i)};
+        // --warning-light-#{$i}:          #{background-opacity($warning-light, $i)};
+        // --warning-dark-#{$i}:           #{background-opacity($warning-dark, $i)};
 
-        --alert-#{$i}:                  #{background-opacity($alert, $i)};
-        --alert-light-#{$i}:            #{background-opacity($alert-light, $i)};
-        --alert-dark-#{$i}:             #{background-opacity($alert-dark, $i)};
+        // --alert-#{$i}:                  #{background-opacity($alert, $i)};
+        // --alert-light-#{$i}:            #{background-opacity($alert-light, $i)};
+        // --alert-dark-#{$i}:             #{background-opacity($alert-dark, $i)};
 
     }
 }
@@ -314,28 +314,28 @@ html[data-theme="dark"] {
         --tertiary-light-#{$i}:         #{background-opacity($dark-tertiary-light, $i)};
         --tertiary-dark-#{$i}:          #{background-opacity($dark-tertiary-dark, $i)};
 
-        --quaternary-#{$i}:             #{background-opacity($dark-quaternary, $i)};
-        --quaternary-light-#{$i}:       #{background-opacity($dark-quaternary-light, $i)};
-        --quaternary-dark-#{$i}:        #{background-opacity($dark-quaternary-dark, $i)};
+        // --quaternary-#{$i}:             #{background-opacity($dark-quaternary, $i)};
+        // --quaternary-light-#{$i}:       #{background-opacity($dark-quaternary-light, $i)};
+        // --quaternary-dark-#{$i}:        #{background-opacity($dark-quaternary-dark, $i)};
 
-        --quinary-#{$i}:                #{background-opacity($dark-quinary, $i)};
-        --quinary-light-#{$i}:          #{background-opacity($dark-quinary-light, $i)};
-        --quinary-dark-#{$i}:           #{background-opacity($dark-quinary-dark, $i)};
+        // --quinary-#{$i}:                #{background-opacity($dark-quinary, $i)};
+        // --quinary-light-#{$i}:          #{background-opacity($dark-quinary-light, $i)};
+        // --quinary-dark-#{$i}:           #{background-opacity($dark-quinary-dark, $i)};
 
-        --senary-#{$i}:                 #{background-opacity($dark-senary, $i)};
-        --senary-light-#{$i}:           #{background-opacity($dark-senary-light, $i)};
-        --senary-dark-#{$i}:            #{background-opacity($dark-senary-dark, $i)};
+        // --senary-#{$i}:                 #{background-opacity($dark-senary, $i)};
+        // --senary-light-#{$i}:           #{background-opacity($dark-senary-light, $i)};
+        // --senary-dark-#{$i}:            #{background-opacity($dark-senary-dark, $i)};
 
-        --success-#{$i}:                #{background-opacity($dark-success, $i)};
-        --success-light-#{$i}:          #{background-opacity($dark-success-light, $i)};
-        --success-dark-#{$i}:           #{background-opacity($dark-success-dark, $i)};
+        // --success-#{$i}:                #{background-opacity($dark-success, $i)};
+        // --success-light-#{$i}:          #{background-opacity($dark-success-light, $i)};
+        // --success-dark-#{$i}:           #{background-opacity($dark-success-dark, $i)};
 
-        --warning-#{$i}:                #{background-opacity($dark-warning, $i)};
-        --warning-light-#{$i}:          #{background-opacity($dark-warning-light, $i)};
-        --warning-dark-#{$i}:           #{background-opacity($dark-warning-dark, $i)};
+        // --warning-#{$i}:                #{background-opacity($dark-warning, $i)};
+        // --warning-light-#{$i}:          #{background-opacity($dark-warning-light, $i)};
+        // --warning-dark-#{$i}:           #{background-opacity($dark-warning-dark, $i)};
 
-        --alert-#{$i}:                  #{background-opacity($dark-alert, $i)};
-        --alert-light-#{$i}:            #{background-opacity($dark-alert-light, $i)};
-        --alert-dark-#{$i}:             #{background-opacity($dark-alert-dark, $i)};
+        // --alert-#{$i}:                  #{background-opacity($dark-alert, $i)};
+        // --alert-light-#{$i}:            #{background-opacity($dark-alert-light, $i)};
+        // --alert-dark-#{$i}:             #{background-opacity($dark-alert-dark, $i)};
     }
 }
