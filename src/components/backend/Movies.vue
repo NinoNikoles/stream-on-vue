@@ -15,7 +15,7 @@
             <div v-if="genreAvailable" class="col12 marg-bottom-m">
                 <div id="searchbar">
                     <label for="movie-api-search">
-                        <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('movie_title')" required>
+                        <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('search')+` ...`" required>
                     </label>
 
                     <div v-if="movies" id="movieSearchResults" class="rounded">

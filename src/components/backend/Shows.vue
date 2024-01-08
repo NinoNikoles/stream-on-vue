@@ -14,8 +14,8 @@
 
             <div class="col12 marg-bottom-m">
                 <div id="searchbar">
-                    <label for="show-api-search">{{ langSnippet('show_name') }}*
-                        <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" placeholder="" required>
+                    <label for="show-api-search">
+                        <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" :placeholder="langSnippet('search')+` ...`" required>
                     </label>
 
                     <div v-if="shows" id="showsearchResults">
