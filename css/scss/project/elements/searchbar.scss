@@ -34,9 +34,6 @@
         position: relative;
 
         input {
-            background: {
-                color: var(--header-bg);
-            }
             padding: {
                 right: rem-calc($input-space-horizontal);
                 left: rem-calc($input-space-horizontal);
@@ -48,12 +45,9 @@
             top: rem-calc(50);
             left: 0;
             z-index: -2;
-            @include transitions(border $transition-default, padding $transition-default 0.3s, width $transition-default 0.3s, top $transition-default);
+            @include transitions(background-color $transition-default, padding $transition-default 0.3s, width $transition-default 0.3s, top $transition-default);
 
             @include MQ(medium) {
-                background: {
-                    color: transparent;
-                }
                 padding: {
                     right: rem-calc(48);
                     //left: rem-calc($grid-padding/2);
@@ -97,10 +91,6 @@
             }
 
             &:hover {
-                background: {
-                    color: transparent;
-                }
-
                 &::before {
                     color: var(--font-color);
                     opacity: 0.7;
@@ -128,9 +118,12 @@
                 }
                 
                 
-                @include transitions(border $transition-default 0.3s, padding $transition-default, width $transition-default, top $transition-default);
+                @include transitions(background-color $transition-default 0.3s, padding $transition-default, width $transition-default, top $transition-default);
 
                 @include MQ(medium) {
+                    background: {
+                        color: transparent;
+                    }
                     width: 0;
                     padding: {
                         right: rem-calc(28);

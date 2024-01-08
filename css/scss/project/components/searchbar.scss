@@ -52,8 +52,8 @@
     overflow-y: scroll;
 
     @include MQ(medium) {
-        height: 100vh;
-        top: 0;
+        height: calc(100vh - 50px);
+        top: rem-calc(50);
         z-index: -1;
     }
 }
