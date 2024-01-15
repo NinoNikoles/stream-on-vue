@@ -21,8 +21,9 @@
                     <form @submit.prevent="uploadFiles(uploadIMG)">
                         <input type="number" name="id" value="<?php echo $_GET['id']; ?>" style="display:none;">
                         <p>
-                            <label for="user-img">{{ langSnippet('upload_new_img') }}
-                                <input type="file" id="imgUpload" @change="handleFileUpload" accept="image/*">
+                            <label for="user-img">
+                                <!-- <div class="input" data-type="file">{{ langSnippet('upload_new_img') }}</div> -->
+                                <input type="file" id="imgUpload" @change="handleFileUpload" accept="image/*" placeholder="test">
                             </label>
                         </p>
                         <p class="text-right">
