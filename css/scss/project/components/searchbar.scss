@@ -50,10 +50,10 @@
     top: rem-calc(100);
     left: 0;
     overflow-y: scroll;
+    z-index: -1;
 
     @include MQ(medium) {
         height: calc(100vh - 50px);
         top: rem-calc(50);
-        z-index: -1;
     }
 }
