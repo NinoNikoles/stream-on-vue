@@ -118,6 +118,7 @@ import router from './../router';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
+import _debounce from 'lodash/debounce';
 
 export default {
     name: 'AppHeader',
@@ -134,6 +135,7 @@ export default {
             routes: router.options.routes,
             searchInput: '',
             searchResults: null,
+            searchResultsOutput: null,
             selectedMedia: null,
             selectedMediaGenre: null,
             selectMediaWatchlist: null,
@@ -162,7 +164,7 @@ export default {
         async handleSearchInput() {
             clearTimeout(this.delayTimer);
 
-            this.delayTimer = setTimeout(async() => {
+            this.delayTimer = _debounce(async () => {
                 let input = this.searchInput;
                 var media = [];
                 var mediaInfos = [];
@@ -216,6 +218,8 @@ export default {
                     this.searchResults = null;
                 }
             }, 1000);
+
+            this.delayTimer();
         },
         async getSeasons(showID) {
             try {
