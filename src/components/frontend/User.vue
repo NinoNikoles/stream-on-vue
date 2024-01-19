@@ -121,7 +121,7 @@ export default {
                 this.currentUser.id = user.id;
                 this.currentUser.username = user.username;
                 this.currentUser.activeImg = `/${this.mediaPath}/avatar.webp`;
-                if ( user.img !== '-1' ) this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${user.img}`;
+                if ( user.img !== '-1' && user.image !== null && user.img !== '' ) this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${user.img}`;
                 this.selectedImg = this.currentUser.activeImg;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -170,7 +170,7 @@ export default {
         async updateUserIMG(imgName) {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/updateUserImg?userID=${this.currentUser.id}&img=${imgName}`).then(() => {
-                    if ( imgName !== -1 ) {
+                    if ( imgName !== -1 && imgName !== null && imgName !== '' ) {
                         this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${imgName}`;
                         this.selectedImg = this.currentUser.activeImg;
                         document.getElementById('userIcon').src = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${imgName}`;
@@ -194,21 +194,23 @@ export default {
             }
         },
         async deleteUploadedUserImg() {
-            var img = this.selectedImg;
+            var img = document.querySelector('input[name="userImg"]:checked').value;
+            console.log(img);
  
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/deleteUploadedUserImage?img=${img[4]}&userID=${this.currentUser.userID}`)
+                await axios.post(`${this.$mainURL}:3000/api/db/deleteUploadedUserImage?img=${img}&userID=${this.currentUser.id}`)
                 .then(() => {
-                    if ( this.selectedImg === this.currentUser.activeImg ) {
-                        this.updateUserIMG('avatar').then(() => {
-                            this.getUploads();
-                        });
-                    } else {
-                        this.getUploads();
+                    var newImg = -1;
+                    if ( this.currentUser.images.length > 1 ) {
+                        newImg = this.currentUser.images[1].path;
                     }
 
-                    this.selectedImg = this.currentUser.activeImg;
-                    Fancybox.close();
+                    this.updateUserIMG(newImg).then(() => {
+                        this.getUploads();
+  
+                        this.selectedImg = this.currentUser.activeImg;
+                        Fancybox.close();
+                    });
                 });
             } catch (err) {
                 console.log(err);
