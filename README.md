@@ -1,9 +1,11 @@
-# stream-on-vue
+# Stream On (VUE)
 
-## install
-npm install
+Intro
 
-## Auführen
-Vue: npm run serve
-node: node server.js
-Grunt: grunt
+## How to install
+Run `npm install`
+
+## Developmnet build
+Run `npm run serve` for Frontend
+Run `node server.js` for Backend
+Run `grunt` for building css
