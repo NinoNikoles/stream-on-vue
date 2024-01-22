@@ -17,7 +17,7 @@
                     <div id="search-bar" class="search-bar">
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
-                            <input type="text" id="media-live-search" v-model="searchInput" @input="handleSearchInput" name="search" placeholder="Suchen">
+                            <input type="text" id="media-live-search" name="search" placeholder="Suchen">
                             <button id="search-btn" @click="searchTrigger($event)" class="btn search-btn"></button>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ import router from './../router';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
-import _debounce from 'lodash/debounce';
+//import _debounce from 'lodash/debounce';
 
 export default {
     name: 'AppHeader',
@@ -147,7 +147,6 @@ export default {
             },
             mediaPath: 'media',
             userUploadPath: 'user_uploads',
-            delayTimer: null,
         };
     },
     methods: {
@@ -162,64 +161,62 @@ export default {
             });
         },
         async handleSearchInput() {
-            clearTimeout(this.delayTimer);
+            const searchInputField = document.getElementById('media-live-search');
+            let delayTimer;
 
-            this.delayTimer = _debounce(async () => {
-                let input = this.searchInput;
-                var media = [];
-                var mediaInfos = [];
-                var mediaGenre = [];
+            searchInputField.addEventListener('input', () => {
+                if (delayTimer) {
+                    clearTimeout(delayTimer);
+                }
 
-                if ( input !== '' ) {
-                    if ( !document.body.classList.contains('active-search') ) document.body.classList.add('active-search');
+                delayTimer = setTimeout(async () => {
+                    const input = searchInputField.value;
 
-                    try {
-                        media = [];
+                    if (input !== '') {
+                        document.body.classList.add('active-search');
 
-                        var response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
-                        var searchResults = response.data;
+                        const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
+                        const searchResults = response.data;
 
-                        for (let i = 0; i < searchResults.length; i++) {
-                            mediaInfos = [];
-                            mediaGenre = [];
+                        const mediaPromises = searchResults.map(async (result) => {
+                            const mediaInfos = {};
+                            const mediaGenre = [];
 
                             try {
-                                if ( searchResults[i].media_type === 'show' ) {
-                                    mediaInfos['seasons'] = await this.getSeasons(searchResults[i].tmdbID);
-                                    mediaInfos['episodes'] = await this.getEpisodes(searchResults[i].tmdbID);
+                                if (result.media_type === 'show') {
+                                    mediaInfos.seasons = await this.getSeasons(result.tmdbID);
+                                    mediaInfos.episodes = await this.getEpisodes(result.tmdbID);
                                 }
 
-                                var mediaGenreIDs = JSON.parse(searchResults[i].genres);
-                                for (let x = 0; x < mediaGenreIDs.length; x++) {
+                                const mediaGenreIDs = JSON.parse(result.genres);
+
+                                for (const genreID of mediaGenreIDs) {
                                     try {
-                                        mediaGenre.push(await this.getGenre(mediaGenreIDs[x]));
-                                        
-                                    } catch(e) {
+                                        mediaGenre.push(await this.getGenre(genreID));
+                                    } catch (e) {
                                         console.log(e);
-                                    }                                    
+                                    }
                                 }
 
-                                mediaInfos['genre'] = mediaGenre;
-                                mediaInfos['mediaDetails'] = searchResults[i];
-                                mediaInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(searchResults[i].tmdbID);
-                                media[i] = mediaInfos;
-                                
+                                mediaInfos.genre = mediaGenre;
+                                mediaInfos.mediaDetails = result;
+                                mediaInfos.mediaDetails.watchlist_status = await this.checkWatchlist(result.tmdbID);
+
+                                return mediaInfos;
                             } catch (error) {
                                 console.log(error);
+                                return null;
                             }
-                        }
+                        });
 
-                        this.searchResults = media;
-                    } catch (err) {
-                        console.log(err);
+                        const media = await Promise.all(mediaPromises);
+                        this.searchResults = media.filter(item => item !== null);
+                    } else {
+                        document.body.classList.remove('active-search');
+                        this.searchResults = null;
                     }
-                } else {
-                    document.body.classList.remove('active-search');
-                    this.searchResults = null;
-                }
-            }, 1000);
-
-            this.delayTimer();
+                }, 1000);
+            });
         },
         async getSeasons(showID) {
             try {
@@ -322,7 +319,8 @@ export default {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.backendRoutes = routes;
                 });
-                this.getCurrentUserInfo();            
+                this.getCurrentUserInfo();     
+                this.handleSearchInput();       
             }
         });
 
