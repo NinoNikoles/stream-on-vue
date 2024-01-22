@@ -120,6 +120,12 @@
             </p>
         </div>
     </div>
+
+    <div class="innerWrap" v-if="mediaPath">
+        <div class="col12 marg-top-base">
+            <p>Current: <span id="currentMediaPath" class="strong">{{ mediaPath }}</span></p>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -131,6 +137,7 @@ import mainFunctions from './mixins/functions.vue';
 export default {
     name: 'MediaBrowser',
     mixins: [langSnippet, mainFunctions],
+    props: ['selectedMedia'],
     data() {
         return {
             folderStructure: {},
@@ -142,6 +149,7 @@ export default {
             oldFolderName: null,
             renameFolderName: null,
             selectedFile: null,
+            mediaPath: null,
         };
     },
     methods: {
@@ -210,6 +218,7 @@ export default {
                         }
                     }).then(() => {
                         Fancybox.close();
+                        this.mediaPath = videoPath;
                     });                
                 } else {
                     mediaType = 'episodes';
@@ -332,7 +341,14 @@ export default {
         }
     },
     mounted() {
-        this.getFileStructure(this.mainFolder);
+        if (this.selectedMedia) {
+            this.mediaPath = this.selectedMedia;
+            var lastSlashIndex = this.selectedMedia.lastIndexOf('/');
+            var pathWithoutFilename = this.selectedMedia.substring(1, lastSlashIndex);
+            this.getFileStructure(pathWithoutFilename);
+        } else {
+            this.getFileStructure(this.mainFolder);
+        }
     }
 };
 </script>

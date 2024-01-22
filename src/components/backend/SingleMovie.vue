@@ -9,7 +9,11 @@
     <div v-if="movie" class="pad-top-xl">
         <div class="innerWrap">
             <div class="col7">
-                <div class="col12"><h1>{{ movie.title }}</h1></div>
+                <div v-if="isHighlight===null" class="col12">
+                    <div class="col9"><h1>{{ movie.title }}</h1></div>
+                    <div class="col3"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
+                </div>
+                <div v-else class="col12"><h1>{{ movie.title }}</h1></div>
                 <div v-if="movie.tagline" class="col12">{{ movie.tagline }}</div>
                 <div class="col12"><p>{{ movie.overview }}</p></div>
                 <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
@@ -25,12 +29,13 @@
             </div>
   
             <div class="col3 marg-left-col1">
-                <div class="col12">
-                    <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media" name="addHighlight">{{ langSnippet('select_file') }}</button>
+                <div class="col12" v-if="movie.file_path">
+                    <figure class="widescreen">
+                        <video :src="this.$mainURL+movie.file_path" controls></video>
+                    </figure>
                 </div>
-
-                <div v-if="isHighlight===null" class="col12">
-                    <button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
+                <div class="col12">
+                    <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
                 </div>
 
                 <div class="row">
@@ -135,10 +140,7 @@
 
         <div id="media-browser" style="display: none;">
             <div class="row">
-                <media-browser-component></media-browser-component>
-            </div>
-            <div v-if="movie.file_path" class="col12 column marg-top-base">
-                <p>Current: {{ movie.file_path }}</p>
+                <media-browser-component :selectedMedia="movie.file_path"></media-browser-component>
             </div>
         </div>
     </div>    
