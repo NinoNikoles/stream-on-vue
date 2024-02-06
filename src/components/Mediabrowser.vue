@@ -1,12 +1,13 @@
 <template>
     <div class="innerWrap mediabrowser-wrap pad-top-xl pad-bottom-xl">
         <div class="col12">
+            
             <div class="table rounded">
                 <div class="thead">
                     <div class="th">
-                        <span class="marg-no"><a @click="changeDirectory(mainFolder, $event)" href="#" class="marg-no icon-left icon-home"></a>/</span>
+                        <span class="marg-no"><a href="#" @click="changeDirectory(mainFolder, $event)" class="marg-no icon-left icon-home"></a>/</span>
                         <template v-for="(folder, index) in folderPathBreadcrumb" :key="index">
-                            <span class="marg-no" v-if="index > 0"><a @click="changeDirectory(folder.path, $event)" href="#" style="margin: 0 10px !important;">{{ folder.name }}</a>/</span>
+                            <span class="marg-no" v-if="index > 0"><a href="#" @click="changeDirectory(folder.path, $event)" style="margin: 0 10px !important;">{{ folder.name }}</a>/</span>
                         </template>
                     </div>
                 </div>
@@ -14,23 +15,39 @@
 
             <table class="not-fixed-layout marg-bottom-no rounded">
                 <tbody>
+                    <template v-for="(folder, index) in folderPathBreadcrumb" :key="index">
+                        <tr v-if="index === (folderPathBreadcrumb.length-1) && index > 0" class="bg-black">
+                            <td>
+                                <span class="marg-no">
+                                    <a href="#" @click="changeDirectory(folderPathBreadcrumb[index-1].path, $event)" class="marg-no icon-left icon-back">.. /</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </template>
+
                     <template v-if="folderStructure.children && folderStructure.children.length > 0">
                         <template v-for="(media, index) in folderStructure.children" :key="index">
+
+                            <!--- If type is folder --->
                             <tr v-if="media.type === 'folder'">
                                 <td>
-                                    <span class="marg-no icon-left icon-folder">
-                                        <a @click="changeDirectory(media.path, $event)" class="marg-no">{{ media.name }}</a> /
+                                    <span class="marg-no">
+                                        <a href="#" @click="changeDirectory(media.path, $event)" class="icon-left icon-folder marg-no">{{ media.name }} /</a>
                                     </span>
                                 </td>
-                                <td class="text-right">
-                                    <button v-if="$route.path === '/media-browser'"
+
+                                <!--- Rename folder button --->
+                                <td class="text-right" v-if="$route.path === '/media-browser'">
+                                    <button
                                     href="#renameFolder"
                                     data-fancybox @click="setOldFolder(media.name)"
                                     class="btn btn-small btn-warning icon-only icon-pen marg-no"
                                     :title="langSnippet('rename_folder')"></button>
                                 </td>
-                                <td class="text-right">
-                                    <button v-if="$route.path === '/media-browser'"
+
+                                <!--- Delete folder button --->
+                                <td class="text-right" v-if="$route.path === '/media-browser'">
+                                    <button
                                     href="#deleteFolder"
                                     data-fancybox
                                     class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
@@ -38,10 +55,14 @@
                                     @click="selectFolder(media.path)"></button>
                                 </td>
                             </tr>
-                            <tr v-else>
+
+                            <!--- If page is NOT media-browser and file is MP4 --->
+                            <tr v-else-if="$route.path !== '/media-browser' && media.name.endsWith('.mp4')">
                                 <td>
-                                    <span class="marg-no icon-left icon-file">{{ media.name }}</span>
+                                    <span class="marg-no icon-left icon-movie">{{ media.name }}</span>
                                 </td>
+
+                                <!--- Preview file button --->
                                 <td class="text-right">
                                     <button
                                     :href="`${$mainURL}/${media.path}`"
@@ -49,14 +70,36 @@
                                     data-fancybox
                                     class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
                                 </td>
-                                <td v-if="$route.path !== '/media-browser'" class="text-right">
+
+                                <!--- Select file button --->
+                                <td v-if="$route.path !== '/media-browser' && '/'+media.path !== mediaPath" class="text-right">
                                     <button
                                     href="#"
                                     :title="langSnippet('select')"
                                     class="btn btn-small btn-success icon-only icon-check marg-bottom-no"
                                     @click="saveMediaPath(`${media.path}`, $event)"></button>
                                 </td>
-                                <td v-else class="text-right">
+                            </tr>
+
+                            <!--- If page is media-browser --->
+                            <tr v-else-if="$route.path === '/media-browser'">
+                                <td>
+                                    <span v-if="media.name.endsWith('.mp4')" class="marg-no icon-left icon-movie">{{ media.name }}</span>
+                                    <span v-else-if="media.name.endsWith('.jpg') || media.name.endsWith('.jpeg') || media.name.endsWith('.png') || media.name.endsWith('.gif')" class="marg-no icon-left icon-image">{{ media.name }}</span>
+                                    <span v-else class="marg-no icon-left icon-file">{{ media.name }}</span>
+                                </td>
+
+                                <!--- Preview file button --->
+                                <td class="text-right">
+                                    <button
+                                    :href="`${$mainURL}/${media.path}`"
+                                    :title="langSnippet('preview')"
+                                    data-fancybox
+                                    class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
+                                </td>
+
+                                <!--- Delete file button --->
+                                <td class="text-right">
                                     <button href="#deleteFile"
                                     data-fancybox
                                     class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
@@ -67,14 +110,18 @@
                             
                         </template>
                     </template>
+
+                    <!--- If current folder is empty --->
                     <template v-else>
                         <tr>
                             <td>...</td>
                         </tr>
                     </template>
+
                 </tbody>
             </table>
         </div>
+
         <div class="marg-top-xs" v-if="$route.path === '/media-browser'">
             <div class="row">
                 <span class="column">
@@ -133,7 +180,7 @@
 
     <div class="innerWrap" v-if="mediaPath">
         <div class="col12">
-            <p class="marg-top-xs marg-bottom-no">Current: <span id="currentMediaPath" class="strong">{{ mediaPath }}</span></p>
+            <p class="marg-top-xs marg-bottom-no">{{ langSnippet('current_selected') }}: <span id="currentMediaPath" class="strong">{{ mediaPath.replace(`/${mainFolder}`, '') }}</span></p>
         </div>
     </div>
 </template>
