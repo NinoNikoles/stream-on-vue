@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(user, index) in users" :key="index">
-                        <td class="desktop-only"><figure class="square"><img data-img="" loading="lazy" alt=""></figure></td>
+                        <td class="desktop-only"><figure class="square rounded"><img data-img="" loading="lazy" alt=""></figure></td>
                         <td>{{ user.username }}</td>
 
                         <td class="desktop-only" v-if="user.role === 'superadmin'">Super Admin</td>
