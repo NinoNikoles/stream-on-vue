@@ -10,6 +10,13 @@
         width: 75vw;
     }
 
+    .mediabrowser-wrap {
+        padding: {
+            top: 0;
+            bottom: 0;
+        }
+    }
+
     table {
         tbody {
             overflow-y: auto;
