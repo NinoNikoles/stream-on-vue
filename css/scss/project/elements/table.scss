@@ -29,5 +29,9 @@ table, .table {
         p, a, span {
             color: var(--font-color);
         }
+
+        a:not(.btn) {
+            text-decoration: none;
+        }
     }
 }
