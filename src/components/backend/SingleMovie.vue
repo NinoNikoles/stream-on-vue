@@ -140,6 +140,7 @@
 
         <div id="media-browser" style="display: none;">
             <div class="row">
+                <div class="innerWrap"><div class="col12"><p class="h4">{{langSnippet('select_a_video_file')}}:</p></div></div>
                 <media-browser-component :selectedMedia="movie.file_path"></media-browser-component>
             </div>
         </div>
