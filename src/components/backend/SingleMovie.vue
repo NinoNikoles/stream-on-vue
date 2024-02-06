@@ -42,7 +42,7 @@
                     <div class="col6 column">
                         <a href="#movie-poster" data-fancybox data-src="#movie-poster">
                             <figure class="poster">
-                                <img :data-img="$loadImg(movie.poster)" loading="lazy" alt="">
+                                <img :data-img="$loadImg(movie.poster)" loading="lazy" alt="" id="mainPoster">
                             </figure>
                         </a>
                         <div id="movie-poster" style="display:none;">
@@ -50,7 +50,7 @@
                             <div v-if="allPosters" class="row">
                                 <div v-for="(poster, index) in allPosters" :key="index" class="col-6 col-3-medium column marg-bottom-base">
                                     <div class="poster-select">
-                                        <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster}`">
+                                        <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster.file_path}`">
                                         <figure class="poster">
                                             <img :data-img="$loadImg(poster.file_path)" loading="lazy" alt="">
                                         </figure>
@@ -66,7 +66,7 @@
                     <div class="col6 column">
                         <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
                             <figure class="widescreen">
-                                <img :data-img="$loadImg(movie.backdrop)" loading="lazy" alt="">
+                                <img :data-img="$loadImg(movie.backdrop)" loading="lazy" alt="" id="mainBackdrop">
                             </figure>
                         </a>
                         <div id="movie-backdrop" style="display:none;">
@@ -74,7 +74,7 @@
                             <div v-if="allBackdrops" class="row">
                                 <div v-for="(backdrop, index) in allBackdrops" :key="index" class="col-6 col-3-medium column marg-bottom-base">
                                     <div class="poster-select">
-                                        <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop}`">
+                                        <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop.file_path}`">
                                         <figure class="original">
                                             <img :data-img="$loadImg(backdrop.file_path)" loading="lazy" alt="">
                                         </figure>
@@ -152,6 +152,7 @@ import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
 import Mediabrowser from '../Mediabrowser.vue';
+import { Fancybox } from '@fancyapps/ui';
 
 export default {
     name: 'BackendMovie',
@@ -197,23 +198,47 @@ export default {
         async getAllImages(mediaID) {
             try {
                 var posters = await this.getPosters('movie', mediaID);
-            } catch(err) {
-                console.log();
-            }
-            try {
                 var backdrops = await this.getBackdrops('movie', mediaID);
+
+                this.allPosters = posters;
+                this.allBackdrops = backdrops;
             } catch(err) {
-                console.log();
+                console.log(err);
+                this.allPosters = '';
+                this.allBackdrops = '';
             }
-            
-            this.allPosters = posters;
-            this.allBackdrops = backdrops;
         },
         async savePoster() {
+            var posterSelect = document.querySelector('input[name="poster"]:checked');
 
+            if (posterSelect) {
+                var newPoster = posterSelect.value;
+
+                try {
+                    await axios.post(`${this.$mainURL}:3000/api/db/saveNewPoster?mediaID=${this.movie.tmdbID}&poster=${newPoster}`);
+                    document.getElementById('mainPoster').src = `http://image.tmdb.org/t/p/original${newPoster}`;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            Fancybox.close();
         },
         async saveBackdrop() {
+            var backdropSelect = document.querySelector('input[name="backdrop"]:checked');
+            
+            if (backdropSelect) {
+                var newBackdrop = backdropSelect.value;
 
+                try {
+                    await axios.post(`${this.$mainURL}:3000/api/db/saveNewBackdrop?mediaID=${this.movie.tmdbID}&backdrop=${newBackdrop}`);
+                    document.getElementById('mainBackdrop').src = `http://image.tmdb.org/t/p/original${newBackdrop}`;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            Fancybox.close();
         },
         async addHighlight(mediaID) {
             try {
@@ -228,9 +253,7 @@ export default {
                 }
             } catch (err) {
                 console.log(err);
-            }
-
-                       
+            }                       
         },
         async checkForHighlight() {
             var isTrue;
