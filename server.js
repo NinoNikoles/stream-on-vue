@@ -63,6 +63,8 @@ app.get('/api/db/mediaFiltered', serverAPI.getMediaFiltered);
 app.post('/api/db/addVideoPathToMedia', serverAPI.addVideoPathToMedia);
 app.post('/api/db/deleteShow', serverAPI.deleteShow);
 app.post('/api/db/deleteSeason', serverAPI.deleteSeason);
+app.post('/api/db/saveNewPoster', serverAPI.saveNewPoster);
+app.post('/api/db/saveNewBackdrop', serverAPI.saveNewBackdrop);
 
 //-- Seasons
 app.get('/api/db/getSeasons', serverAPI.getSeasons);
