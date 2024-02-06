@@ -286,6 +286,34 @@ const addVideoPathToMedia = (req, res) => {
     });
 }
 
+const saveNewPoster = (req, res) => {
+    const { mediaID, poster } = req.query;
+
+    let query = `UPDATE media SET poster = ? WHERE tmdbID = ?`;
+    
+    db.all(query, [`${poster}`, mediaID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json('Success');
+    });
+}
+
+const saveNewBackdrop = (req, res) => {
+    const { mediaID, backdrop } = req.query;
+
+    let query = `UPDATE media SET backdrop = ? WHERE tmdbID = ?`;
+    
+    db.all(query, [`${backdrop}`, mediaID], (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json('Success');
+    });
+}
+
 //-- Seasons --
 const getSeasons = (req, res) => {
     const { showID } = req.query;
@@ -1071,6 +1099,8 @@ module.exports = {
     addVideoPathToMedia,
     deleteShow,
     deleteSeason,
+    saveNewPoster,
+    saveNewBackdrop,
 
     // Episodes
     getSeasons,
