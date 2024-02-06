@@ -3,3 +3,5 @@ public/build/
 database.db
 package-lock.json
 dist/
+public/media/bibliothek/*
+public/media/user_uploads/*
