@@ -1,5 +1,5 @@
 #media-browser {
-    padding: 0;
+    padding: rem-calc($space-base*2);
     overflow-x: hidden;
 
     @include MQ(xsmall) {
@@ -17,6 +17,22 @@
 
             @include MQ(xsmall) {
                 max-height: 50vh;
+            }
+        }
+    }
+}
+
+.mediabrowser-wrap {
+    table {
+        tbody {
+            tr {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                td:first-of-type {
+                    flex-grow: 1;
+                }
             }
         }
     }

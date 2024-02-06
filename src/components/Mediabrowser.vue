@@ -1,7 +1,7 @@
 <template>
-    <div class="innerWrap">
+    <div class="innerWrap mediabrowser-wrap pad-top-xl pad-bottom-xl">
         <div class="col12">
-            <div class="table marg-bottom-no">
+            <div class="table rounded">
                 <div class="thead">
                     <div class="th">
                         <span class="marg-no"><a @click="changeDirectory(mainFolder, $event)" href="#" class="marg-no icon-left icon-home"></a>/</span>
@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <table class="not-fixed-layout marg-bottom-no">
+            <table class="not-fixed-layout marg-bottom-no rounded">
                 <tbody>
                     <template v-if="folderStructure.children && folderStructure.children.length > 0">
                         <template v-for="(media, index) in folderStructure.children" :key="index">
@@ -23,10 +23,15 @@
                                     </span>
                                 </td>
                                 <td class="text-right">
-                                    <button href="#renameFolder" data-fancybox @click="setOldFolder(media.name)" class="btn btn-small btn-warning icon-only icon-pen marg-no" :title="langSnippet('rename_folder')"></button>
+                                    <button v-if="$route.path === '/media-browser'"
+                                    href="#renameFolder"
+                                    data-fancybox @click="setOldFolder(media.name)"
+                                    class="btn btn-small btn-warning icon-only icon-pen marg-no"
+                                    :title="langSnippet('rename_folder')"></button>
                                 </td>
                                 <td class="text-right">
-                                    <button href="#deleteFolder"
+                                    <button v-if="$route.path === '/media-browser'"
+                                    href="#deleteFolder"
                                     data-fancybox
                                     class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
                                     :title="langSnippet('delete')"
@@ -38,11 +43,16 @@
                                     <span class="marg-no icon-left icon-file">{{ media.name }}</span>
                                 </td>
                                 <td class="text-right">
-                                    <button :href="`${$mainURL}/${media.path}`" data-fancybox class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
+                                    <button
+                                    :href="`${$mainURL}/${media.path}`"
+                                    :title="langSnippet('preview')"
+                                    data-fancybox
+                                    class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
                                 </td>
                                 <td v-if="$route.path !== '/media-browser'" class="text-right">
                                     <button
-                                    href="#"  
+                                    href="#"
+                                    :title="langSnippet('select')"
                                     class="btn btn-small btn-success icon-only icon-check marg-bottom-no"
                                     @click="saveMediaPath(`${media.path}`, $event)"></button>
                                 </td>
@@ -122,8 +132,8 @@
     </div>
 
     <div class="innerWrap" v-if="mediaPath">
-        <div class="col12 marg-top-base">
-            <p>Current: <span id="currentMediaPath" class="strong">{{ mediaPath }}</span></p>
+        <div class="col12">
+            <p class="marg-top-xs marg-bottom-no">Current: <span id="currentMediaPath" class="strong">{{ mediaPath }}</span></p>
         </div>
     </div>
 </template>
