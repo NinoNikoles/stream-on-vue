@@ -1,4 +1,11 @@
 .tabs {
+    border: {
+        bottom: {
+            right-radius: 0;
+            left-radius: 0;
+        }
+    }
+
     @include MQ(medium) {
         flex-direction: row;
         flex-wrap: nowrap;
@@ -55,6 +62,15 @@
 
             @include MQ(medium) {
                 width: max-content;
+            }
+        }
+    }
+
+    &-content {
+        border: {
+            top: {
+                right-radius: 0;
+                left-radius: 0;
             }
         }
     }
