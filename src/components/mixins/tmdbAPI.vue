@@ -25,7 +25,6 @@ export default {
             }
             
             const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
-            console.log(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
             return response;
         },
         async checkApiKey(key) {

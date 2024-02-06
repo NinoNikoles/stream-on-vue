@@ -120,8 +120,6 @@ export default {
                                     mediaInfos['seasons'] = await this.getSeasons(mediaResponse[i].tmdbID);
                                     mediaInfos['episodes'] = await this.getEpisodes(mediaResponse[i].tmdbID);
                                 }
-                                console.log(mediaInfos['seasons']);
-                                console.log(mediaInfos['episodes']);
 
                                 var mediaGenreIDs = JSON.parse(mediaResponse[i].genres);
                                 for (let x = 0; x < mediaGenreIDs.length; x++) {
