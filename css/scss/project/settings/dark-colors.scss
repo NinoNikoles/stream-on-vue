@@ -13,6 +13,8 @@ $dark-success: #3adb76;
 $dark-warning: #ffae00;
 $dark-alert: #cc4b37;
 
+$dark-header-bg: #000000;
+
 //-- Form Settings --
 $dark-input-bg:					#2a2a2a;
 $dark-input-bg-focus:			#4d4d4d;
@@ -22,6 +24,7 @@ $dark-input-border-color-focus: transparent;
 // $input-color-placeholder:	form(place-holder-color) !default;
 // $input-label-color:		    form(label-color) !default;
 
-$dark-header-bg: #000000;
-//$dark-body-bg: $dp0 !default;
-//$dark-footer-bg: $dp8 !default;
+
+//-- Table --
+$dark-table-bg:         $dark-light;
+$dark-table-light:      rgba(255, 255, 255, 0.2);

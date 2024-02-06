@@ -1,5 +1,33 @@
-table {
+table, .table {
     a {
         cursor: pointer;
+    }
+
+    thead, .thead {
+        background: {
+            color: var(--white);
+        }
+    
+        th, .th {
+            color: var(--font-color-invert);
+            font: {
+                weight: 600;
+            }
+    
+            p, span, a {
+                color: var(--font-color-invert);
+                font: {
+                    weight: 600;
+                }
+            }
+        }
+    }
+    
+    td, .td {
+        color: var(--font-color);
+    
+        p, a, span {
+            color: var(--font-color);
+        }
     }
 }
