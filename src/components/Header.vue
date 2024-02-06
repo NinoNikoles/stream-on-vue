@@ -18,6 +18,7 @@
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
                             <input type="text" id="media-live-search" name="search" placeholder="Suchen">
+                            <span class="loader"></span>
                             <button id="search-btn" @click="searchTrigger($event)" class="btn search-btn"></button>
                         </div>
                     </div>
@@ -80,7 +81,7 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-top-l pad-bottom-l bg-dark">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-top-xl pad-bottom-l bg-dark">
             <div class="innerWrap">
                 <div class="col12">
                     <h1>Suchergebnisse für: {{ searchInput }}</h1>
@@ -165,6 +166,7 @@ export default {
             let delayTimer;
 
             searchInputField.addEventListener('input', () => {
+                document.getElementById('search-bar').classList.add('searching');
                 if (delayTimer) {
                     clearTimeout(delayTimer);
                 }
@@ -215,6 +217,8 @@ export default {
                         document.body.classList.remove('active-search');
                         this.searchResults = null;
                     }
+
+                    document.getElementById('search-bar').classList.remove('searching');
                 }, 1000);
             });
         },
