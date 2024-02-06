@@ -54,6 +54,7 @@ const langs = [
             'order': 'Order',
             'page_title': 'Page title',
             'password': 'Password',
+            'preview': 'Preview',
             'profile': 'Profile',
             'rating': 'Rating',
             'release_date': 'Release date',
@@ -66,6 +67,7 @@ const langs = [
             'search_results': 'Search results',
             'season': 'Season',
             'seasons': 'Seasons',
+            'select': 'Select',
             'send': 'Send',
             'settings': 'Settings',
             'show': 'TV Show',
@@ -89,6 +91,10 @@ const langs = [
             'lang_info': 'The language is need to fetch all infos in your desired language. Format: language-COUNTRY (example: en-US)',
 			'trailer_info': 'ID of the YouTube video URL. Example: https://www.youtube.com/watch?v=<strong>iUISLveqaII</strong>',
             'enable_edit_btn': 'Do you want to allow media editing from the main pages? (concerns admins only)',
+            'select_new_backdrop': 'Select a new thumbnail',
+            'select_new_poster': 'Select a new poster',
+            'select_a_video_file': 'Select a video file',
+            'current_selected': 'Currently selected',
 
             // Other
             'admin_setup_here': 'Please update the page settings <a href="/backend/settings"><strong>here</strong></a> to be able to add your content.',
@@ -163,6 +169,7 @@ const langs = [
             'order': 'Reihenfolge',
             'page_title': 'Seitenname',
             'password': 'Passwort',
+            'preview': 'Vorschau',
             'profile': 'Profil',
             'rating': 'Bewertung',
             'release_date': 'Erscheinungsdatum',
@@ -175,6 +182,7 @@ const langs = [
             'search_results': 'Suchergebnisse',
             'season': 'Staffel',
             'seasons': 'Staffeln',
+            'select': 'Auswählen',
             'send': 'Senden',
             'settings': 'Einstellungen',
             'show': 'TV Serie',
@@ -198,6 +206,10 @@ const langs = [
             'lang_info': 'Wird benötigt um Inhalte in der gewünschten Sprache zu laden. Format: language-COUNTRY (example: en-US)',
 			'trailer_info': 'ID der YouTube Video URL. Beispiel: https://www.youtube.com/watch?v=<strong>iUISLveqaII</strong>',
             'enable_edit_btn': 'Erlaube das Bearbeiten von Inhalten direkt von den Hauptseiten? (Betrifft nur Administratoren)',
+            'select_new_backdrop': 'Wähle ein neues Thumbnail',
+            'select_new_poster': 'Wähle ein neues Poster',
+            'select_a_video_file': 'Wähle eine Videodatei aus',
+            'current_selected': 'Aktuell ausgewählt',
 
             // Other
             'admin_setup_here': 'Bitte aktualisiere <a href="/backend/settings"><strong>hier</strong></a> die Seiteneinstellungen um Inhalte hinzufügen zu können.',
