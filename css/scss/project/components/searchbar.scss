@@ -40,6 +40,16 @@
         &.hidden {
             display: none;
         }
+
+        > a {
+            @include transition(background-color $transition-default);
+
+            &:hover {
+                background: {
+                    color: var(--dark-light);
+                }
+            }
+        }
     }
 }
 

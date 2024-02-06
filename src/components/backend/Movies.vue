@@ -23,7 +23,7 @@
                             <figure class="poster" style="width:20%;max-width:100px;">
                                 <img :data-img="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
                             </figure>
-                            <span class="pad-xs" style="width:80%;">{{ movie.title }}</span>
+                            <span class="pad-xs marg-no" style="width:80%;">{{ movie.title }}</span>
 
                             <div :id="`add-movie-${movie.id}`" style="display:none;">
                                 <p v-html="langSnippet('add_movie_to_library', movie.title)"></p>
