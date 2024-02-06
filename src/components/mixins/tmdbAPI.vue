@@ -17,7 +17,7 @@ export default {
             var requestLanguage = '';
 
             if ( query !== "" ) {
-                requestQuery = `&query=${query}&language=${language}`;
+                requestQuery = `&query=${query}`;
             }
             
             if ( language !== "" ) {
@@ -25,6 +25,7 @@ export default {
             }
             
             const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
+            console.log(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
             return response;
         },
         async checkApiKey(key) {
