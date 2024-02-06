@@ -94,6 +94,7 @@ a.icon-right:hover {
     &-arrow-right { &::before { content: $icon-arrow-right; } }
     &-arrow-back { &::before { content: $icon-arrow-back; } }
     &-arrow-left { &::before { content: $icon-arrow-back; } }
+    &-back { &::before { content: $icon-back; rotate: 180deg; } }
     &-check { &::before { content: $icon-check; } }
     &-chevron-down { &::before { content: $icon-chevron-down; } }
     &-chevron-left { &::before { content: $icon-chevron-left; } }
