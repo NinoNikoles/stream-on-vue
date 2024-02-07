@@ -42,7 +42,7 @@
                                 <figure class="poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${show.title}`">
                                 </figure>
-                                <span class="title marg-no">{{ $truncate(show.title, 15) }}</span>
+                                <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
                             </router-link>
                         </div>
                     </div>
@@ -153,6 +153,7 @@ export default {
                     // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
                     this.outputShows = outputShows;
                     this.searchAndDisplayShows(this.outputText);
+                    this.callout('success', 'Show added successfully');
                 });
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);

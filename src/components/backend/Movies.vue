@@ -42,7 +42,7 @@
                                 <figure class="media-card poster">
                                     <img :src="$loadImg()" loading="lazy" :alt="`${movie.title}`">
                                 </figure>
-                                <span class="title">{{ $truncate(movie.title, 15) }}</span>
+                                <span class="title">{{ $truncate(movie.title, 20) }}</span>
                             </router-link>
                         </div>
                     </div>
