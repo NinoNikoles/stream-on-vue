@@ -1,14 +1,16 @@
 <template>
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
         <header-component @data-fetched="updateVariable"></header-component>
-    </template>    
+    </template>
 
     <div id="main">
         <router-view @data-fetched="updateVariable"></router-view>
     </div>
 
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
-        <div id="callout" class="callout hidden"></div>
+        <div id="callout" data-time="0" data-id="0">
+            <p id="callout-content">test</p>
+        </div>
     </template>
 
     <div class="modal" :id="`media-content`">

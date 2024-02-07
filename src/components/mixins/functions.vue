@@ -129,47 +129,50 @@ export default {
             document.querySelectorAll(`.${selectID}[data-select-tab="${selectValue}`)[0].classList.add('is-active');
         },
         callout(type, message) {
-            const callout = document.getElementById('callout'),
-                success = 'success',
-                warning = 'warning',
-                alert = 'alert';
+            const callout = document.getElementById('callout');
+            const calloutText = document.getElementById('callout-content');
+            const active = 'active';
+            const calloutID = parseInt(callout.getAttribute('data-id'));
+            var i = 0;
+            var intervalID;
+            var animationTime;
+            var newCalloutID;
 
-            function clearCallout() {
-                if ( !callout.classList.contains('hidden') ) {
-                    callout.classList.add('hidden');
-
-                    setTimeout(() => {
-                        if ( callout.classList.contains(success) ) callout.classList.remove(success);
-                        if ( callout.classList.contains(warning) ) callout.classList.remove(warning);
-                        if ( callout.classList.contains(alert) ) callout.classList.remove(alert);
-                        callout.innerHTML = "";
-                    }, 1000);
-                } else {
-                    if ( callout.classList.contains(success) ) callout.classList.remove(success);
-                    if ( callout.classList.contains(warning) ) callout.classList.remove(warning);
-                    if ( callout.classList.contains(alert) ) callout.classList.remove(alert);
-                    callout.innerHTML = "";
-                }
-            }
+            callout.setAttribute('data-time', 0);
 
             function setCallout() {
-                callout.classList.add(type);
-                callout.innerHTML = '<p id="callout-content">'+message+'</p>';
-                callout.classList.remove('hidden');
+                newCalloutID = parseInt(callout.getAttribute('data-id'));
+
+                if ( (newCalloutID-1) !== calloutID ) {
+                    i = 5000;
+                    animationTime = 5000;
+                    callout.classList.remove('active');
+                    clearInterval(intervalID);
+                }
+
+                animationTime = parseInt(callout.getAttribute('data-time'));
+
+                if ( !callout.classList.contains(active) && i === 0 ) {
+                    callout.setAttribute('data-type', type);
+                    calloutText.textContent = message;
+                    callout.classList.add(active);
+                }
+                if ( animationTime !== i ) {
+                    i = 0;
+                    animationTime = 0;
+                    callout.setAttribute('data-time', i);               
+                }
+                if ( i >= 5000 ) {
+                    callout.classList.remove('active');
+                    clearInterval(intervalID);
+                } else {
+                    i = i+500;
+                    callout.setAttribute('data-time', i);
+                }                
             }
 
-            clearCallout();
-
-            setTimeout(() => {
-                if ( type === success ) {
-                    setCallout();
-                    setTimeout(() => {
-                        clearCallout();
-                    }, 5000);
-                } else {
-                    setCallout();
-                }
-            }, 500);
+            callout.setAttribute('data-id', calloutID+1);
+            intervalID = setInterval(setCallout, 500);
         },
         async sessionUser() {
             try {
