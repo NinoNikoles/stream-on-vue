@@ -5,6 +5,7 @@
             left-radius: 0;
         }
     }
+    overflow: hidden;
 
     @include MQ(medium) {
         flex-direction: row;
