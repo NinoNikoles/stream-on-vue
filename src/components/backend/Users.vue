@@ -1,11 +1,11 @@
 <template>
     <div class="innerWrap pad-top-xl">
         <div class="col12">
-            <div class="col12">
+            <div class="col6">
                 <h1>{{ langSnippet('users') }}</h1>
             </div>
 
-            <div class="col12 text-right">
+            <div class="col6 text-right">
                 <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
             </div>
 
@@ -28,23 +28,23 @@
                         <td class="desktop-only" v-else>User</td>
 
                         <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                            <button data-src="#edit-user" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                            <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
                         </td>
                         <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                            <button data-src="#edit-user" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                            <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
                         </td>
                         <td v-else></td>
 
                         <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                            <button data-src="#change-password" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                            <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
                         </td>
                         <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                            <button data-src="#change-password" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                            <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
                         </td>
                         <td v-else></td>
 
                         <td v-if="user.role !== 'superadmin'">
-                            <button data-src="#delete-user" @click="selectUser(user.id, user.username, user.role)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
+                            <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
                         </td>
                         <td v-else></td>
                     </tr>
@@ -56,16 +56,16 @@
                 <p>{{ langSnippet('add_user') }}</p>
                 <form @submit.prevent="addUser">
                     <p>
-                        <label for="newUsername" >{{ langSnippet('username') }}
+                        <label for="newUsername" >
                         <input v-model="newUser.name" type="text" id="newUsername" name="newUsername" :placeholder="langSnippet('username')" required></label>
+                    </p>
+                    <p>
+                        <label for="newUserpassword">
+                        <input v-model="newUser.password" type="password" id="newUserpassword" name="newUserpassword" :placeholder="langSnippet('password')" required></label>
                     </p>
                     <p>
                         <label for="newUserrole" class="checkbox-label">{{ langSnippet('admin') }}
                         <input v-model="newUser.role" type="checkbox" id="newUserrole" name="newUserrole"></label>
-                    </p>
-                    <p>
-                        <label for="newUserpassword">{{ langSnippet('password') }}
-                        <input v-model="newUser.password" type="password" id="newUserpassword" name="newUserpassword" :placeholder="langSnippet('password')" required></label>
                     </p>
                     <p class="text-right">
                         <button class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
@@ -74,11 +74,11 @@
             </div>
             <!-- Edit user -->
             <div id="edit-user" style="display:none;">
-                <p v-html="langSnippet('edit_user', selectedUser.username)"></p>
-                <form @submit.prevent="editUser(selectedUser.id, selectedUser.username, selectedUser.role)">
+                <p v-html="langSnippet('edit_user', selectedUser.name)"></p>
+                <form @submit.prevent="editUser(selectedUser)">
                     <p>
-                        <label for="username" >{{ langSnippet('username') }}
-                        <input v-model="selectedUser.username" type="text" id="username" name="username" :placeholder="langSnippet('username')" required></label>
+                        <label for="username" >
+                        <input v-model="selectedUser.name" type="text" id="username" name="username" :placeholder="langSnippet('username')" required></label>
                     </p>
                     <p>
                         <label for="role" class="checkbox-label">{{ langSnippet('admin') }}
@@ -91,15 +91,15 @@
             </div>
             <!-- Change password of user -->
             <div id="change-password" style="display:none;">
-                <p v-html="langSnippet('edit_user')"></p>
+                <p v-html="langSnippet('new_password')"></p>
                 <form @submit.prevent="changeUserPassword(selectedUser.id)">
                     <p>
-                        <label for="new-password">{{ langSnippet('password') }}
+                        <label for="new-password">
                         <input v-model="newPassword" type="password" id="new-password" name="new-password" :placeholder="langSnippet('password')" required></label>
                     </p>
                     <p>
-                        <label for="new-password-check">{{ langSnippet('password') }}
-                        <input v-model="newPasswordCheck" type="password" id="new-password-check" name="new-password-check" :placeholder="langSnippet('password')" required></label>
+                        <label for="new-password-check">
+                        <input v-model="newPasswordCheck" type="password" id="new-password-check" name="new-password-check" :placeholder="langSnippet('password_repeate')" required></label>
                     </p>
                     <p class="text-right marg-no">
                         <button type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
@@ -108,7 +108,7 @@
             </div>
             <!-- Delete user -->
             <div id="delete-user" style="display:none;">
-                <p v-html="langSnippet('delete_user', selectedUser.username)"></p>
+                <p v-html="langSnippet('delete_user', selectedUser.name)"></p>
                 <p class="text-right marg-no">
                     <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
                 </p>
@@ -140,7 +140,7 @@ export default {
             },
             selectedUser: {
                 id: null,
-                username: null,
+                name: null,
                 role: true,
             },
             newPassword: null,
@@ -176,23 +176,23 @@ export default {
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
         },
-        selectUser(userID, username, role) {
-            this.selectedUser.id = userID;
-            this.selectedUser.username = username;
+        selectUser(user) {
+            this.selectedUser.id = user.id;
+            this.selectedUser.name = user.username;
 
-            if ( role === 'superadmin' || role === 'admin') {
+            if ( user.role === 'superadmin' || user.role === 'admin') {
                 this.selectedUser.role = true;
             } else {
                 this.selectedUser.role = false;
             }
         },
-        async editUser(userID, username, role) {
-            if ( this.userID !== null && this.username !== '' ) {
+        async editUser(user) {
+            if ( this.user.id !== null && this.user.name !== '' ) {
                 try {
-                    await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${userID}&username=${username}&role=${role}`)
+                    await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${user.id}&username=${user.name}&role=${user.role}`)
                     .then(() => {
                         this.selectedUser.id = null;
-                        this.selectedUser.username = null;
+                        this.selectedUser.name = null;
                         this.selectedUser.role = null;
 
                         Fancybox.close();
@@ -216,7 +216,7 @@ export default {
                         await axios.post(`${this.$mainURL}:3000/api/db/changeUserPassword?userID=${userID}&password=${this.newPassword}`)
                         .then(() => {
                             this.selectedUser.id = null;
-                            this.selectedUser.username = null;
+                            this.selectedUser.name = null;
                             this.selectedUser.role = null;
 
                             this.newPassword = null;
@@ -242,7 +242,7 @@ export default {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteUser?userID=${userID}`)
                 .then(() => {
                     this.selectedUser.id = null;
-                    this.selectedUser.username = null;
+                    this.selectedUser.name = null;
                     this.selectedUser.role = null;
 
                     Fancybox.close();
