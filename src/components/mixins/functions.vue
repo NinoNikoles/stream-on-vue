@@ -211,6 +211,39 @@ export default {
             } catch(err) {
                 console.log(err);
             }
+        },
+
+
+        //-- API --
+        async fetchUserSession() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                if ( response.data.user ) {
+                    const userData = {
+                        isLoggedIn: response.data.user.isLoggedIn,
+                        id: response.data.user.id,
+                        username: response.data.user.name,
+                        role: response.data.user.role
+                    }
+                    return userData;
+                }               
+            } catch (error) {
+                return error;
+            }
+        },
+        async logout_function() {
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/logout`, { username: '', role: ''}, { withCredentials: true })
+                .then(() => {
+                    window.location.href = '/';               
+                })
+                .catch((error) => {
+                    // Fehler bei der Anmeldung
+                    console.error('Login failed', error);
+                });
+            } catch(err) {
+                console.log(err);
+            }
         }
     }
 };
