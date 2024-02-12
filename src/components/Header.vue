@@ -52,7 +52,7 @@
                     <!-- Profil -->
                     <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
                         <figure class="square">
-                            <img :data-img="`${this.currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
+                            <img :data-img="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
@@ -62,7 +62,7 @@
                                 </li>
                                 
                                 <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
-                                <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
+                                <li class="menu-item"><a href="#" @click="logout_function()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>
                     </button>
@@ -246,32 +246,18 @@ export default {
                 console.log(error);
             }
         },
-        async logout() {
-            // Benutzeranmeldeinformationen            
-            try {
-                await axios.post(`${this.$mainURL}:3000/api/db/logout`, { username: '', role: ''}, { withCredentials: true })
-                .then(async() => {
-                    window.location.href = '/';               
-                })
-                .catch((error) => {
-                    // Fehler bei der Anmeldung
-                    console.error('Login failed', error);
-                });
-            } catch(err) {
-                console.log(err);
-            }
-        },
+        // async logout() {
+        //     await this.logout_function();
+        // },
         async fetchSessionStatus() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
-                if ( response.data.user ) {
-                    this.isLoggedIn = response.data.user.isLoggedIn;
-                    this.id = response.data.user.id;
-                    this.username = response.data.user.name;
-                    this.role = response.data.user.role;
-                }               
-            } catch (error) {
-                console.error('Fehler beim Abrufen des Session-Status:', error);
+            const userData = await this.fetchUserSession();
+            if ( typeof userData === 'object' ) {
+                    this.isLoggedIn = userData.isLoggedIn;
+                    this.id = userData.id;
+                    this.username = userData.name;
+                    this.role = userData.role;
+            } else {
+                this.callout('error', 'Fehler!');
             }
         },
         async getCurrentUserInfo() {
