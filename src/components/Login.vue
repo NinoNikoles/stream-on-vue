@@ -4,11 +4,11 @@
             <form @submit.prevent="login">
                 <h2>{{ langSnippet('login')}}</h2>
                 <p>
-                    <label>{{ langSnippet('username') }}<input type="text" v-model="username"></label>
+                    <label><input type="text" v-model="username" :placeholder="langSnippet('username')"></label>
                     <span class="text-alert" v-if="error && error === 'user_not_found'">{{ langSnippet(error) }}</span>
                 </p>
                 <p>
-                    <label>{{ langSnippet('password') }}<input type="password" v-model="password"></label>
+                    <label><input type="password" v-model="password" :placeholder="langSnippet('password')"></label>
                     <span class="text-alert" v-if="error && error === 'invalid_password'">{{ langSnippet(error) }}</span>
                 </p>
                 <p class="text-right marg-no">
