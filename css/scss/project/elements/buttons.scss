@@ -72,7 +72,15 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
         }
 
         &.is-loading {
+            overflow: hidden;
+
             &::after {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                line-height: 1;
+                aspect-ratio: 1 / 1;
+                width: 100%;
                 opacity: 1;
                 visibility: visible;
                 @include animate(spinner, 2s, linear, infinite);
@@ -80,8 +88,15 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
         }
 
         &.saved {
+            overflow: hidden;
+
             &::after {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
                 content: $icon-save;
+                height: 100%;
+                width: 100%;
                 opacity: 1;
                 visibility: visible;
             }
@@ -192,6 +207,10 @@ i {
 }
 
 .menu-button {
+    margin: {
+        right: rem-calc(-$grid-padding);
+    }
+
     &.active-button {
         .bar {
             &-2 {

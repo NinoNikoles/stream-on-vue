@@ -71,25 +71,25 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
 .btn {
     &-contact {
         &::before {
-            content: "\f1d8" !important;
+            content: $icon-send !important;
         }
     }
 
     &-mail {
         &::before {
-            content: "\6d" !important;
+            content: $icon-mail !important;
         }
     }
 
     &-map {
         &::before {
-            content: "\f3c5" !important;
+            content: $icon-location !important;
         }
     }
 
     &-back {
         &::before {
-            content: "\e91e" !important;
+            content: $icon-back !important;
         }
     }
 }
