@@ -7,6 +7,10 @@ nav.header-menu-main {
             a {
                 &:not(.subbutton):not(.backbutton) {
                     color: var(--font-color);
+                    padding: {
+                        right: rem-calc($grid-padding);
+                        left: rem-calc($grid-padding);
+                    }
 
                     &:hover {
                         background: {
@@ -19,7 +23,9 @@ nav.header-menu-main {
                         line-height: rem-calc(50);
                         padding: {
                             top: 0;
+                            right: rem-calc(20);
                             bottom: 0;
+                            left: rem-calc(20);
                         }
                     }
                 }
