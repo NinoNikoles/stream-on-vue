@@ -57,11 +57,11 @@
                 <form @submit.prevent="addUser">
                     <p>
                         <label for="newUsername" >
-                        <input v-model="newUser.name" type="text" id="newUsername" name="newUsername" :placeholder="langSnippet('username')" required></label>
+                        <input v-model="newUser.name" type="text" id="newUsername" autocomplete="username" name="newUsername" :placeholder="langSnippet('username')" required></label>
                     </p>
                     <p>
                         <label for="newUserpassword">
-                        <input v-model="newUser.password" type="password" id="newUserpassword" name="newUserpassword" :placeholder="langSnippet('password')" required></label>
+                        <input v-model="newUser.password" type="password" id="newUserpassword" autocomplete="new-password" name="newUserpassword" :placeholder="langSnippet('password')" required></label>
                     </p>
                     <p>
                         <label for="newUserrole" class="checkbox-label">{{ langSnippet('admin') }}
@@ -78,7 +78,7 @@
                 <form @submit.prevent="editUser(selectedUser)">
                     <p>
                         <label for="username" >
-                        <input v-model="selectedUser.name" type="text" id="username" name="username" :placeholder="langSnippet('username')" required></label>
+                        <input v-model="selectedUser.name" type="text" id="username" autocomplete="username" name="username" :placeholder="langSnippet('username')" required></label>
                     </p>
                     <p>
                         <label for="role" class="checkbox-label">{{ langSnippet('admin') }}
@@ -93,13 +93,14 @@
             <div id="change-password" style="display:none;">
                 <p v-html="langSnippet('new_password')"></p>
                 <form @submit.prevent="changeUserPassword(selectedUser.id)">
+                    <input v-model="selectedUser.name" type="text" name="username" autocomplete="username" :placeholder="langSnippet('username')" style="display:none; visibility: hidden;" disabled>
                     <p>
                         <label for="new-password">
-                        <input v-model="newPassword" type="password" id="new-password" name="new-password" :placeholder="langSnippet('password')" required></label>
+                        <input v-model="newPassword" type="password" id="new-password" autocomplete="new-password" name="new-password" :placeholder="langSnippet('password')" required></label>
                     </p>
                     <p>
                         <label for="new-password-check">
-                        <input v-model="newPasswordCheck" type="password" id="new-password-check" name="new-password-check" :placeholder="langSnippet('password_repeate')" required></label>
+                        <input v-model="newPasswordCheck" type="password" id="new-password-check" autocomplete="new-password" name="new-password-check" :placeholder="langSnippet('password_repeate')" required></label>
                     </p>
                     <p class="text-right marg-no">
                         <button type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
