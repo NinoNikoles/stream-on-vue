@@ -184,6 +184,7 @@ $button-size: (
 $input: (
     background:             transparent,
     border-color:           map-get($global, border-color),
+    border-color-hover:     map-get($global, border-color-hover),
     border-color-focus:     map-get($global, border-color-hover),
     border-radius:          map-get($global, border-radius),
     border-style:           map-get($global, border-style),

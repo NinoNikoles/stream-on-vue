@@ -109,8 +109,10 @@ $border-color-hover:    global(border-color-hover) !default;
 
 //-- Form Settings --
 $input-bg:					form(background) !default;
+$input-bg-hover:			form(background) !default;
 $input-bg-focus:			form(background) !default;
 $input-border-color: 		form(border-color) !default;
+$input-border-color-hover: 	form(border-color-hover) !default;
 $input-border-color-focus:  form(border-color-focus) !default;
 $input-color:				form(color) !default;
 $input-color-placeholder:	form(place-holder-color) !default;

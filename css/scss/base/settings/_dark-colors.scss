@@ -90,8 +90,10 @@ $dark-border-color-hover:    global(border-color-hover) !default;
 
 //-- Form Settings --
 $dark-input-bg:					    form(background) !default;
+$dark-input-bg-hover:			    form(background) !default;
 $dark-input-bg-focus:			    form(background) !default;
 $dark-input-border-color: 		    $grey !default;
+$dark-input-border-color-hover:     $white !default;
 $dark-input-border-color-focus:     $white !default;
 $dark-input-color:				    typo(color-invert) !default;
 $dark-input-color-placeholder:	    $grey-dark !default;

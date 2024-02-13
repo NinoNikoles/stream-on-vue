@@ -105,8 +105,10 @@
 
     //-- Form Settings --
     --input-bg:                         #{$input-bg};
+    --input-bg-hover:                   #{$input-bg-hover};
     --input-bg-focus:                   #{$input-bg-focus};
     --input-border-color:               #{$input-border-color};
+    --input-border-color-hover:         #{$input-border-color-hover};
     --input-border-color-focus:         #{$input-border-color-focus};
     --input-border-style:               #{$input-border-style};
     --input-color:                      #{$input-color};
@@ -284,8 +286,10 @@ html[data-theme="dark"] {
 
     //-- Form Settings --
     --input-bg:                         #{$dark-input-bg};
+    --input-bg-hover:                   #{$dark-input-bg-hover};
     --input-bg-focus:                   #{$dark-input-bg-focus};
     --input-border-color:               #{$dark-input-border-color};
+    --input-border-color-hover:         #{$dark-input-border-color-hover};
     --input-border-color-focus:         #{$dark-input-border-color-focus};
     --input-color:                      #{$dark-input-color};
     --input-color-placeholder:          #{$dark-input-color-placeholder};

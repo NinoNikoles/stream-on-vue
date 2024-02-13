@@ -16,6 +16,31 @@ label {
     }
 }
 
+[type='color'],
+[type='date'],
+[type='datetime'],
+[type='datetime-local'],
+[type='email'],
+[type='month'],
+[type='number'],
+[type='password'],
+[type='search'],
+[type='tel'],
+[type='text'],
+[type='time'],
+[type='url'],
+[type='week'],
+[type="file"],
+[data-type="file"],
+select,
+textarea {
+    &:focus {
+        &::placeholder {
+            color: var(--white-50);
+        }
+    }
+}
+
 input[type="file"] {
     &::file-selector-button {
         display: none;

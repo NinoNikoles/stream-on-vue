@@ -109,6 +109,16 @@ textarea {
     max-width: 100%;
     @include transitions(background-color $transition-default, border-color $transition-default, color $transition-default);
 
+    &:hover {
+        background: {
+            color: var(--input-bg-hover);
+        }
+        border: {
+            color: var(--input-border-color-hover);
+        }
+        outline: none;
+    }
+
     &:focus {
         background: {
             color: var(--input-bg-focus);
