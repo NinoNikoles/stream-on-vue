@@ -109,6 +109,7 @@ export default {
                 this.callout('success', this.langSnippet('save'));
             } else {
                 this.keyError = "API Key is not valid!";
+                this.callout('alert', this.langSnippet(this.keyError));
             }
             
             this.enableButton(saveButton);
