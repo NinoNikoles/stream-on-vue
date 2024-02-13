@@ -10,7 +10,9 @@
     position: relative;
 
     @include MQ(medium) {
+        flex-grow: 1;
         width: auto;
+        max-width: rem-calc(500);
     }
 
     &-fix {
@@ -33,6 +35,11 @@
         height: rem-calc(40);
         position: relative;
 
+        @include MQ(medium) {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         input {
             box-shadow: 0px 20px 15px 5px rgba(0, 0, 0, 0.5);
             padding: {
@@ -52,14 +59,11 @@
                 box-shadow: none;
                 padding: {
                     right: rem-calc(48);
-                    //left: rem-calc($grid-padding/2);
                 }
-                width: rem-calc(300);
                 height: rem-calc(40);
-                max-width: rem-calc(300);
                 position: relative;
                 top: 0;
-                right: 0;
+                right: unset;
                 left: unset;
                 z-index: 0;
             }
@@ -129,6 +133,8 @@
                     padding: {
                         right: rem-calc(28);
                     }
+                    right: unset;
+                    left: unset;
                 }
             }
 

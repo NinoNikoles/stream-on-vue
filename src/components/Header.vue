@@ -294,8 +294,7 @@ export default {
                 document.body.classList.remove(activeClass);
                 this.searchResults = null;
             }
-        },        
-
+        },
     },
     mounted() {
         this.fetchSessionStatus()
@@ -309,11 +308,10 @@ export default {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.backendRoutes = routes;
                 });
-                this.getCurrentUserInfo();     
-                this.handleSearchInput();       
+                this.getCurrentUserInfo();
+                this.handleSearchInput();
             }
         });
-
     }
 };
 </script>
