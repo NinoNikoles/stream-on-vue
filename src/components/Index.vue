@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <div v-if="availableSlider">
+        <template v-if="availableSlider">
             <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
                     <div class="column column-space-2">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 

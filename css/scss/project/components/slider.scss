@@ -1,5 +1,14 @@
 .currentWatch-slider,
 .genre-slider {
+    opacity: 0;
+    visibility: hidden;
+    @include transition(opacity $transition-default);
+
+    &.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
     .column {
         .swiper-slide {
             z-index: 0;
