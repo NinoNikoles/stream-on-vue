@@ -6,15 +6,15 @@
         </div>
     </div>
 
-    <div v-if="show" class="pad-top-xl">
+    <div v-if="show" class="pad-top-xl pad-bottom-xl">
         <div class="innerWrap">
             <div class="col7">
                 <div class="col12"><h1>{{ show.title }}</h1></div>
                 <div class="col12"><p>{{ show.overview }}</p></div>
-                <div class="col3"><p><strong>Rating:</strong><br>{{ show.rating }}</p></div>
-                <div class="col5"><p><strong>Release:</strong><br>{{ show.release_date }}</p></div>
+                <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ show.rating }}</p></div>
+                <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ show.release_date }}</p></div>
                 <div class="col12">
-                    <p><strong>Genre:</strong><br>
+                    <p><strong>{{ langSnippet('genres') }}:</strong><br>
                         <span v-for="(listGenre, index) in genre" :key="index" class="tag">
                             {{ listGenre }}
                         </span>
@@ -64,7 +64,9 @@
         </div>
 
         <div id="media-browser" style="display: none;">
-            <media-browser-component></media-browser-component>
+            <div class="row">
+                <media-browser-component></media-browser-component>
+            </div>
         </div>
 
         <div id="deleteShow" style="display: none;">
@@ -176,7 +178,39 @@ export default {
             } catch (err) {
                 console.log(err);
             }
-        }
+        },
+        async savePoster() {
+            var posterSelect = document.querySelector('input[name="poster"]:checked');
+
+            if (posterSelect) {
+                var newPoster = posterSelect.value;
+
+                try {
+                    await axios.post(`${this.$mainURL}:3000/api/db/saveNewPoster?mediaID=${this.movie.tmdbID}&poster=${newPoster}`);
+                    document.getElementById('mainPoster').src = `http://image.tmdb.org/t/p/original${newPoster}`;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            Fancybox.close();
+        },
+        async saveBackdrop() {
+            var backdropSelect = document.querySelector('input[name="backdrop"]:checked');
+            
+            if (backdropSelect) {
+                var newBackdrop = backdropSelect.value;
+
+                try {
+                    await axios.post(`${this.$mainURL}:3000/api/db/saveNewBackdrop?mediaID=${this.movie.tmdbID}&backdrop=${newBackdrop}`);
+                    document.getElementById('mainBackdrop').src = `http://image.tmdb.org/t/p/original${newBackdrop}`;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            Fancybox.close();
+        },
     },
     mounted() {
         const showID = this.$route.params.id;
