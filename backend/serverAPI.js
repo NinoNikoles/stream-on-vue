@@ -44,6 +44,34 @@ function loginFunction(username, password, request) {
     });
 }
 
+function getQueryFunction(query) {
+    return new Promise((resolve, reject) => {
+        // Finde den Benutzer in der Datenbank
+        db.all(query, [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+const getQuery = async(req, res) => {
+    const { query, like } = req.query;
+    let queryString = query;
+
+    if (like) {
+        queryString = queryString.replace(/\$\$\$\$/g, `LIKE '%${like}%'`);
+    }
+
+    try {
+        var response = await getQueryFunction(queryString);
+        res.json(response);
+    } catch(err) {
+        res.status(500).send({message: err});
+    }
+}
+
 //-- Login --
 const login = async(req, res) => {
     const { username, password } = req.body;
@@ -608,7 +636,7 @@ const genreSlider = (req, res) => {
 const genreMovies = (req, res) => {
     const { genreID } = req.query;
 
-    let query = `SELECT *
+    let query = `SELECT tmdbID
     FROM media
     INNER JOIN media_genre ON media.tmdbID = media_genre.media_id
     WHERE media_genre.genre_id = ${genreID}
@@ -1081,6 +1109,7 @@ const updateWatchlist = async(req, res) => {
 }
 
 module.exports = {
+    getQuery,
     getSession,
     login,
     logout,
