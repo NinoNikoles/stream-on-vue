@@ -229,5 +229,6 @@ $aspect-ratio: (
 
 //-- Transitions --
 $transitions: (
-    default: 0.3s ease
+    duration:   0.3s,
+    timing:     ease,
 ) !default;
