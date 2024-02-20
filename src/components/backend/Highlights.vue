@@ -1,13 +1,13 @@
 <template>
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-xl">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('highlights') }}</h1>
             </div>
 
-            <div class="col12 marg-bottom-m">
-                <div v-if="highlights">
-                    <table class="rounded">
+            <div class="col12">
+
+                    <table class="rounded marg-no" v-if="highlights">
                         <thead>
                             <th class="desktop-only">{{ langSnippet('thumbnail') }}</th>
                             <th>{{ langSnippet('name') }}</th>
@@ -34,10 +34,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div v-else>
-                    <p>{{ langSnippet('')}}</p>
-                </div>
+                    <p class="marg-no" v-else>{{ langSnippet('no_highlights_available')}}</p>
             </div>
         </div>
     </div>    

@@ -6,7 +6,7 @@
         </div>
     </div>
 
-    <div v-if="movie" class="pad-top-xl">
+    <div v-if="movie" class="pad-top-xl pad-bottom-l">
         <div class="innerWrap">
             <div class="col7">
                 <div v-if="isHighlight===null" class="col12">

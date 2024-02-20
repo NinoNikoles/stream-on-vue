@@ -6,13 +6,13 @@
         </div>
     </div>
 
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-l">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('movies') }}</h1>
             </div>
 
-            <div v-if="genreAvailable" class="col12 marg-bottom-m">
+            <div v-if="genreAvailable" class="col12">
                 <div id="searchbar">
                     <label for="movie-api-search">
                         <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('search')+` ...`" required>

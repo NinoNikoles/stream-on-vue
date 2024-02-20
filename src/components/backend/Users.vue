@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-xl">
         <div class="col12">
             <div class="col6">
                 <h1>{{ langSnippet('users') }}</h1>
@@ -9,7 +9,7 @@
                 <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
             </div>
 
-            <table v-if="users" class="rounded">
+            <table v-if="users" class="rounded marg-no">
                 <thead>
                     <th class="desktop-only">{{ langSnippet('user_img') }}</th>
                     <th>{{ langSnippet('username') }}</th>

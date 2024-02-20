@@ -6,13 +6,13 @@
         </div>
     </div>
 
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-l">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('shows') }}</h1>
             </div>
 
-            <div class="col12 marg-bottom-m">
+            <div class="col12">
                 <div id="searchbar">
                     <label for="show-api-search">
                         <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" :placeholder="langSnippet('search')+` ...`" required>

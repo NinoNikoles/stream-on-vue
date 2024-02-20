@@ -1,11 +1,11 @@
 <template>
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-l">
         <div class="col12">
             <div class="col12">
                 <h1>{{ langSnippet('settings') }}</h1>
             </div>
 
-            <div class="col12 marg-bottom-m">
+            <div class="col12">
                 <div class="row">
                     <div class="col5 column marg-right-col7">
                         <p>

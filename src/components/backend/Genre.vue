@@ -1,30 +1,26 @@
 <template>
-    <div class="innerWrap pad-top-xl">
+    <div class="innerWrap pad-top-xl pad-bottom-xl">
         <div class="col12">
             <div class="col12">
                 <h1>Genre</h1>
             </div>
 
-            <div class="col12 marg-bottom-m">
-                <div v-if="genre">  
-                    <table class="rounded">
-                        <thead>
-                            <th class="desktop-only">ID</th>
-                            <th>TMDB ID</th>
-                            <th>Name</th>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(listGenre, index) in genre" :key="index">
-                                <td class="desktop-only">{{ listGenre.id }}</td>
-                                <td>{{ listGenre.genre_id}}</td>
-                                <td>{{ listGenre.genre_name }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div v-else>
-                    <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre">Add</button>
-                </div>
+            <div class="col12">
+                <table class="rounded marg-no" v-if="genre">
+                    <thead>
+                        <th class="desktop-only">ID</th>
+                        <th>TMDB ID</th>
+                        <th>Name</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(listGenre, index) in genre" :key="index">
+                            <td class="desktop-only">{{ listGenre.id }}</td>
+                            <td>{{ listGenre.genre_id}}</td>
+                            <td>{{ listGenre.genre_name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre" v-else>Add</button>
             </div>
         </div>
     </div>    

@@ -108,6 +108,7 @@ const langs = [
             'select_file': 'Select a file',
             'upload_new_img': 'Upload new profile image',
             'please_wait_adding_show': 'Please wait. This could take a while.',
+            'no_highlights_available': 'No highlights available.',
 
             //Add
             'add_movie_to_library': 'Do you want to add the movie "<strong>$content</strong>" to your library?',
@@ -225,6 +226,7 @@ const langs = [
             'select_file': 'Datei auswählen',
             'upload_new_img': 'Neues Profilbild hochladen',
             'please_wait_adding_show': 'Bitte warten. Dies könnte einige Zeit in Anpsruch nehmen.',
+            'no_highlights_available': 'Keine Highlights vorhanden.',
 
             //Add
             'add_movie_to_library': 'Möchtest du den Film "<strong>$content</strong>" deiner Bibliothek hinzufügen?',
