@@ -132,4 +132,6 @@ $table-space-vertical:      table(space-vertical) !default;
 $mnavheight: rem-calc(50) !default;
 
 //-- Transitions --
-$transition-default:   transition(default) !default;
+$transition-duration:       transition(duration) !default;
+$transition-timing:         transition(timing) !default;
+$transition-default:        $transition-duration $transition-timing !default;
