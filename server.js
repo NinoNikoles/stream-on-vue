@@ -44,6 +44,8 @@ const blueColor = "\x1b[34m";
 // Connects / Init database
 dbSetup();
 
+app.get('/api/db/getQuery', serverAPI.getQuery);
+
 //-- Settings
 app.post('/api/db/saveSettings', serverAPI.updateSettings);
 app.get('/api/db/getSettings', serverAPI.getSettings);
