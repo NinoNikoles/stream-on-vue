@@ -399,7 +399,7 @@ function userMenuBtn() {
 
 function scrollTrigger() {
 
-    function checkVisibility(className, offset = 150) {
+    function checkVisibility(className, offset = 100) {
         var elements = document.querySelectorAll('.' + className);
         var main = document.getElementById('main');
 

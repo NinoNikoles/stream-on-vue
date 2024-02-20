@@ -1,7 +1,7 @@
 .modal {
     display: block;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     position: fixed;
     top: 0;
     left: 100%;
@@ -16,7 +16,7 @@
     &.active {
         left: 0;
         z-index: 20;
-        @include transitions(left $transition-default, z-index 0s ease 0s);
+        @include transitions(left $transition-default 0.3, z-index 0s ease 0s);
 
         .modal-overlay {
             opacity: 1;
@@ -192,18 +192,8 @@
     }
 }
 
-// body {
-//     @include transition(overflow 0s ease 0s);
-// }
-
 body.active-modal {
-    // overflow: hidden;
-}
-
-#main {
-    overflow: auto;
-    max-height: calc(100vh - 50px);
-    width: 100vw;
+    overflow: hidden;
 }
 
 .fancybox__container {

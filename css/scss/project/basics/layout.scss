@@ -6,13 +6,13 @@ body {
     padding: {
         top: rem-calc(50) !important;
     }
-    overflow: unset;
+    // overflow: unset;
 }
 
-// #main {
-//     height: calc(100vh - 50px);
-//     overflow: hidden auto;
-// }
+#main {
+    max-height: calc(100vh - 50px);
+    overflow: auto;
+}
 
 table,
 .table {

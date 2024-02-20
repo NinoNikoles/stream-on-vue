@@ -101,7 +101,7 @@ export default {
             var modal = document.getElementById(popUpID);
             
             body.classList.add('active-modal');
-            document.documentElement.style.overflow = 'hidden';
+            // document.documentElement.style.overflow = 'hidden';
             modal.classList.add('active');
         },
         closePopUp(popUpID, event) {
@@ -110,7 +110,7 @@ export default {
             var modal = document.getElementById(popUpID);
 
             document.body.classList.remove('active-modal');
-            document.documentElement.style.overflow = 'unset';
+            // document.documentElement.style.overflow = 'unset';
             modal.classList.remove('active');
         },
         disableButton(button) {
