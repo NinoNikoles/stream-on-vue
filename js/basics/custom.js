@@ -242,7 +242,8 @@ debounceScroll = function(e){
 
 var checkPosition = function(e) {
     var header = document.querySelector('header'),
-        top = window.scrollY;
+        main = document.getElementById('main'),
+        top = main.scrollTop;
 
     if ( header !== null ) {
     // Überprüfe, ob der Benutzer 50 Pixel nach unten gescrollt hat
@@ -400,10 +401,11 @@ function scrollTrigger() {
 
     function checkVisibility(className, offset = 150) {
         var elements = document.querySelectorAll('.' + className);
+        var main = document.getElementById('main');
 
         elements.forEach(function(element) {
             var rect = element.getBoundingClientRect();
-            var windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            var windowHeight = main.innerHeight || main.clientHeight;
             var topThreshold = offset;
             var bottomThreshold = windowHeight - offset;
 
@@ -427,8 +429,9 @@ function initCustomJS() {
     initTabs();
     scrollTrigger();
 
+
     // window.addEventListener('resize', debounce);
-    window.addEventListener('scroll', debounceScroll);
+    document.getElementById('main').addEventListener('scroll', debounceScroll);
 }
 
 window.initCustomJS = initCustomJS;
