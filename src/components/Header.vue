@@ -62,7 +62,7 @@
                                 </li>
                                 
                                 <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
-                                <li class="menu-item"><a href="#" @click="logout_function()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
+                                <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>
                     </button>
@@ -94,15 +94,15 @@
                         <div class="media-card">
                             <div class="media-card-wrapper">
                                 <figure class="widescreen desktop-only">
-                                    <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media.title}`">
+                                    <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                                 </figure>
                                 <figure class="poster mobile-only">
-                                    <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                                    <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                                 </figure>
                                 <div class="link-wrapper">
-                                    <a v-if="media['mediaDetails'].file_path" href="#" :title="`${media['mediaDetails'].title}`" class="play-trigger"></a>
-                                    <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
-                                    <a :href="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
+                                    <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
+                                    <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
+                                    <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
                         </div>
@@ -120,6 +120,8 @@ import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
 //import _debounce from 'lodash/debounce';
+
+let mediaInfos = [];
 
 export default {
     name: 'AppHeader',
@@ -177,42 +179,16 @@ export default {
                     if (input !== '') {
                         document.body.classList.add('active-search');
 
-                        const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaByInput?input=${input}&orderBy=title&order=ASC`);
-                        const searchResults = response.data;
+                        var mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE title $$$$ ORDER BY title ASC`, input);
 
-                        const mediaPromises = searchResults.map(async (result) => {
-                            const mediaInfos = {};
-                            const mediaGenre = [];
-
-                            try {
-                                if (result.media_type === 'show') {
-                                    mediaInfos.seasons = await this.getSeasons(result.tmdbID);
-                                    mediaInfos.episodes = await this.getEpisodes(result.tmdbID);
-                                }
-
-                                const mediaGenreIDs = JSON.parse(result.genres);
-
-                                for (const genreID of mediaGenreIDs) {
-                                    try {
-                                        mediaGenre.push(await this.getGenre(genreID));
-                                    } catch (e) {
-                                        console.log(e);
-                                    }
-                                }
-
-                                mediaInfos.genre = mediaGenre;
-                                mediaInfos.mediaDetails = result;
-                                mediaInfos.mediaDetails.watchlist_status = await this.checkWatchlist(result.tmdbID);
-
-                                return mediaInfos;
-                            } catch (error) {
-                                console.log(error);
-                                return null;
+                        for (let i = 0; i < mediaResponse.length; i++) {
+                            if ( !mediaInfos.includes(mediaResponse[i].tmdbID) ) {
+                                mediaInfos.push(mediaResponse[i].tmdbID);
                             }
-                        });
+                        }
 
-                        const media = await Promise.all(mediaPromises);
-                        this.searchResults = media.filter(item => item !== null);
+                        var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
+                        this.searchResults = await this.getAllMediaInfos(ids, 'title', 'ASC');
                     } else {
                         document.body.classList.remove('active-search');
                         this.searchResults = null;
@@ -246,9 +222,9 @@ export default {
                 console.log(error);
             }
         },
-        // async logout() {
-        //     await this.logout_function();
-        // },
+        async logout() {
+            await this.logout_function();
+        },
         async fetchSessionStatus() {
             const userData = await this.fetchUserSession();
             if ( typeof userData === 'object' ) {

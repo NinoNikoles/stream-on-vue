@@ -7,6 +7,75 @@ export default {
     mixins: [langSnippet],
     emits: ['data-fetched'],
     methods: {
+        async get(query, like = null) {
+            try {
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/getQuery?query=${query}&like=${like}`);
+                return response.data;
+            } catch (err) {
+                return err;
+            }            
+        },
+        tmdbIDinArray(element, arr) {
+            var equal = false;
+
+            if ( arr.length > 0 ) {
+                for (let i = 0; i < arr.length; i++) {
+                    if ( element === arr[i].tmdbID ) {
+                        equal = true;
+                        return equal;
+                    }
+                }
+            }
+
+            return false;
+        },
+        async getMediaPreview(ids, orderBy, orderType) {
+            let idOutput = ids.join(', ');
+            let query = `SELECT * FROM media WHERE tmdbID in (${idOutput})`;
+
+            if (orderBy) query += ` ORDER BY ${orderBy}`;
+            if (orderType) query += ` ${orderType}`;
+
+            try {
+                var response = await this.get(query);                
+                return response;
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        async getAllMediaInfos(ids, orderBy = null, orderType = null) {
+            var mediaInfos = [];
+
+            // Gets all Basic infos from database
+            mediaInfos = await this.getMediaPreview(ids, orderBy, orderType);
+
+            for (let i = 0; i < mediaInfos.length; i++) {
+                // Gets all seasons and episodes if media is show
+                if (mediaInfos[i].media_type === "show") {
+                    try {                                    
+                        mediaInfos[i]['seasons'] = await this.getSeasons(mediaInfos[i].tmdbID);
+                        mediaInfos[i]['episodes'] = await this.getEpisodes(mediaInfos[i].tmdbID);                      
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
+                
+                var mediaGenreIDs = JSON.parse(mediaInfos[i].genres);
+                mediaInfos[i].genres = [];
+
+                for (let x = 0; x < mediaGenreIDs.length; x++) {
+                    try {
+                        mediaInfos[i]['genres'][x] = await this.getGenre(mediaGenreIDs[x]);                                    
+                    } catch(e) {
+                        console.log(e);
+                    }                                    
+                }
+
+                mediaInfos[i]['watchlist_status'] = await this.checkWatchlist(mediaInfos[i].tmdbID);
+            }
+            return mediaInfos;
+        },
         toggleMainMenu(event) {
             event.preventDefault();
             var menuBtn = document.getElementById('menu-button');
@@ -22,51 +91,17 @@ export default {
                 userBtn.classList.add('active');
             }
         },
-
-        async createContent(media) {
-            var newMedia = {
-                'genre': [],
-                'mediaDetails': {},
-                'seasons': [],
-                'episodes': []
-            }
-
-            var genre = null;
-
-            for (let x = 0; x < media['genre'].length; x++) {
-                genre = media['genre'][x];
-                newMedia['genre'].push(genre);
-            }
-
-            Object.entries(media['mediaDetails']).forEach(([key, value]) => {
-                newMedia['mediaDetails'][key] = value;
-            });
-
-            if (media['seasons']) {
-                Object.entries(media['seasons']).forEach(([key, value]) => {
-                    newMedia['seasons'][key] = value;
-                });
-            }
-            if (media['episodes']) {
-                Object.entries(media['episodes']).forEach(([key, value]) => {
-                    newMedia['episodes'][key] = value;
-                });
-            }
-            
-            return newMedia;
+        openMediaPopUp(media, event) {
+            this.$emit('data-fetched', media);
+            this.openPopUp('media-content', event);                                  
         },
-        async openMediaPopUp(media, event) {
-            this.createContent(media).then((newMedia) => {
-                this.$emit('data-fetched', newMedia);
-                this.openPopUp('media-content', event); 
-            });                       
-        },
-
         openPopUp(popUpID, event) {
             event.preventDefault();
+            var body = document.body;
             var modal = document.getElementById(popUpID);
             
-            document.body.classList.add('active-modal');
+            body.classList.add('active-modal');
+            document.documentElement.style.overflow = 'hidden';
             modal.classList.add('active');
         },
         closePopUp(popUpID, event) {
@@ -75,6 +110,7 @@ export default {
             var modal = document.getElementById(popUpID);
 
             document.body.classList.remove('active-modal');
+            document.documentElement.style.overflow = 'unset';
             modal.classList.remove('active');
         },
         disableButton(button) {
@@ -239,7 +275,7 @@ export default {
                 })
                 .catch((error) => {
                     // Fehler bei der Anmeldung
-                    console.error('Login failed', error);
+                    console.error('Logout failed', error);
                 });
             } catch(err) {
                 console.log(err);

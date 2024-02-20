@@ -36,137 +36,34 @@
             <div v-for="(show, index) in shows" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
                 <div class="media-card">
                     <div class="media-card-wrapper">
-                        <template v-if="show['mediaDetails'].file_path === null">
+                        <template v-if="show.file_path === null">
                             <figure class="widescreen desktop-only disabled">
-                                <img src="" :data-img="$loadImg(show['mediaDetails'].backdrop)" :alt="`${show['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(show.backdrop)" :alt="`${show.title}`">
                             </figure>
                             <figure class="poster mobile-only disabled">
-                                <img src="" :data-img="$loadImg(show['mediaDetails'].poster)" :alt="`${show['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(show.poster)" :alt="`${show.title}`">
                             </figure>
                         </template>
 
                         <template v-else>
                             <figure class="widescreen desktop-only">
-                                <img src="" :data-img="$loadImg(show['mediaDetails'].backdrop)" :alt="`${show['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(show.backdrop)" :alt="`${show.title}`">
                             </figure>
                             <figure class="poster mobile-only">
-                                <img src="" :data-img="$loadImg(show['mediaDetails'].poster)" :alt="`${show['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(show.poster)" :alt="`${show.title}`">
                             </figure>
                         </template>
 
                         <div class="link-wrapper">
-                            <a v-if="show['mediaDetails'].file_path" href="#" :title="`${show['mediaDetails'].title}`" class="play-trigger"></a>
-                            <a href="#" @click="openPopUp(`${show['mediaDetails'].tmdbID}`, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show['mediaDetails'].tmdbID}`"></a>
-                            <router-link :to="`/backend/${show['mediaDetails'].media_type}/${show['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                            <a v-if="show.file_path" href="#" :title="`${show.title}`" class="play-trigger"></a>
+                            <a href="#" @click="openMediaPopUp(show, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show.tmdbID}`"></a>
+                            <router-link :to="`/backend/${show.media_type}/${show.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <template v-if="shows">
-        <div class="modal" :id="`${show['mediaDetails'].tmdbID}`" v-for="(show, index) in shows" :key="index">
-            <div class="modal-overlay"></div>
-            <div class="modal-wrap large">
-                <div class="modal-inner-wrap">
-                    <div class="info-popup">
-                        <div class="col12 marg-bottom-xs mobile-only">
-                            <figure class="widescreen">
-                                <img :data-img="$loadImg(show['mediaDetails'].backdrop)" loading="lazy" importance="low" alt="">
-                            </figure>
-                        </div>
-                        <div class="innerWrap">
-                            <div class="col7 marg-right-col1">
-                                <p class="h2">{{ show['mediaDetails'].title }}</p>
-                                <p class="small tag-list marg-bottom-base">
-                                    <span class="tag">{{ show['mediaDetails'].release_date }}</span>
-                                    <span class="tag">{{ show['mediaDetails'].rating }}/10 ★</span>
-                                </p>
-
-                                <div class="col12">
-                                    <div class="col-9">
-                                        <!-- Play button -->
-                                        <button v-if="show['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
-                                    </div>                                    
-                                
-                                    <div class="col-3">
-                                        <p class="text-right">
-                                            <!-- Like button -->
-                                            <button v-if="show['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
-                                            <button v-else @click="watchListAction(show['mediaDetails'].tmdbID, `btn-${show['mediaDetails'].tmdbID}`)" href="#" :id="`btn-${show['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn liked marg-no"></button>
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <p class="small">{{ show['mediaDetails'].overview }}</p>
-                                <p v-if="show['genre']" class="small tag-list marg-bottom-base">
-                                    <span v-for="(genre, index) in show['genre']" :key="index" class="tag">
-                                        {{ genre }}
-                                    </span>
-                                </p>
-                                <p>
-                                    <label>{{ langSnippet('seasons') }}
-                                        <select :class="`tab-select season-select-${show['mediaDetails'].tmdbID}`" :id="`season-select-${show['mediaDetails'].tmdbID}`" @change="SelectTabs($event)">
-                                            <template v-for="(season, index) in show['seasons']" :key="index">
-                                                <option v-if="season.title !== 'Extras'" :value="`${season.season_number}`">
-                                                    {{ season.title }}
-                                                </option>
-                                            </template>
-                                            <!-- Extras always get shown at the end -->
-                                            <option v-if="show['seasons'][0].title === 'Extras'" :value="`${show['seasons'][0].season_number}`">
-                                                {{ show['seasons'][0].title }}
-                                            </option>
-                                        </select>
-                                    </label>
-                                </p>
-
-                                <template v-for="(season, index) in show['seasons']" :key="index">
-                                    <div v-if="season.season_number === 1" :class="`col12 select-tab-content season-select-${show['mediaDetails'].tmdbID} is-active marg-bottom-base`" :data-select-tab="`${season.season_number}`">
-                                        <template v-for="(episode, index) in show['episodes']" :key="index">
-                                            <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
-                                                <div class="col-5 col-3-medium">
-                                                    <figure class="widescreen">
-                                                        <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
-                                                    </figure>
-                                                </div>
-                                                <div class="col-7 col-9-medium pad-left-xs">
-                                                    <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                                    <p class="small">{{ $truncate(episode.overview, 100) }}</p>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </div>
-                                    <div v-else :class="`col12 select-tab-content season-select-${show['mediaDetails'].tmdbID} marg-bottom-base`" :data-select-tab="`${season.season_number}`">
-                                        <template v-for="(episode, index) in show['episodes']" :key="index">
-                                            <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
-                                                <div class="col-5 col-3-medium">
-                                                    <figure class="widescreen">
-                                                        <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
-                                                    </figure>
-                                                </div>
-                                                <div class="col-7 col-9-medium pad-left-xs">
-                                                    <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                                    <p class="small">{{ $truncate(episode.overview, 100) }}</p>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </template>
-                            </div>
-                            <div class="col4 desktop-only">
-                                <figure class="poster">
-                                    <img :data-img="$loadImg(show['mediaDetails'].poster)" alt="" loading="lazy" importance="low">
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="modal-close" @click="closePopUp(`${show['mediaDetails'].tmdbID}`, $event)"></a>
-            </div>
-        </div>
-    </template>
-
 </template>
 
 <script>
@@ -174,6 +71,8 @@ import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 //import { Swiper, SwiperSlide } from 'swiper/vue';
+
+let mediaInfos = [];
 
 export default {
     name: 'FrontendShows',
@@ -196,59 +95,30 @@ export default {
             var orderArr = orderString.split(',');
             var orderBy = orderArr[0];
             var orderType = orderArr[1];
-            var mediaGenre = [];
-            var allShows = [];
-            var allShowInfos = [];
-            var shows = [];
+            var mediaResponse = [];
 
-            if ( genreID === 'all' ) {               
+            if ( genreID === 'all' ) {
                 try {
-                    const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type='show'&orderBy=${orderBy}&order=${orderType}`);
-                    shows = response.data;                    
+                    mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE media_type = "show" ORDER BY ${orderBy} ${orderType}`);
                 } catch (error) {
-                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                     console.log(error);
                 }
             } else {
                 try {
-                    const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaFiltered?mediaType=show&orderBy=${orderBy}&order=${orderType}&genreID=${parseInt(genreID)}`);
-                    shows = response.data;
+                    mediaResponse = await this.get(`SELECT tmdbID FROM media JOIN media_genre ON media.tmdbID = media_genre.media_id WHERE media_genre.genre_id = ${parseInt(genreID)} AND media_type = "show" ORDER BY ${orderBy} ${orderType}`);
                 } catch (error) {
-                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                     console.log(error);
                 }
             }
 
-            for (let i = 0; i < shows.length; i++) {
-                allShowInfos = [];
-                mediaGenre = [];
-
-                try {
-                    allShowInfos['seasons'] = await this.getSeasons(shows[i].tmdbID);
-                    allShowInfos['episodes'] = await this.getEpisodes(shows[i].tmdbID);
-
-                    var mediaGenreIDs = JSON.parse(shows[i].genres);
-                    for (let x = 0; x < mediaGenreIDs.length; x++) {
-                        try {
-                            mediaGenre.push(await this.getGenreNames(mediaGenreIDs[x]));
-                            
-                        } catch(e) {
-                            console.log(e);
-                        }                                    
-                    }
-
-                    allShowInfos['genre'] = mediaGenre;
-                    allShowInfos['mediaDetails'] = shows[i];
-                    allShowInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(shows[i].tmdbID);
-                    
-                } catch (err) {
-                    console.log(err);
+            for (let i = 0; i < mediaResponse.length; i++) {
+                if ( !mediaInfos.includes(mediaResponse[i].tmdbID) ) {
+                    mediaInfos.push(mediaResponse[i].tmdbID);
                 }
-
-                allShows.push(allShowInfos);
             }
 
-            this.shows = allShows;
+            var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
+            this.shows = await this.getAllMediaInfos(ids, orderBy, orderType);
         },
         async getGenre() {
             try {

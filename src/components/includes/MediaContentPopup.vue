@@ -1,47 +1,47 @@
 <template>
     <template v-if="media !== null">
-        <div class="info-popup" :id="`${media['mediaDetails'].tmdbID}`">
+        <div class="info-popup" :id="`${media.tmdbID}`">
             <div class="col12 marg-bottom-xs mobile-only">
                 <figure class="widescreen">
-                    <img :data-img="$loadImg(media['mediaDetails'].backdrop)" loading="lazy" importance="low" alt="">
+                    <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
                 </figure>
             </div>
             <div class="innerWrap">
                 <div class="col7 marg-right-col1">
                     <div class="col12">
                         <div class="col-9">
-                            <p class="h2">{{ media['mediaDetails'].title }}</p>
+                            <p class="h2">{{ media.title }}</p>
                         </div>
 
                         <div class="col-3">
                             <p class="text-right">
                                 <!-- Like button -->
-                                <button v-if="media['mediaDetails']['watchlist_status'] === 0" @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
-                                <button v-else @click="watchListAction(media['mediaDetails'].tmdbID, `btn-${media['mediaDetails'].tmdbID}`)" :id="`btn-${media['mediaDetails'].tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn liked marg-no"></button>
+                                <button v-if="media['watchlist_status'] === 0" @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
+                                <button v-else @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn liked marg-no"></button>
                             </p>
                         </div>
                     </div>
 
                     <p class="small tag-list marg-bottom-base">
-                        <span class="tag">{{ media['mediaDetails'].release_date }}</span>
-                        <span class="tag">{{ media['mediaDetails'].rating }}/10 ★</span>
+                        <span class="tag">{{ media.release_date }}</span>
+                        <span class="tag">{{ media.rating }}/10 ★</span>
                         <!-- <span class="tag">'.$extraInfo.'</span> -->
                     </p>
 
                     <!-- Play button -->
-                    <button v-if="media['mediaDetails'].file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
+                    <button v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
                     
-                    <p class="small">{{ media['mediaDetails'].overview }}</p>
+                    <p class="small">{{ media.overview }}</p>
                     <p v-if="media['genre']" class="small tag-list marg-bottom-base">
                         <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
                             {{ genre }}
                         </span>
                     </p>
 
-                    <template v-if="media['mediaDetails'].media_type === 'show'">
+                    <template v-if="media.media_type === 'show'">
                         <p>
                             <label>{{ langSnippet('seasons') }}
-                                <select :class="`tab-select season-select-${media['mediaDetails'].tmdbID}`" :id="`season-select-${media['mediaDetails'].tmdbID}`" @change="SelectTabs($event)">
+                                <select :class="`tab-select season-select-${media.tmdbID}`" :id="`season-select-${media.tmdbID}`" @change="SelectTabs($event)">
                                     <template v-for="(season, index) in media['seasons']" :key="index">
                                         <option v-if="season.title !== 'Extras'" :value="`${season.season_number}`">
                                             {{ season.title }}
@@ -56,7 +56,7 @@
                         </p>
 
                         <template v-for="(season, index) in media['seasons']" :key="index">
-                            <div v-if="season.season_number === 1" :class="`col12 select-tab-content season-select-${media['mediaDetails'].tmdbID} is-active marg-bottom-base`" :data-select-tab="`${season.season_number}`">
+                            <div v-if="season.season_number === 1" :class="`col12 select-tab-content season-select-${media.tmdbID} is-active marg-bottom-base`" :data-select-tab="`${season.season_number}`">
                                 <template v-for="(episode, index) in media['episodes']" :key="index">
                                     <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
                                         <div class="col-5 col-3-medium">
@@ -79,7 +79,7 @@
                                     </div>
                                 </template>
                             </div>
-                            <div v-else :class="`col12 select-tab-content season-select-${media['mediaDetails'].tmdbID} marg-bottom-base`" :data-select-tab="`${season.season_number}`">
+                            <div v-else :class="`col12 select-tab-content season-select-${media.tmdbID} marg-bottom-base`" :data-select-tab="`${season.season_number}`">
                                 <template v-for="(episode, index) in media['episodes']" :key="index">
                                     <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
                                         <div class="col-5 col-3-medium">
@@ -92,8 +92,8 @@
                                             <p class="small">{{ $truncate(episode.overview, 100) }}</p>
                                         </div>
 
-                                        <div v-if="episode.file_path" class="link-wrapper">
-                                            <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
+                                        <div v-if="media && episode.file_path" class="link-wrapper">
+                                            <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger" v-if="media">
                                                 <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
                                                     <i class="icon-play"></i>
                                                 </span>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="col4 desktop-only">
                     <figure class="poster">
-                        <img :data-img="$loadImg(media['mediaDetails'].poster)" alt="" loading="lazy" importance="low">
+                        <img :data-img="$loadImg(media.poster)" alt="" loading="lazy" importance="low" v-if="media">
                     </figure>
                 </div>
             </div>

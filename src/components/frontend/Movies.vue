@@ -37,28 +37,28 @@
             <div v-for="(media, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
                 <div class="media-card">
                     <div class="media-card-wrapper">
-                        <template v-if="media['mediaDetails'].file_path === null">
+                        <template v-if="media.file_path === null">
                             <figure class="widescreen desktop-only disabled">
-                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                             </figure>
                             <figure class="poster mobile-only disabled">
-                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                             </figure>
                         </template>
 
                         <template v-else>
                             <figure class="widescreen desktop-only">
-                                <img src="" :data-img="$loadImg(media['mediaDetails'].backdrop)" :alt="`${media['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
                             </figure>
                             <figure class="poster mobile-only">
-                                <img src="" :data-img="$loadImg(media['mediaDetails'].poster)" :alt="`${media['mediaDetails'].title}`">
+                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
                             </figure>
                         </template>
 
                         <div class="link-wrapper">
-                            <a v-if="media['mediaDetails'].file_path" href="#" :title="`${media['mediaDetails'].title}`" class="play-trigger"></a>
-                            <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media['mediaDetails'].tmdbID}`"></a>
-                            <router-link :to="`/backend/${media['mediaDetails'].media_type}/${media['mediaDetails'].tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                            <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
+                            <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
+                            <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
                 </div>
@@ -71,6 +71,8 @@
 import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
+
+let mediaInfos = [];
 
 export default {
     name: 'FrontendMovies',
@@ -93,57 +95,30 @@ export default {
             var orderArr = orderString.split(',');
             var orderBy = orderArr[0];
             var orderType = orderArr[1];
-            var allMovies = []
-            var movies = [];
-            var movieInfos = [];
-            var movieGenre = [];
+            var mediaResponse = [];
 
             if ( genreID === 'all' ) {
                 try {
-                    const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type='movie'&orderBy=${orderBy}&order=${orderType}`);
-                    allMovies = response.data;
+                    mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE media_type = "movie" ORDER BY ${orderBy} ${orderType}`);
                 } catch (error) {
-                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                     console.log(error);
                 }
             } else {
                 try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/mediaFiltered?mediaType=movie&orderBy=${orderBy}&order=${orderType}&genreID=${parseInt(genreID)}`);
-                    allMovies = response.data;
+                    mediaResponse = await this.get(`SELECT tmdbID FROM media JOIN media_genre ON media.tmdbID = media_genre.media_id WHERE media_genre.genre_id = ${parseInt(genreID)} AND media_type = "movie" ORDER BY ${orderBy} ${orderType}`);
                 } catch (error) {
-                    // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                     console.log(error);
                 }
             }
 
-            for (let i = 0; i < allMovies.length; i++) {
-                movieInfos = [];
-                movieGenre = [];
-
-                try {
-                    var movieGenreIDs = JSON.parse(allMovies[i].genres);
-                    for (let x = 0; x < movieGenreIDs.length; x++) {
-                        try {
-                            movieGenre.push(await this.getGenreNames(movieGenreIDs[x]));
-                            
-                        } catch(e) {
-                            console.log(e);
-                        }                                    
-                    }
-
-                    movieInfos['genre'] = movieGenre;
-                    movieInfos['mediaDetails'] = allMovies[i];
-                    movieInfos['mediaDetails']['watchlist_status'] = await this.checkWatchlist(allMovies[i].tmdbID);
-                    console.log(movieInfos['mediaDetails']['watchlist_status']);
-                    
-                } catch (err) {
-                    console.log(err);
+            for (let i = 0; i < mediaResponse.length; i++) {
+                if ( !mediaInfos.includes(mediaResponse[i].tmdbID) ) {
+                    mediaInfos.push(mediaResponse[i].tmdbID);
                 }
-
-                movies.push(movieInfos);
             }
-
-            this.movies = movies;
+            
+            var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
+            this.movies = await this.getAllMediaInfos(ids, orderBy, orderType);
         },
         async getGenre() {
             try {
