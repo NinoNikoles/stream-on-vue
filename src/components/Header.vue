@@ -214,14 +214,6 @@ export default {
                 console.log(error);
             }
         },
-        async getGenre(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async logout() {
             await this.logout_function();
         },

@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 
@@ -106,17 +105,6 @@ export default {
             
             var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
             this.movies = await this.getAllMediaInfos(ids, 'title', 'ASC');
-            console.log(this.movies);
-        },
-        async getGenre() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
-                this.genres = response.data;
-                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
         },
         async popUpTrigger(media) {
             await this.selectMedia(media)
@@ -124,23 +112,15 @@ export default {
                 this.openPopUp();
             });
         },
-        async getGenreNames(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
         }
     },
     mounted() {
-        this.sessionUser().then((userID) => {
+        this.sessionUser().then(async(userID) => {
             this.userID = userID;
 
-            this.getGenre();
+            this.genres = await this.getGenre();
             this.getMovies().then(() => {
                 document.getElementById('loader').classList.add('hidden');
             });

@@ -33,7 +33,7 @@
                     
                     <p class="small">{{ media.overview }}</p>
                     <p v-if="media['genre']" class="small tag-list marg-bottom-base">
-                        <span v-for="(genre, index) in media['genre']" :key="index" class="tag">
+                        <span v-for="(genre, index) in media['genres']" :key="index" class="tag">
                             {{ genre }}
                         </span>
                     </p>

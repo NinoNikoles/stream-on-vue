@@ -125,27 +125,11 @@ export default {
                 console.log(error);
             }
         },
-        async getGenre(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async popUpTrigger(media) {
             await this.selectMedia(media)
             .then(() => {
                 this.openPopUp();
             });
-        },
-        async getGenreNames(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
-            } catch (error) {
-                console.log(error);
-            }
         },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
@@ -162,10 +146,10 @@ export default {
         },
     },
     mounted() {
-        this.sessionUser().then((userID) => {
+        this.sessionUser().then(async(userID) => {
             this.userID = userID;
 
-            this.getGenreAll();
+            this.genres = await this.getGenre();
             this.getMedia().then(() => {
                 document.getElementById('loader').classList.add('hidden');
             });

@@ -26,7 +26,6 @@ export default {
                     }
                 }
             }
-
             return false;
         },
         async getMediaPreview(ids, orderBy, orderType) {
@@ -66,15 +65,34 @@ export default {
 
                 for (let x = 0; x < mediaGenreIDs.length; x++) {
                     try {                                  
-                        mediaInfos[i]['genres'][x] = await this.getGenre(mediaGenreIDs[x]);                                    
+                        mediaInfos[i]['genres'][x] = await this.getGenreNames(mediaGenreIDs[x]);
                     } catch(e) {
                         console.log(e);
                     }                                    
                 }
 
+                mediaInfos[i]['genres'].sort();
                 mediaInfos[i]['watchlist_status'] = await this.checkWatchlist(mediaInfos[i].tmdbID);
             }
             return mediaInfos;
+        },
+        async getGenre() {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
+                return response.data;
+                
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
+        async getGenreNames(genreID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
+                return response.data[0].genre_name;                
+            } catch (error) {
+                console.log(error);
+            }
         },
         toggleMainMenu(event) {
             event.preventDefault();
