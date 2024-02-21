@@ -1094,15 +1094,15 @@ const updateWatchlist = async(req, res) => {
 
     try {
         const response = await selectFromWatchList(userID, mediaID);
-        var trigger = null;
+        var status = null;
 
         if ( response !== undefined ) {
-            trigger = await removeFromWatchlist(userID, mediaID);
+            status = await removeFromWatchlist(userID, mediaID);
         } else {
-            trigger = await addToWatchlist(userID, mediaID);
+            status = await addToWatchlist(userID, mediaID);
         }
 
-        res.json(trigger);
+        res.json(status);
     } catch(err) {
         res.status(500).send('error_occured');
     }

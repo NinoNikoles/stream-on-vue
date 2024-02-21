@@ -112,7 +112,13 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
     }
 
     &.like-btn {
-        border-color: transparent !important;
+        background: {
+            color: transparent !important;
+        }
+        border: {
+            color: transparent !important;
+        }
+        color: var(--font-color) !important;
         min-height: unset !important;
         @include transitions(background-color $transition-default, color $transition-default);
 
@@ -129,6 +135,7 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
 
         &::before {
             content: $icon-heart-empty;
+            color: inherit;
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
             @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
@@ -146,7 +153,6 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
                 family: $icon-font;
                 size: rem-calc(26) !important;
             }
-            line-height: rem-calc(46);
             margin: 0 !important;
             position: absolute !important;
             top: 50% !important;
@@ -157,7 +163,7 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
             @include animate(bounce-out, 0.15s, ease-in-out, 1);
         }
 
-        &.liked {
+        &[data-status="1"] {
             &::before {
                 transform: translate(-50%, -50%) scale(0);
                 opacity: 0;
@@ -170,6 +176,10 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
                 @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
                 @include animate(bounce-in, 0.15s, ease-in-out, 1, 0.1s);
             }
+        }
+
+        &:hover {
+            color: var(--grey) !important;
         }
     }
 }

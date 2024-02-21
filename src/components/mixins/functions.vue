@@ -256,12 +256,8 @@ export default {
 
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
-                var trigger = response.data;
-                if (trigger === 1) {
-                    button.classList.add('liked');
-                } else {
-                    button.classList.remove('liked');
-                }
+                var status = response.data;
+                button.setAttribute('data-status', status);
             } catch(err) {
                 console.log(err);
             }

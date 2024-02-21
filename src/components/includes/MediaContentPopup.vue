@@ -16,8 +16,7 @@
                         <div class="col-3">
                             <p class="text-right">
                                 <!-- Like button -->
-                                <button v-if="media['watchlist_status'] === 0" @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
-                                <button v-else @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" class="btn btn-small btn-white hollow icon-only like-btn liked marg-no"></button>
+                                <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="media['watchlist_status']" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
                             </p>
                         </div>
                     </div>
