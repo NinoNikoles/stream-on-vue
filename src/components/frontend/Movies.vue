@@ -57,7 +57,7 @@
 
                         <div class="link-wrapper">
                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                            <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
+                            <a href="#" @click="popUpTrigger(index, media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
                             <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
@@ -106,14 +106,15 @@ export default {
             var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
             this.movies = await this.getAllMediaInfos(ids, 'title', 'ASC');
         },
-        async popUpTrigger(media) {
-            await this.selectMedia(media)
-            .then(() => {
-                this.openPopUp();
-            });
-        },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
+        },
+        async popUpTrigger(index, media, event) {
+            console.log(media);
+            var status =  await this.checkWatchlist(media.tmdbID);
+            this.movies[index].watchlist_status = status
+            media.watchlist_status = status;
+            this.openMediaPopUp(media, event);
         }
     },
     mounted() {

@@ -19,7 +19,7 @@
             <div class="modal-inner-wrap">
                 <media-content-popup :media="media"></media-content-popup>
             </div>
-            <a href="#" class="modal-close" @click="closePopUp(`media-content`, $event)"></a>
+            <a href="#" class="modal-close" @click="closeMediaPopUp($event)"></a>
         </div>
     </div>
 </template>
@@ -49,6 +49,20 @@ export default {
         updateVariable(value) {
             this.media = value;
         },
+        async closeMediaPopUp(event) {
+            try {
+                await this.closePopUp(event);
+                var popUp = document.getElementById('media-content');
+                
+                popUp.addEventListener('transitionend', () => {
+                    if ( !popUp.classList.contains('active') ) {
+                        this.media = "";
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }                         
+        }
     },
     updated() {
         document.querySelectorAll('img[data-img]').forEach(function(el) {

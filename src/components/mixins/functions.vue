@@ -111,24 +111,23 @@ export default {
         },
         openMediaPopUp(media, event) {
             this.$emit('data-fetched', media);
-            this.openPopUp('media-content', event);                                  
+            console.log(media);
+            this.openPopUp(event);                                  
         },
-        openPopUp(popUpID, event) {
+        openPopUp(event) {
             event.preventDefault();
             var body = document.body;
-            var modal = document.getElementById(popUpID);
+            var modal = document.getElementById('media-content');
             
             body.classList.add('active-modal');
-            // document.documentElement.style.overflow = 'hidden';
             modal.classList.add('active');
         },
-        closePopUp(popUpID, event) {
+        async closePopUp(event) {
             event.preventDefault();
             this.$emit('data-fetched', null);
-            var modal = document.getElementById(popUpID);
+            var modal = document.getElementById('media-content');
 
             document.body.classList.remove('active-modal');
-            // document.documentElement.style.overflow = 'unset';
             modal.classList.remove('active');
         },
         disableButton(button) {
@@ -244,7 +243,7 @@ export default {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
                 const userID = response.data.user.id;
                 const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/getFromWatchlist?userID=${userID}&mediaID=${mediaID}`);
-                const status = newResponse.data;
+                var status = newResponse.data;
                 return status;
             } catch(err) {
                 console.log(err);

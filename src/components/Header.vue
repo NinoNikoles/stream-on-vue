@@ -101,7 +101,7 @@
                                 </figure>
                                 <div class="link-wrapper">
                                     <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                    <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
+                                    <a href="#" @click="popUpTrigger(index, media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
                                     <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
                                 </div>
                             </div>
@@ -262,6 +262,12 @@ export default {
                 document.body.classList.remove(activeClass);
                 this.searchResults = null;
             }
+        },
+        async popUpTrigger(index, media, event) {
+            var status =  await this.checkWatchlist(media.tmdbID);
+            this.searchResults[index].watchlist_status = status
+            media.watchlist_status = status;
+            this.openMediaPopUp(media, event);
         },
     },
     mounted() {

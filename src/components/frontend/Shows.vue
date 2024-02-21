@@ -56,7 +56,7 @@
 
                         <div class="link-wrapper">
                             <a v-if="show.file_path" href="#" :title="`${show.title}`" class="play-trigger"></a>
-                            <a href="#" @click="openMediaPopUp(show, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show.tmdbID}`"></a>
+                            <a href="#" @click="popUpTrigger(index, show, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show.tmdbID}`"></a>
                             <router-link :to="`/backend/${show.media_type}/${show.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
@@ -103,12 +103,6 @@ export default {
             var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
             this.shows = await this.getAllMediaInfos(ids, 'title', 'ASC');
         },
-        async popUpTrigger(media) {
-            await this.selectMedia(media)
-            .then(() => {
-                this.openPopUp();
-            });
-        },
         async getSeasons(showID) {
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
@@ -129,7 +123,13 @@ export default {
         },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
-        }
+        },
+        async popUpTrigger(index, media, event) {
+            var status =  await this.checkWatchlist(media.tmdbID);
+            this.shows[index].watchlist_status = status
+            media.watchlist_status = status;
+            this.openMediaPopUp(media, event);
+        },
     },
     mounted() {
         this.sessionUser().then(async(userID) => {

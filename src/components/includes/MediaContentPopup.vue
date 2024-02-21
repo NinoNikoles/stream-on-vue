@@ -1,5 +1,5 @@
 <template>
-    <template v-if="media !== null">
+    <template v-if="media">
         <div class="info-popup" :id="`${media.tmdbID}`">
             <div class="col12 marg-bottom-xs mobile-only">
                 <figure class="widescreen">
@@ -16,7 +16,7 @@
                         <div class="col-3">
                             <p class="text-right">
                                 <!-- Like button -->
-                                <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="media['watchlist_status']" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
+                                <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="`${media.watchlist_status}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
                             </p>
                         </div>
                     </div>

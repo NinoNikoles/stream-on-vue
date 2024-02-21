@@ -57,7 +57,7 @@
 
                         <div class="link-wrapper">
                             <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                            <a href="#" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
+                            <a href="#" @click="popUpTrigger(index, media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
                             <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
                         </div>
                     </div>
@@ -125,12 +125,6 @@ export default {
                 console.log(error);
             }
         },
-        async popUpTrigger(media) {
-            await this.selectMedia(media)
-            .then(() => {
-                this.openPopUp();
-            });
-        },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
         },
@@ -143,6 +137,12 @@ export default {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
                 console.log(error);
             }
+        },
+        async popUpTrigger(index, media, event) {
+            var status =  await this.checkWatchlist(media.tmdbID);
+            this.mediaAll[index].watchlist_status = status
+            media.watchlist_status = status;
+            this.openMediaPopUp(media, event);
         },
     },
     mounted() {
