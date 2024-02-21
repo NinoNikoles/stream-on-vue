@@ -60,12 +60,12 @@ export default {
                     }
                 }
 
-                
                 var mediaGenreIDs = JSON.parse(mediaInfos[i].genres);
-                mediaInfos[i].genres = [];
+                mediaInfos[i].genre = mediaGenreIDs;
+                mediaInfos[i]['genres'] = [];                 
 
                 for (let x = 0; x < mediaGenreIDs.length; x++) {
-                    try {
+                    try {                                  
                         mediaInfos[i]['genres'][x] = await this.getGenre(mediaGenreIDs[x]);                                    
                     } catch(e) {
                         console.log(e);
@@ -247,6 +247,55 @@ export default {
             } catch(err) {
                 console.log(err);
             }
+        },
+        filterByGenre(event) {
+            var $this = document.getElementById(event.target.id);
+            var selectedGenre = $this.value;
+            var mediaList = document.querySelectorAll('#media-list .media');
+
+            for (var i = 0; i < mediaList.length; i++) {
+                if ( selectedGenre === 'all' ) {
+                    mediaList[i].classList.remove('hidden-by-genre');
+                } else {
+                    var mediaGenres = JSON.parse(mediaList[i].getAttribute('data-genre'));
+                    if ( !mediaGenres.includes(parseInt(selectedGenre)) ) {
+                        mediaList[i].classList.add('hidden-by-genre');
+                    } else {
+                        mediaList[i].classList.remove('hidden-by-genre'); 
+                    }
+                }
+            }
+        },
+        filterBySetting(event) {
+            var $this = document.getElementById(event.target.id);
+            var selectedFilter = $this.value.slice(1, -1).split(",");
+            var filter = selectedFilter[0];
+            var order = selectedFilter[1];
+            var mediaList = Array.from(document.querySelectorAll('#media-list .media'));
+            var itemA, itemB;
+
+            mediaList.sort((a, b) => {
+                if ( filter === 'title' ) {
+                    itemA = a.dataset.title.toUpperCase();
+                    itemB = b.dataset.title.toUpperCase();
+                } else if ( filter === 'rating' ) {
+                    itemA = parseFloat(a.dataset.rating);
+                    itemB = parseFloat(b.dataset.rating);
+                }
+
+                if (order === 'ASC') {
+                    if (itemA < itemB) return -1;
+                    if (itemA > itemB) return 1;
+                } else if (order === 'DESC') {
+                    if (itemA < itemB) return 1;
+                    if (itemA > itemB) return -1;
+                }
+                return 0;
+            });
+
+            const container = document.getElementById('media-list');
+            container.innerHTML = '';
+            mediaList.forEach(item => container.appendChild(item));
         },
 
 

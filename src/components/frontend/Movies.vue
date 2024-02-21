@@ -12,7 +12,7 @@
         <div class="grid-row">
             <div class="col-12 col-3-medium grid-padding marg-bottom-s">
                 <label class="select">
-                    <select id="genre-filter" v-model="genreFilter" @change="getMovies()">
+                    <select id="genre-filter" @change="filterByGenre($event)">
                         <option value="all">{{ langSnippet('all') }}</option>
                         <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
                     </select>
@@ -20,13 +20,13 @@
             </div>
             <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-s">
                 <label class="select">
-                    <select id="title-filter" v-model="orderFilter" @change="getMovies()">
-                        <option value="title,ASC">A - Z</option>
-                        <option value="title,DESC">Z - A</option>
+                    <select id="title-filter" @change="filterBySetting($event)">
+                        <option value="[title,ASC]">A - Z</option>
+                        <option value="[title,DESC]">Z - A</option>
                         <!-- <option value="releaseDate,DESC">Neuste - Älteste</option>
                         <option value="releaseDate,ASC">Älteste - Neuste</option> -->
-                        <option value="rating,DESC">Bewertung: Höchste - Niedrigste</option>
-                        <option value="rating,ASC">Bewertung: Niedrigste - Höchste</option>
+                        <option value="[rating,DESC]">Bewertung: Höchste - Niedrigste</option>
+                        <option value="[rating,ASC]">Bewertung: Niedrigste - Höchste</option>
                     </select>
                 </label>
             </div>
@@ -34,7 +34,7 @@
 
         <!--- Movies --->
         <div v-if="movies" class="grid-row" id="media-list">
-            <div v-for="(media, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
+            <div v-for="(media, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding media" :data-genre="`[${media.genre}]`" :data-title="media.title" :data-rating="media.rating">
                 <div class="media-card">
                     <div class="media-card-wrapper">
                         <template v-if="media.file_path === null">
@@ -90,25 +90,12 @@ export default {
 
     methods: {
         async getMovies() {
-            var genreID = this.genreFilter;
-            var orderString = this.orderFilter;
-            var orderArr = orderString.split(',');
-            var orderBy = orderArr[0];
-            var orderType = orderArr[1];
             var mediaResponse = [];
 
-            if ( genreID === 'all' ) {
-                try {
-                    mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE media_type = "movie" ORDER BY ${orderBy} ${orderType}`);
-                } catch (error) {
-                    console.log(error);
-                }
-            } else {
-                try {
-                    mediaResponse = await this.get(`SELECT tmdbID FROM media JOIN media_genre ON media.tmdbID = media_genre.media_id WHERE media_genre.genre_id = ${parseInt(genreID)} AND media_type = "movie" ORDER BY ${orderBy} ${orderType}`);
-                } catch (error) {
-                    console.log(error);
-                }
+            try {
+                mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE media_type = "movie" ORDER BY title ASC`);
+            } catch (error) {
+                console.log(error);
             }
 
             for (let i = 0; i < mediaResponse.length; i++) {
@@ -118,7 +105,8 @@ export default {
             }
             
             var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
-            this.movies = await this.getAllMediaInfos(ids, orderBy, orderType);
+            this.movies = await this.getAllMediaInfos(ids, 'title', 'ASC');
+            console.log(this.movies);
         },
         async getGenre() {
             try {
