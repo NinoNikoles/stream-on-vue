@@ -1,7 +1,7 @@
 <template>
     <div class="innerWrap mediabrowser-wrap pad-top-xl pad-bottom-xl">
         <div class="col12">
-            
+
             <div class="table rounded">
                 <div class="thead">
                     <div class="th">
@@ -65,7 +65,7 @@
                                 <!--- Preview file button --->
                                 <td class="text-right">
                                     <button
-                                    :href="`${$mainURL}/${media.path}`"
+                                    :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
                                     class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
@@ -92,7 +92,7 @@
                                 <!--- Preview file button --->
                                 <td class="text-right">
                                     <button
-                                    :href="`${$mainURL}/${media.path}`"
+                                    :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
                                     class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
@@ -130,7 +130,7 @@
                         <input type="file" accept=".mp4" ref="fileInput" @change="uploadVideo()">
                     </span>                    
                 </span>
-                <span class="column">
+                <span class="column marg-no">
                     <button href="#createFolder" data-fancybox class="btn btn-white btn-small hollow icon-left icon-save marg-no">{{ langSnippet('create_folder') }}</button>
                 </span>         
             </div>
@@ -176,6 +176,16 @@
                 <button type="submit" @click="deleteFolder(selectedFolder)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
             </p>
         </div>
+
+        
+        <div id="deleteFile">
+            <p>
+                {{ langSnippet('delete_file') }}
+            </p>
+            <p class="text-right marg-no">
+                <button type="submit" @click="deleteFile(selectedFile)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+            </p>
+        </div>
     </div>
 
     <div class="innerWrap" v-if="mediaPath">
@@ -194,11 +204,12 @@ import mainFunctions from './mixins/functions.vue';
 export default {
     name: 'MediaBrowser',
     mixins: [langSnippet, mainFunctions],
-    props: ['selectedMedia'],
+    props: ['selectedMedia', 'onMediaPopUp'],
     data() {
         return {
             folderStructure: {},
             mainFolder: 'public/media/bibliothek',
+            mediaFolder: 'media/bibliothek',
             folderPathBreadcrumb: [],
             selectedFolder: null,
             newFolderName: null,
