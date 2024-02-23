@@ -99,12 +99,16 @@
             }
 
             .info-trigger {
+                border: none;
+                cursor: pointer;
                 width: rem-calc(50);
                 height: rem-calc(50);
                 top: unset;
                 right: 0;
                 bottom: 0;
                 left: unset;
+                outline: none !important;
+
                 &::after {
                     content: "\i";
                     font: {

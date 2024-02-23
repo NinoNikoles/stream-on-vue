@@ -1,0 +1,55 @@
+<template>
+    <template v-if="mediaContent">
+        
+        <div class="media-card">
+            <div class="media-card-wrapper">
+                <template v-if="mediaContent.file_path === null">
+                    <figure class="widescreen desktop-only disabled">
+                        <img src="" :data-img="$loadImg(mediaContent.backdrop)" :alt="`${mediaContent.title}`">
+                    </figure>
+                    <figure class="poster mobile-only disabled">
+                        <img src="" :data-img="$loadImg(mediaContent.poster)" :alt="`${mediaContent.title}`">
+                    </figure>
+                </template>
+
+                <template v-else>
+                    <figure class="widescreen desktop-only">
+                        <img src="" :data-img="$loadImg(mediaContent.backdrop)" :alt="`${mediaContent.title}`">
+                    </figure>
+                    <figure class="poster mobile-only">
+                        <img src="" :data-img="$loadImg(mediaContent.poster)" :alt="`${mediaContent.title}`">
+                    </figure>
+                </template>
+                
+                <div class="link-wrapper">
+                    <router-link v-if="mediaContent.file_path && mediaContent.media_type === 'movie'" :to="`/watch?id=${mediaContent.tmdbID}`" :title="`${mediaContent.title}`" class="play-trigger"></router-link>
+                    <router-link v-else-if="mediaContent.media_type === 'show' && mediaContent['episodes'][0].file_path" :to="`/watch?id=${mediaContent['episodes'][0].tmdbID}`" :title="`${mediaContent['episodes'][0].title}`" class="play-trigger"></router-link>
+                    
+                    <button @click="popUpTrigger(mediaContent, mediaIndex, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
+                    <router-link :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                </div>
+            </div>
+        </div>
+
+    </template>
+</template>
+
+<script>
+//import axios from 'axios';
+import functions from '../mixins/functions.vue';
+import langSnippet from '../mixins/language.vue';
+
+export default {
+    name: 'MediaCard',
+    mixins: [functions, langSnippet],
+    props: ['mediaContent', 'mediaIndex', 'onPopUpTrigger'],
+    methods: {
+        async popUpTrigger(media, index, event) {
+            var status =  await this.checkWatchlist(media.tmdbID);
+            media.watchlist_status = status;
+            this.onPopUpTrigger(media, index, event);
+            this.openPopUp(event); 
+        },
+    }
+}
+</script>

@@ -1,10 +1,10 @@
 <template>
-    <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
-        <header-component @data-fetched="updateVariable"></header-component>
-    </template>
-
     <div id="main">
-        <router-view @data-fetched="updateVariable"></router-view>
+        <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
+            <header-component @mediaPopUp="updateVariable"></header-component>
+        </template>
+        
+        <router-view @mediaPopUp="updateVariable"></router-view>
     </div>
 
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
@@ -15,11 +15,12 @@
 
     <div class="modal" :id="`media-content`">
         <div class="modal-overlay"></div>
+        
         <div class="modal-wrap large">
-            <div class="modal-inner-wrap">
+            <div class="modal-inner-wrap rounded">
+                <a href="#" class="modal-close" @click="closeMediaPopUp($event)"></a>
                 <media-content-popup :media="media"></media-content-popup>
             </div>
-            <a href="#" class="modal-close" @click="closeMediaPopUp($event)"></a>
         </div>
     </div>
 </template>

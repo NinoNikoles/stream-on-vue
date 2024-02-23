@@ -28,49 +28,22 @@
                     </div>
 
                     <div class="col12">
+
                         <div class="swiper card-slider column column-space-2">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
                                     <template v-for="(media, index) in allMedia" :key="index">
-                                        <div class="media-card" v-if="media.tmdbID === id">
-                                            <div class="media-card-wrapper">
-                                                <template v-if="media.file_path === null">
-                                                    <figure class="widescreen desktop-only disabled">
-                                                        <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                                                    </figure>
-                                                    <figure class="poster mobile-only disabled">
-                                                        <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
-                                                    </figure>
-                                                </template>
-
-                                                <template v-else>
-                                                    <figure class="widescreen desktop-only">
-                                                        <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                                                    </figure>
-                                                    <figure class="poster mobile-only">
-                                                        <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
-                                                    </figure>
-                                                </template>
-                                                
-                                                <div class="link-wrapper">
-                                                    <router-link v-if="media.file_path && media.media_type === 'movie'" :to="`/watch?id=${media.tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
-                                                    <router-link v-else-if="media.media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
-                                                    
-                                                    <a :href="`#${media.tmdbID}`" @click="openMediaPopUp(media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${slider.genre.genre_name}-media-${media.tmdbID}`"></a>
-                                                    <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
-                                                </div>
-                                            </div>
-                                        </div>
-
+                                        <media-content v-if="media.tmdbID === id" :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
+                                        <template v-else></template>
                                     </template>
-
                                 </div>
 
                             </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -82,12 +55,17 @@
 import axios from 'axios';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
+import MediaContent from './includes/MediaCard.vue';
 
 let mediaInfos = []
 
 export default {
     name: 'AppIndex',
     mixins: [functions, langSnippet],
+    components: {
+        'media-content': MediaContent,
+    },
+    props: ['onMediaPopUp'],
     data() {
         return {
             userID: null,
@@ -100,6 +78,10 @@ export default {
         };
     },
     methods: {
+        mediaOpen(media, index) {
+            this.allMedia[index].watchlist_status = media.watchlist_status;
+            this.onMediaPopUp(media);
+        },
         async genreSlider() {
             try {
                 var slider = [];

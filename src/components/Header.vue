@@ -91,21 +91,7 @@
             <div class="innerWrap">
                 <div class="grid-row" id="media-list">
                     <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
-                        <div class="media-card">
-                            <div class="media-card-wrapper">
-                                <figure class="widescreen desktop-only">
-                                    <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                                </figure>
-                                <figure class="poster mobile-only">
-                                    <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
-                                </figure>
-                                <div class="link-wrapper">
-                                    <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                                    <a href="#" @click="popUpTrigger(index, media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-header" data-modal :data-src="`${media.tmdbID}`"></a>
-                                    <a :href="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
-                                </div>
-                            </div>
-                        </div>
+                        <media-content :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
                     </div>
                 </div>
             </div>
@@ -119,13 +105,17 @@ import router from './../router';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
-//import _debounce from 'lodash/debounce';
+import MediaContent from './includes/MediaCard.vue';
 
 let mediaInfos = [];
 
 export default {
     name: 'AppHeader',
     mixins: [functions, langSnippet, tmdb],
+    components: {
+        'media-content': MediaContent,
+    },
+    props: ['onMediaPopUp'],
     data() {
         return {
             id: null,
@@ -153,6 +143,10 @@ export default {
         };
     },
     methods: {
+        mediaOpen(media, index) {
+            this.searchResults[index].watchlist_status = media.watchlist_status;
+            this.onMediaPopUp(media);
+        },
         async mainRouter() {
             return this.routes.filter(route => {
                 return route.meta.main;

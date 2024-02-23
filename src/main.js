@@ -8,8 +8,9 @@ const app = createApp(App);
 app.config.globalProperties.productionTip = false; // Setze den Wert auf true oder false, wie benötigt
 
 function loadImg(img, size = 'original') {
-    if ( !img ) return '/build/css/images/img_preview.webp';
-    return `http://image.tmdb.org/t/p/${size}${img}`;
+    if ( !img || !size) return '/build/css/images/img_preview.webp';
+    return '/build/css/images/img_preview.webp';
+    // return `http://image.tmdb.org/t/p/${size}${img}`;
 }
 
 function truncate(string, length = 100, append = "...") {

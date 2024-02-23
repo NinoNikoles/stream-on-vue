@@ -35,33 +35,7 @@
         <!--- Movies --->
         <div v-if="movies" class="grid-row" id="media-list">
             <div v-for="(media, index) in movies" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding media" :data-genre="`[${media.genre}]`" :data-title="media.title" :data-rating="media.rating">
-                <div class="media-card">
-                    <div class="media-card-wrapper">
-                        <template v-if="media.file_path === null">
-                            <figure class="widescreen desktop-only disabled">
-                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                            </figure>
-                            <figure class="poster mobile-only disabled">
-                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
-                            </figure>
-                        </template>
-
-                        <template v-else>
-                            <figure class="widescreen desktop-only">
-                                <img src="" :data-img="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                            </figure>
-                            <figure class="poster mobile-only">
-                                <img src="" :data-img="$loadImg(media.poster)" :alt="`${media.title}`">
-                            </figure>
-                        </template>
-
-                        <div class="link-wrapper">
-                            <a v-if="media.file_path" href="#" :title="`${media.title}`" class="play-trigger"></a>
-                            <a href="#" @click="popUpTrigger(index, media, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${media.tmdbID}`"></a>
-                            <router-link :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
-                        </div>
-                    </div>
-                </div>
+                <media-content :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
             </div>
         </div>
     </div>
@@ -70,12 +44,17 @@
 <script>
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
+import MediaContent from './../includes/MediaCard.vue';
 
 let mediaInfos = [];
 
 export default {
     name: 'FrontendMovies',
     mixins: [functions, langSnippet],
+    components: {
+        'media-content': MediaContent,
+    },
+    props: ['onMediaPopUp'],
     data() {
         return {
             userID: null,
@@ -88,6 +67,10 @@ export default {
     },
 
     methods: {
+        mediaOpen(media, index) {
+            this.movies[index].watchlist_status = media.watchlist_status;
+            this.onMediaPopUp(media);
+        },
         async getMovies() {
             var mediaResponse = [];
 
@@ -110,7 +93,6 @@ export default {
             this.watchListTrigger(this.userID, mediaID, buttonID);
         },
         async popUpTrigger(index, media, event) {
-            console.log(media);
             var status =  await this.checkWatchlist(media.tmdbID);
             this.movies[index].watchlist_status = status
             media.watchlist_status = status;

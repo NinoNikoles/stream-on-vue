@@ -109,10 +109,11 @@ export default {
                 userBtn.classList.add('active');
             }
         },
-        openMediaPopUp(media, event) {
-            this.$emit('data-fetched', media);
-            console.log(media);
-            this.openPopUp(event);                                  
+        openMediaPopUp(data) {
+            var media = data[0],
+                e = data[1];
+            this.$emit('mediaPopUp', media);
+            this.openPopUp(e);
         },
         openPopUp(event) {
             event.preventDefault();

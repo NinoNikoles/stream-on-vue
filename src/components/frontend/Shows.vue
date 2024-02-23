@@ -34,33 +34,7 @@
 
         <div v-if="shows" class="grid-row" id="media-list">
             <div v-for="(show, index) in shows" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding media" :data-genre="`[${show.genre}]`" :data-title="show.title" :data-rating="show.rating">
-                <div class="media-card">
-                    <div class="media-card-wrapper">
-                        <template v-if="show.file_path === null">
-                            <figure class="widescreen desktop-only disabled">
-                                <img src="" :data-img="$loadImg(show.backdrop)" :alt="`${show.title}`">
-                            </figure>
-                            <figure class="poster mobile-only disabled">
-                                <img src="" :data-img="$loadImg(show.poster)" :alt="`${show.title}`">
-                            </figure>
-                        </template>
-
-                        <template v-else>
-                            <figure class="widescreen desktop-only">
-                                <img src="" :data-img="$loadImg(show.backdrop)" :alt="`${show.title}`">
-                            </figure>
-                            <figure class="poster mobile-only">
-                                <img src="" :data-img="$loadImg(show.poster)" :alt="`${show.title}`">
-                            </figure>
-                        </template>
-
-                        <div class="link-wrapper">
-                            <a v-if="show.file_path" href="#" :title="`${show.title}`" class="play-trigger"></a>
-                            <a href="#" @click="popUpTrigger(index, show, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal" data-modal :data-src="`${show.tmdbID}`"></a>
-                            <router-link :to="`/backend/${show.media_type}/${show.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
-                        </div>
-                    </div>
-                </div>
+                <media-content :mediaContent="show" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
             </div>
         </div>
     </div>
@@ -70,13 +44,17 @@
 import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
-//import { Swiper, SwiperSlide } from 'swiper/vue';
+import MediaContent from './../includes/MediaCard.vue';
 
 let mediaInfos = [];
 
 export default {
     name: 'FrontendShows',
     mixins: [functions, langSnippet],
+    components: {
+        'media-content': MediaContent,
+    },
+    props: ['onMediaPopUp'],
     data() {
         return {
             userID: null,
@@ -89,6 +67,10 @@ export default {
     },
 
     methods: {
+        mediaOpen(media, index) {
+            this.shows[index].watchlist_status = media.watchlist_status;
+            this.onMediaPopUp(media);
+        },
         async getShows() {
             var mediaResponse = [];
 
@@ -123,12 +105,6 @@ export default {
         },
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
-        },
-        async popUpTrigger(index, media, event) {
-            var status =  await this.checkWatchlist(media.tmdbID);
-            this.shows[index].watchlist_status = status
-            media.watchlist_status = status;
-            this.openMediaPopUp(media, event);
         },
     },
     mounted() {
