@@ -1,7 +1,3 @@
-body.active-modal {
-    overflow: unset;
-}
-
 .fancybox__container .fancybox__content {
     background: {
         color: var(--body-bg);
@@ -59,9 +55,41 @@ body.active-modal {
     }
 }
 
-.modal-wrap {
-    background: {
-        color: var(--body-bg);
+.modal {
+    height: 100%;
+    width: 100%;
+
+    &.active {
+        .modal-overlay {
+            position: fixed;
+        }
+    }
+
+    &-wrap {
+        display: block;
+        background: {
+            color: transparent;
+        }
+        width: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important;
+
+        @include MQ(medium) {
+            padding: {
+                right: 20%;
+                left: 20%;
+            }
+        }
+    }
+
+    &-inner {
+        &-wrap {
+            background: {
+                color: var(--body-bg);
+            }
+            height: auto;
+            min-height: 100%;
+        }
     }
 }
 

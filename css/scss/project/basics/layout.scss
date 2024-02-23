@@ -1,17 +1,28 @@
+* {
+    scroll-behavior: auto !important;
+}
+
 .header, #header {
     background-image: linear-gradient(180deg,rgba(0,0,0,.7) 10%,transparent);
 }
 
 body {
     padding: {
-        top: rem-calc(50) !important;
+        top: rem-calc(0) !important;
     }
-    // overflow: unset;
+
+    overflow-x: hidden !important;
+    overflow-y: unset !important;
 }
 
-#main {
-    max-height: calc(100vh - 50px);
-    overflow: auto;
+// #main {
+//     max-height: 100vh;
+//     overflow: auto;
+// }
+
+body.active-modal {
+    max-height: 100vh;
+    overflow-y: hidden !important;
 }
 
 table,
