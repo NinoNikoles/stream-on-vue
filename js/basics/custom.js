@@ -332,8 +332,10 @@ function initSliders() {
         });
 
         swiper.on('resize', function() {
-            var self = this;
-            swiperLoopCheck(self);
+            setTimeout(() => {
+                var self = this;
+                swiperLoopCheck(self);
+            }, 500);
         });
 
         $el.find('[data-fancybox="gallery"]').each(function() {
