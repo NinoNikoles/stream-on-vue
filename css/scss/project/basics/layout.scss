@@ -20,6 +20,7 @@ body {
 //     overflow: auto;
 // }
 
+body.active-menu,
 body.active-modal {
     max-height: 100vh;
     overflow-y: hidden !important;
