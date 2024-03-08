@@ -1,4 +1,11 @@
 .media {
+    // @include transitions(
+    //     width $transition-default,
+    //     height $transition-default,
+    //     min-width $transition-default,
+    //     padding $transition-default,
+    // );
+
     &-card {
         display: flex;
         flex-direction: column;
@@ -172,7 +179,17 @@
         left: 0;
 
         &::before {
-            display: none;
+            content: "";
+            background: {
+                color: var(--body-bg);
+            }
+            width: calc(100% + 8px);
+            height: calc(100% + 8px);
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            transform: scale(1) !important;
+            z-index: 0;
         }
 
         &::after {
@@ -186,6 +203,7 @@
             position: absolute;
             top: -4px;
             left: -4px;
+            z-index: 2;
         }
 
         &:checked {
@@ -461,5 +479,8 @@
 }
 
 .hidden-by-genre {
-    display: none !important;
+    width: 0px;
+    height: 0px;
+    min-width: 0px;
+    padding: 0;
 }

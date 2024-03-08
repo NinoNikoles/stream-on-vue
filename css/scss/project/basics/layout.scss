@@ -53,7 +53,7 @@ label {
 }
 
 #loginWrap {
-    height: calc(100vh - 100px);
+    height: 100vh;
 
     .loginCol {
         background: {
@@ -61,7 +61,7 @@ label {
         }
         padding: rem-calc(20);
         position: relative;
-        top: 40%;
+        top: 50%;
         left: 0;
         transform: translateY(-50%);
     }
@@ -72,5 +72,36 @@ label {
 
     img {
         border-radius: 0;
+    }
+}
+
+.scroller {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    @include transitions(display 0s ease 0.31s, visibility 0s ease 0.31s, opacity 0.3s ease);
+
+    &.visible {
+        display: inline-block;
+        opacity: 1;
+        visibility: visible;
+        @include transitions(display 0s ease 0s, visibility 0s ease 0s, opacity 0.3s ease 0.1s);
+    }
+}
+
+.vue-recycle-scroller__item-wrapper {
+    @extend .grid-row;
+}
+
+.sticky-top {
+    background: {
+        color: var(--body-bg);
+    }
+    position: sticky;
+    top: rem-calc(0);
+    z-index: 1;
+
+    @include MQ(medium) {
+        top: rem-calc(-25);
     }
 }
