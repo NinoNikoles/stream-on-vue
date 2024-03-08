@@ -21,7 +21,7 @@
                     <div v-if="movies" id="movieSearchResults" class="rounded">
                         <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.id}`" data-fancybox class="display-flex flex-row marg-no">
                             <figure class="poster" style="width:20%;max-width:100px;">
-                                <img :data-img="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
+                                <img :src="$loadImg(movie.poster_path)" loading="lazy" :alt="`${movie.title}`">
                             </figure>
                             <span class="pad-xs marg-no" style="width:80%;">{{ movie.title }}</span>
 
@@ -38,9 +38,10 @@
                 <div v-if="outputMovies" class="col12 marg-top-m">
                     <div class="grid-row">
                         <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
+                            <p>{{  movie }}</p>
                             <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card-wrap">
                                 <figure class="media-card poster">
-                                    <img :src="$loadImg()" loading="lazy" :alt="`${movie.title}`">
+                                    <img :src="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
                                 </figure>
                                 <span class="title">{{ $truncate(movie.title, 20) }}</span>
                             </router-link>

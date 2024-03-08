@@ -9,8 +9,9 @@ app.config.globalProperties.productionTip = false; // Setze den Wert auf true od
 
 function loadImg(img, size = 'original') {
     if ( !img || !size) return '/build/css/images/img_preview.webp';
-    return '/build/css/images/img_preview.webp';
-    // return `http://image.tmdb.org/t/p/${size}${img}`;
+    // return '';
+    // return '/build/css/images/img_preview.webp';
+    return `http://image.tmdb.org/t/p/${size}${img}`;
 }
 
 function truncate(string, length = 100, append = "...") {
@@ -27,10 +28,10 @@ app.config.globalProperties.$truncate = truncate;
 
 app.mixin({
     updated() {
-        document.querySelectorAll('img[data-img]').forEach(function(el) {
-            el.setAttribute('src', el.getAttribute('data-img'));
-            el.removeAttribute('data-img');
-        });
+        // document.querySelectorAll('img[data-img]').forEach(function(el) {
+        //     el.setAttribute('src', el.getAttribute('data-img'));
+        //     el.removeAttribute('data-img');
+        // });
         
         this.$nextTick(() => {
             window.initCustomJS();

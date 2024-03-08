@@ -17,7 +17,7 @@
                         <tbody>
                             
                             <tr v-for="(highlight, index) in highlights" :key="index">
-                                <td class="desktop-only"><figure class="widescreen"><img :data-img="$loadImg(highlight.backdrop)" loading="lazy"></figure></td>
+                                <td class="desktop-only"><figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy"></figure></td>
                                 <td><a :href="`/backend/movie/${highlight.highlight_id}`" :title="`${highlight.title}`" class="marg-no dark">{{ highlight.title }}</a></td>
                                 <td>
                                     <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-if="highlight.highlight_status === 1" v-bind:checked="true">

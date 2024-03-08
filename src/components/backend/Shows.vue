@@ -21,7 +21,7 @@
                     <div v-if="shows" id="showsearchResults">
                         <a v-for="(show, index) in shows" :key="index" :href="`#add-show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox>
                             <figure class="poster" style="width:20%;max-width:100px;">
-                                <img :data-img="$loadImg(show.poster)" loading="lazy" :alt="`${show.name}`">
+                                <img :src="$loadImg(show.poster_path)" loading="lazy" :alt="`${show.name}`">
                             </figure>
                             <span class="pad-xs" style="width:80%;">{{ show.name }}</span>
 
@@ -40,7 +40,7 @@
                         <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
                             <router-link :to="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card">
                                 <figure class="poster">
-                                    <img :src="$loadImg()" loading="lazy" :alt="`${show.title}`">
+                                    <img :src="$loadImg(show.poster)" loading="lazy" :alt="`${show.title}`">
                                 </figure>
                                 <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
                             </router-link>

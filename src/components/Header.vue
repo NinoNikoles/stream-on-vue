@@ -31,7 +31,7 @@
                             </div>
 
                             <li v-for="route in mainRoutes" :key="route.name" class="menu-item">
-                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="toggleMainMenu($event)">{{ route.name }}</router-link>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                             </li>
 
                             <div class="col12 mobile-only marg-top-m" v-if="this.role === 'superadmin' || this.role === 'admin'">
@@ -39,7 +39,7 @@
                             </div>
 
                             <li v-for="route in backendRoutes" :key="route.name" class="menu-item mobile-only">
-                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="toggleMainMenu($event)">{{ route.name }}</router-link>
+                                <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                             </li>
                             <!-- <div class="col12 mobile-only marg-top-m">
                                 <li class="menu-item spacer"><span><?php echo lang_snippet('admin').' '.lang_snippet('menu');?></span></li>
@@ -52,16 +52,16 @@
                     <!-- Profil -->
                     <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
                         <figure class="square">
-                            <img :data-img="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
+                            <img :src="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
                             <ul>
                                 <li v-for="route in backendRoutes" :key="route.name" class="desktop-only">
-                                    <router-link :to="`${route.path}`" :title="`${route.name}`">{{ route.name }}</router-link>
+                                    <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                                 </li>
                                 
-                                <li class="menu-item"><router-link :to="`/user/${id}`" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
+                                <li class="menu-item"><router-link :to="`/user/${id}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>

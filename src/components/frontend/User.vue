@@ -11,7 +11,7 @@
             <div class="col8 marg-left-col2" v-else>
                 <div class="col5 marg-right-col1">
                     <figure class="square">
-                        <img :data-img="`${this.currentUser.activeImg}`" id="user-img" loading="lazy" alt="">
+                        <img :src="`${this.currentUser.activeImg}`" id="user-img" loading="lazy" alt="">
                     </figure>                
                 </div>
 
@@ -50,7 +50,7 @@
                                 <input v-if="`/${mediaPath}/${userUploadPath}/${currentUser.id}/${image.path}` === this.currentUser.activeImg" v-model="selectedImg" type="radio" name="userImg" :value="`${image.path}`" checked>
                                 <input v-else type="radio" v-model="selectedImg" name="userImg" :value="`${image.path}`">
                                 <figure class="square">
-                                    <img :data-img="`/${mediaPath}/${userUploadPath}/${this.currentUser.id}/${image.path}`" loading="lazy" alt="">
+                                    <img :src="`/${mediaPath}/${userUploadPath}/${this.currentUser.id}/${image.path}`" loading="lazy" alt="">
                                 </figure>
                             </div>
                         </div>
