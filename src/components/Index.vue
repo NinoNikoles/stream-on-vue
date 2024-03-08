@@ -8,8 +8,8 @@
 
     <div class="col12 pad-bottom-xl">
         <div v-if="highlight" class="highlight-wrapper">
-            <figure class="widescreen"><img :data-img="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
-            <figure class="poster"><img :data-img="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
+            <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
+            <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
             <div class='content-wrap mobile-only'>
                 <h1 class="h1 text-center">{{  highlight.title }}</h1>
                 <p class="small">{{  highlight.overview }}</p>
@@ -116,7 +116,7 @@ export default {
 
                 this.availableSlider = slider;
                 var ids = mediaInfos;
-                this.allMedia = await this.getAllMediaInfos(ids);
+                this.allMedia = await this.getAllMediaInfos(null, null, ids);
             } catch (error) {
                 console.log(error);
             }
@@ -138,22 +138,6 @@ export default {
             }
 
             this.highlight = response.data[0];
-        },
-        async getSeasons(showID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        async getEpisodes(showID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                console.log(error);
-            }
         },
         async getGenre(genreID) {
             try {

@@ -28,25 +28,50 @@ export default {
             }
             return false;
         },
-        async getMediaPreview(ids, orderBy, orderType) {
-            let idOutput = ids.join(', ');
-            let query = `SELECT * FROM media WHERE tmdbID in (${idOutput})`;
+        async getSeasons(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
+                return response.data;                
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
+        async getEpisodes(showID) {
+            try {
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
+                return response.data;                
+            } catch (error) {
+                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
+                console.log(error);
+            }
+        },
+        async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, watchlist = 0, userID = null) {
+            var mediaInfos = [];
+
+            let query = `SELECT * FROM media`;
+            let idOutput = '';
+
+            if ( watchlist === 1) {
+                query = `SELECT * FROM media JOIN watchlist ON media.tmdbID = watchlist.media_id WHERE watchlist.user_id = ${userID}`;
+            } else if ( ids && type ) {
+                idOutput = ids.join(', ');
+                query += ` WHERE tmdbID in (${idOutput}) AND media_type = "${type}"`;
+            } else if ( ids ) {
+                let idOutput = ids.join(', ');
+                query += ` WHERE tmdbID in (${idOutput})`;
+            } else if ( type ) {
+                query += ` WHERE media_type = "${type}"`;
+            }
 
             if (orderBy) query += ` ORDER BY ${orderBy}`;
             if (orderType) query += ` ${orderType}`;
 
             try {
-                var response = await this.get(query);                
-                return response;
+                mediaInfos = await this.get(query);
             } catch (err) {
                 console.log(err);
             }
-        },
-        async getAllMediaInfos(ids, orderBy = null, orderType = null) {
-            var mediaInfos = [];
-
-            // Gets all Basic infos from database
-            mediaInfos = await this.getMediaPreview(ids, orderBy, orderType);
 
             for (let i = 0; i < mediaInfos.length; i++) {
                 // Gets all seasons and episodes if media is show
@@ -59,20 +84,7 @@ export default {
                     }
                 }
 
-                var mediaGenreIDs = JSON.parse(mediaInfos[i].genres);
-                mediaInfos[i].genre = mediaGenreIDs;
-                mediaInfos[i]['genres'] = [];                 
-
-                for (let x = 0; x < mediaGenreIDs.length; x++) {
-                    try {                                  
-                        mediaInfos[i]['genres'][x] = await this.getGenreNames(mediaGenreIDs[x]);
-                    } catch(e) {
-                        console.log(e);
-                    }                                    
-                }
-
-                mediaInfos[i]['genres'].sort();
-                mediaInfos[i]['watchlist_status'] = await this.checkWatchlist(mediaInfos[i].tmdbID);
+                // mediaInfos[i]['watchlist_status'] = await this.checkWatchlist(mediaInfos[i].tmdbID);
             }
             return mediaInfos;
         },
@@ -86,10 +98,12 @@ export default {
                 console.log(error);
             }
         },
-        async getGenreNames(genreID) {
+        async getGenreName(genreID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`)
+                return new Promise((resolve) => {
+                    resolve(response.data[0].genre_name);
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -99,6 +113,11 @@ export default {
             var menuBtn = document.getElementById('menu-button');
             document.body.classList.toggle('active-menu');
             menuBtn.classList.toggle('active-button');
+        },
+        closeMainMenu() {
+            var menuBtn = document.getElementById('menu-button');
+            document.body.classList.remove('active-menu');
+            menuBtn.classList.remove('active-button');
         },
         userBtnTrigger() {
             var userBtn = document.getElementById('user-menu-btn');

@@ -3,7 +3,7 @@
         <div class="info-popup" :id="`${media.tmdbID}`">
             <div class="col12 marg-bottom-xs mobile-only">
                 <figure class="widescreen">
-                    <img :data-img="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
+                    <img :src="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
                 </figure>
             </div>
             <div class="innerWrap">
@@ -31,8 +31,8 @@
                     <button v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
                     
                     <p class="small">{{ media.overview }}</p>
-                    <p v-if="media['genre']" class="small tag-list marg-bottom-base">
-                        <span v-for="(genre, index) in media['genres']" :key="index" class="tag">
+                    <p v-if="genreNames" class="small tag-list marg-bottom-base">
+                        <span v-for="(genre, index) in genreNames" :key="index" class="tag">
                             {{ genre }}
                         </span>
                     </p>
@@ -60,7 +60,7 @@
                                     <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
                                         <div class="col-5 col-3-medium">
                                             <figure class="widescreen">
-                                                <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
+                                                <img :src="$loadImg(episode.backdrop)" :alt="episode.title">
                                             </figure>
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
@@ -83,7 +83,7 @@
                                     <div v-if="episode.season_number === season.season_number" :class="`col12 media-card-episode pad-top-xs pad-bottom-xs`">
                                         <div class="col-5 col-3-medium">
                                             <figure class="widescreen">
-                                                <img :data-img="$loadImg(episode.backdrop)" :alt="episode.title">
+                                                <img :src="$loadImg(episode.backdrop)" :alt="episode.title">
                                             </figure>
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
@@ -105,8 +105,8 @@
                     </template>
                 </div>
                 <div class="col4 desktop-only">
-                    <figure class="poster">
-                        <img :data-img="$loadImg(media.poster)" alt="" loading="lazy" importance="low" v-if="media">
+                    <figure class="poster rounded">
+                        <img :src="$loadImg(media.poster)" alt="" loading="lazy" importance="low" v-if="media">
                     </figure>
                 </div>
             </div>
@@ -119,24 +119,46 @@
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 
+let genreArr = [];
+
 export default {
     name: 'MediaContentPopup',
     mixins: [functions, langSnippet],
     props: ['media'],
     data() {
         return {
-            userID: null
+            userID: null,
+            genreNames: null
         }
     },
     methods: {
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
         },
+        async setGenreNames() {
+            if ( this.media ) {
+                if ( JSON.parse(this.media['genres']).length > 0 ) {
+                    var genreIDs = JSON.parse(this.media['genres']);
+                    for(var i=0; i < genreIDs.length; i++) {
+                        try {
+                            var genreName = await this.getGenreName(genreIDs[i]);
+                            genreArr.push(genreName);
+                        } catch(err) {
+                            console.log(err);
+                        }
+                    }
+
+                    this.genreNames = genreArr;
+                    genreArr = [];
+                }
+            }
+        }
     },
     updated() {
         this.sessionUser().then((userID) => {
             this.userID = userID;
         });
-    }
+        this.setGenreNames();
+    },
 }
 </script>

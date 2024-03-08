@@ -408,19 +408,30 @@ const getGenre = (req, res) => {
         res.json(rows);
     });
 }
+function getGenreNameByIDFunktion(id) {
+    return new Promise((resolve, reject) => {
+        // Finde den Benutzer in der Datenbank
+        db.all("SELECT genre_name FROM genre WHERE genre_ID = ?", id, (err, row) => {
+            if (row) {
+                resolve(row);
+            } else {
+                // Benutzer nicht gefunden
+                err = 'user_not_found';
+                reject(err);
+            }
+        });
+    });
+}
 
-const getGenreNameByID = (req, res) => {
+const getGenreNameByID = async (req, res) => {
     const { id } = req.query;
 
-    let query = `SELECT genre_name FROM genre WHERE genre_ID=${id}`;
-
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.json(rows);
-    });
+    try {
+        var response = await getGenreNameByIDFunktion(id);
+        res.json(response);
+    } catch(err) {
+        res.status(500).send({message: err});
+    }
 }
 
 function sendSeason(season) {
