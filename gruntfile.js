@@ -9,9 +9,7 @@ module.exports = function(grunt) {
         },
         jsResources: [
             '<%= config.root %>js/plugins/scrolltrigger.js',
-            // '<%= config.root %>js/basics/menu.js',
             '<%= config.root %>js/basics/custom.js',
-            //'<%= config.root %>js/basics/api.js',
         ],
         cssResources: [],
 
