@@ -100,8 +100,6 @@ export default {
             ORDER BY ${orderBy}`;
             if (orderType) query += ` ${orderType}`;
 
-            console.log(query);
-
             try {
                 mediaInfos = await this.get(query);
             } catch (err) {
