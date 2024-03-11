@@ -1,6 +1,6 @@
 <template>
     <div id="main">
-        <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
+        <template v-if="$route.name !== 'Login' && $route.name !== 'Player' && $route.name !== 'PlayerMulti'">
             <header-component @mediaPopUp="updateVariable"></header-component>
         </template>
         
