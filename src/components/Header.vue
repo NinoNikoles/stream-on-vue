@@ -219,7 +219,10 @@ export default {
                     this.username = userData.name;
                     this.role = userData.role;
             } else {
-                this.callout('error', 'Fehler!');
+                // if ( this.$route !== 'Login') {
+                //     console.log(this.mainRoutes);
+                //     this.callout('error', 'Fehler!');
+                // }               
             }
         },
         async getCurrentUserInfo() {
