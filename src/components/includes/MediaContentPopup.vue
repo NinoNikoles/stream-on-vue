@@ -31,8 +31,8 @@
                     <button v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
                     
                     <p class="small">{{ media.overview }}</p>
-                    <p v-if="genreNames" class="small tag-list marg-bottom-base">
-                        <span v-for="(genre, index) in genreNames" :key="index" class="tag">
+                    <p class="small tag-list marg-bottom-base">
+                        <span v-for="(genre, index) in JSON.parse(media.genre_names)" :key="index" class="tag">
                             {{ genre }}
                         </span>
                     </p>
@@ -119,8 +119,6 @@
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 
-let genreArr = [];
-
 export default {
     name: 'MediaContentPopup',
     mixins: [functions, langSnippet],
@@ -128,37 +126,17 @@ export default {
     data() {
         return {
             userID: null,
-            genreNames: null
         }
     },
     methods: {
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.userID, mediaID, buttonID);
-        },
-        async setGenreNames() {
-            if ( this.media ) {
-                if ( JSON.parse(this.media['genres']).length > 0 ) {
-                    var genreIDs = JSON.parse(this.media['genres']);
-                    for(var i=0; i < genreIDs.length; i++) {
-                        try {
-                            var genreName = await this.getGenreName(genreIDs[i]);
-                            genreArr.push(genreName);
-                        } catch(err) {
-                            console.log(err);
-                        }
-                    }
-
-                    this.genreNames = genreArr;
-                    genreArr = [];
-                }
-            }
         }
     },
     updated() {
         this.sessionUser().then((userID) => {
             this.userID = userID;
         });
-        this.setGenreNames();
     },
 }
 </script>

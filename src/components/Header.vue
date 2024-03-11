@@ -52,7 +52,7 @@
                     <!-- Profil -->
                     <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
                         <figure class="square">
-                            <img :src="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
+                            <img v-if="currentUser.activeImg" :src="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
@@ -81,8 +81,8 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-top-xl pad-bottom-l bg-dark">
-            <div class="innerWrap">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-bottom-l bg-dark">
+            <div class="innerWrap pad-top-xl sticky-top">
                 <div class="col12">
                     <h1>Suchergebnisse für: {{ searchInput }}</h1>
                 </div>
@@ -182,7 +182,7 @@ export default {
                         }
 
                         var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
-                        this.searchResults = await this.getAllMediaInfos(ids, 'title', 'ASC');
+                        this.searchResults = await this.getAllMediaInfos('title', 'ASC', ids);
                     } else {
                         document.body.classList.remove('active-search');
                         this.searchResults = null;

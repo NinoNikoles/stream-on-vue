@@ -46,26 +46,61 @@ export default {
                 console.log(error);
             }
         },
-        async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, watchlist = 0, userID = null) {
+        async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, userID = null, watchlist = null, mediaWatched = null) {
             var mediaInfos = [];
-
-            let query = `SELECT * FROM media`;
-            let idOutput = '';
-
-            if ( watchlist === 1) {
-                query = `SELECT * FROM media JOIN watchlist ON media.tmdbID = watchlist.media_id WHERE watchlist.user_id = ${userID}`;
-            } else if ( ids && type ) {
-                idOutput = ids.join(', ');
-                query += ` WHERE tmdbID in (${idOutput}) AND media_type = "${type}"`;
-            } else if ( ids ) {
-                let idOutput = ids.join(', ');
-                query += ` WHERE tmdbID in (${idOutput})`;
-            } else if ( type ) {
-                query += ` WHERE media_type = "${type}"`;
+            let query =
+            `SELECT media.*, json_group_array(genre.genre_name) AS genre_names,
+                CASE WHEN watchlist.user_id IS NOT NULL THEN 1 ELSE 0 END AS in_watchlist`;
+            if ( mediaWatched === 1) {
+                query += 
+                `,
+                media_watched.watched_seconds,
+                media_watched.total_length,
+                media_watched.watched,
+                media_watched.last_watched`;
             }
 
-            if (orderBy) query += ` ORDER BY ${orderBy}`;
+            query +=
+            ` FROM media
+            LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${userID}
+            LEFT JOIN genre ON EXISTS (
+                SELECT 1
+                FROM json_each(media.genres) AS json_genre
+                WHERE json_genre.value = genre.genre_id
+            )`;
+
+            if ( mediaWatched === 1) query += `
+            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
+
+            if ( type || ids || watchlist === 1 ) query += `
+            WHERE`;
+
+            if ( type ) query += ` media.media_type = '${type}'`;
+            if ( type && ids ) {
+                query += `
+                AND media.tmdbID IN (${ids.join(', ')})`;
+            } else if ( !type && ids ) {
+                query += ` media.tmdbID IN (${ids.join(', ')})`;
+            }
+
+            if ( type && ids && watchlist === 1 ) {
+                query += `
+                AND in_watchlist = 1`;
+            } else if ( !type && ids && watchlist === 1 ) {
+                query += `
+                AND in_watchlist = 1`;
+            } else if ( !type && !ids && watchlist === 1 ) {
+                query += ` in_watchlist = 1`;
+            }
+
+            query += `
+            GROUP BY media.tmdbID`;
+
+            if (orderBy) query += `
+            ORDER BY ${orderBy}`;
             if (orderType) query += ` ${orderType}`;
+
+            console.log(query);
 
             try {
                 mediaInfos = await this.get(query);

@@ -127,7 +127,7 @@ export default {
             this.onMediaPopUp(media);
         },
         async getMedia() {
-            this.mediaAll = await this.getAllMediaInfos('title', 'ASC', null, 'movie', 1, this.userID);
+            this.mediaAll = await this.getAllMediaInfos('title', 'ASC', null, null, this.userID, 1);
 
             this.totalPages = Math.ceil(this.mediaAll.length/20);
             this.visibleMedia = this.mediaAll.slice(0, this.page * this.pageSize);
