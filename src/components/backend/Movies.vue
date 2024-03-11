@@ -38,7 +38,6 @@
                 <div v-if="outputMovies" class="col12 marg-top-m">
                     <div class="grid-row">
                         <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
-                            <p>{{  movie }}</p>
                             <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card-wrap">
                                 <figure class="media-card poster">
                                     <img :src="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
