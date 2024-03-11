@@ -41,7 +41,7 @@
                                     <button
                                     href="#renameFolder"
                                     data-fancybox @click="setOldFolder(media.name)"
-                                    class="btn btn-small btn-warning icon-only icon-pen marg-no"
+                                    class="btn btn-small btn-transparent icon-only icon-pen marg-no"
                                     :title="langSnippet('rename_folder')"></button>
                                 </td>
 
@@ -68,7 +68,7 @@
                                     :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
-                                    class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
+                                    class="btn btn-small btn-transparent icon-only icon-eye marg-no"></button>
                                 </td>
 
                                 <!--- Select file button --->
@@ -95,7 +95,7 @@
                                     :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
-                                    class="btn btn-small btn-warning icon-only icon-eye marg-no"></button>
+                                    class="btn btn-small btn-transparent icon-only icon-eye marg-no"></button>
                                 </td>
 
                                 <!--- Delete file button --->

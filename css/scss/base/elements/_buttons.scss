@@ -49,6 +49,10 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
         &.hollow { @include button-hollow(var(--white), var(--white), var(--alert), var(--alert-dark)); }
     }
 
+    &.btn-transparent { @include button-colors(var(--black), var(--black-50), transparent, transparent);
+        &.hollow { @include button-hollow(var(--black), var(--black-50), transparent, transparent); }
+    }
+
     &.btn-round {
         border-radius: 100px !important;
     }

@@ -1,0 +1,9 @@
+table, .table {
+    td, .td {
+        a:not(.btn) {
+            &:hover {
+                color: var(--white-50);
+            }
+        }
+    }
+}
