@@ -77,12 +77,12 @@ export default {
                     if ( response.data.length > 0 ) {
                         this.media = response.data[0];
                         this.type = 'movie';
-                        this.videoOptions.sources[0].src = this.$mainURL+this.media.file_path;
+                        this.videoOptions.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
                     } else {
                         const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
                         this.media = newResponse.data[0];
                         this.type = 'show';
-                        this.videoOptions.sources[0].src = this.$mainURL+this.media.file_path;
+                        this.videoOptions.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
                     }
 
                 } catch (error) {

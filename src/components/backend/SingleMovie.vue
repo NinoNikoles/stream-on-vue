@@ -31,7 +31,7 @@
             <div class="col3 marg-left-col1">
                 <div class="col12" v-if="movie.file_path">
                     <figure class="widescreen">
-                        <video :src="this.$mainURL+movie.file_path" controls></video>
+                        <video :src="`${this.$mainURL}:8080/${this.movie.file_path.replace('/public/', '')}`" controls></video>
                     </figure>
                 </div>
                 <div class="col12">
