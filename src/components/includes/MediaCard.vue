@@ -27,6 +27,10 @@
                 <router-link :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>
+        <div v-if="mediaWatchList" class="watched-bar">
+            <p class="smaller marg-bottom-xxs">{{ mediaContent.title }}</p>
+            <progress max="100" :value="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)"></progress>
+        </div>
     </div>
 </template>
 
@@ -38,7 +42,7 @@ import langSnippet from '../mixins/language.vue';
 export default {
     name: 'MediaCard',
     mixins: [functions, langSnippet],
-    props: ['mediaContent', 'mediaIndex', 'onPopUpTrigger'],
+    props: ['mediaContent', 'mediaIndex', 'mediaWatchList', 'onPopUpTrigger'],
     methods: {
         async popUpTrigger(media, index, event) {
             var status =  await this.checkWatchlist(media.tmdbID);
@@ -46,6 +50,13 @@ export default {
             this.onPopUpTrigger(media, index, event);
             this.openPopUp(event); 
         },
+        getWatchedTime(watchedTime, totalDuration) {
+            const currTime = parseFloat(watchedTime);
+            const totalLength = parseFloat(totalDuration);
+            const watchedInPercent = (currTime/totalLength)*100;
+
+            return watchedInPercent;
+        }
     }
 }
 </script>

@@ -21,10 +21,10 @@
         </div>
 
         <template v-if="userWatchList">
-            <div class="`genre-slider marg-top-l`">
+            <div class="currentWatch-slider marg-top-l">
                 <div class="col12">
                     <div class="column column-space-2">
-                        <h3>Zuletzt angeschaut</h3>
+                        <h2>Zuletzt angeschaut</h2>
                     </div>
 
                     <div class="col12">
@@ -33,7 +33,7 @@
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
-                                    <media-content :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
+                                    <media-content :mediaContent="media" :mediaIndex="index" :mediaWatchList="1" @popUpTrigger="mediaOpen"></media-content>
                                 </div>
 
                             </div>

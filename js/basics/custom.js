@@ -418,6 +418,7 @@ function scrollTrigger() {
         });
     }
 
+    checkVisibility('currentWatch-slider'); // Überprüfe beim Laden der Seite
     checkVisibility('genre-slider'); // Überprüfe beim Laden der Seite
     checkVisibility('scroller'); // Überprüfe beim Laden der Seite
 }
