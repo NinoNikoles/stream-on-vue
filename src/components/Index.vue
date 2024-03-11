@@ -20,6 +20,32 @@
             </div>
         </div>
 
+        <template v-if="userWatchList">
+            <div class="`genre-slider marg-top-l`">
+                <div class="col12">
+                    <div class="column column-space-2">
+                        <h3>Zuletzt angeschaut</h3>
+                    </div>
+
+                    <div class="col12">
+
+                        <div class="swiper card-slider column column-space-2">
+                            <div class="swiper-wrapper">
+
+                                <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
+                                    <media-content :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
+                                </div>
+
+                            </div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
         <template v-if="availableSlider && allMedia">
             <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
@@ -74,13 +100,17 @@ export default {
             availableSlider: null,
             availableSliderContent: null,
             url: window.location.protocol + '//' + window.location.hostname,
-            allMedia: null
+            allMedia: null,
+            userWatchList: null
         };
     },
     methods: {
         mediaOpen(media, index) {
             this.allMedia[index].watchlist_status = media.watchlist_status;
             this.onMediaPopUp(media);
+        },
+        async watchList () {
+            this.userWatchList = await this.getAllMediaInfos(null, null, null, null, this.userID, 0, 1);
         },
         async genreSlider() {
             try {
@@ -153,6 +183,7 @@ export default {
             this.userID = userID;
 
             this.getHighlight();
+            this.watchList();
             this.genreSlider().then(() => {
                 this.availableSliderContent = this.availableSlider;
                 document.getElementById('loader').classList.add('hidden');
