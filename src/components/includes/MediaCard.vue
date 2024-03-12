@@ -20,6 +20,7 @@
             </template>
             
             <div class="link-wrapper">
+                <progress v-if="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)" max="100" :value="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)"></progress>
                 <router-link v-if="mediaContent.file_path && mediaContent.media_type === 'movie'" :to="`/watch?id=${mediaContent.tmdbID}`" :title="`${mediaContent.title}`" class="play-trigger"></router-link>
                 <router-link v-else-if="mediaContent.media_type === 'show' && mediaContent['episodes'][0].file_path" :to="`/watch?id=${mediaContent['episodes'][0].tmdbID}`" :title="`${mediaContent['episodes'][0].title}`" class="play-trigger"></router-link>
                 
@@ -27,10 +28,10 @@
                 <router-link :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>
-        <div v-if="mediaWatchList" class="watched-bar">
+        <!-- <div v-if="mediaWatchList" class="watched-bar">
             <p class="smaller marg-bottom-xxs">{{ mediaContent.title }}</p>
-            <progress max="100" :value="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)"></progress>
-        </div>
+            
+        </div> -->
     </div>
 </template>
 

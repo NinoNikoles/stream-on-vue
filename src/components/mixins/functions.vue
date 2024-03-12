@@ -50,15 +50,11 @@ export default {
             var mediaInfos = [];
             let query =
             `SELECT media.*, json_group_array(genre.genre_name) AS genre_names,
-                CASE WHEN watchlist.user_id IS NOT NULL THEN 1 ELSE 0 END AS in_watchlist`;
-            if ( mediaWatched === 1) {
-                query += 
-                `,
+                CASE WHEN watchlist.user_id IS NOT NULL THEN 1 ELSE 0 END AS in_watchlist,
                 media_watched.watched_seconds,
                 media_watched.total_length,
                 media_watched.watched,
                 media_watched.last_watched`;
-            }
 
             query +=
             ` FROM media
@@ -69,7 +65,10 @@ export default {
                 WHERE json_genre.value = genre.genre_id
             )`;
 
-            if ( mediaWatched === 1) query += `
+            if ( !mediaWatched ) query += `
+            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$data.userID}`;
+
+            if ( mediaWatched === 1 ) query += `
             INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
 
             if ( type || ids || watchlist === 1 ) query += `
