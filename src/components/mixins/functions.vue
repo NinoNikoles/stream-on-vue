@@ -65,20 +65,23 @@ export default {
                 WHERE json_genre.value = genre.genre_id
             )`;
 
+            // Wenn nicht alle Medien ausgegeben werden sollen
             if ( !mediaWatched ) query += `
             LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$data.userID}`;
-
+            
+            // Wenn NUR geschaute Medien ausgegeben werden sollen
             if ( mediaWatched === 1 ) query += `
             INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
 
+            // Wenn bestimmte Medien ausgewählt werden sollen
             if ( type || ids || watchlist === 1 ) query += `
             WHERE`;
 
-            if ( type ) query += ` media.media_type = '${type}'`;
-            if ( type && ids ) {
+            if ( type ) query += ` media.media_type = '${type}'`; // Wenn nur Filme ODER Serien ausgewählt werden sollen
+            if ( type && ids ) { // Wenn nur bestimmte Filme ODER bestimmte Serien ausgewählt werden sollen
                 query += `
                 AND media.tmdbID IN (${ids.join(', ')})`;
-            } else if ( !type && ids ) {
+            } else if ( !type && ids ) { // Wenn nur bestimmte Filme UND bestimmte Serien ausgewählt werden sollen
                 query += ` media.tmdbID IN (${ids.join(', ')})`;
             }
 
@@ -115,8 +118,6 @@ export default {
                         console.log(error);
                     }
                 }
-
-                // mediaInfos[i]['watchlist_status'] = await this.checkWatchlist(mediaInfos[i].tmdbID);
             }
             return mediaInfos;
         },
