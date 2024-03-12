@@ -309,21 +309,30 @@ function initSliders() {
             loop: true,
             //effect: effect,
             slidesPerView: slidesPerViewMobile,//itemsMobile,
+            slidesPerGroup: slidesPerViewMobile,
             spaceBetween: 16,
             allowTouchMove: true,
             breakpoints: {
                 // when window width is >= 320px
                 720: {
-                    slidesPerView: slidesPerViewSmallTablet//itemsTablet,
+                    slidesPerView: slidesPerViewSmallTablet,
+                    slidesPerGroup: slidesPerViewSmallTablet,
                 },
                 1080: {
-                    slidesPerView: slidesPerViewTablet//itemsTablet,
+                    slidesPerView: slidesPerViewTablet,
+                    slidesPerGroup: slidesPerViewTablet,
                 },
                 1400: {
-                    slidesPerView: slidesPerViewDesktop//itemsDesktop,
+                    slidesPerView: slidesPerViewDesktop,
+                    slidesPerGroup: slidesPerViewDesktop,
                 }
             },
             
+            pagination: {
+                el: '.swiper-pagination',
+                // clickable: true
+            },
+
             // Navigation arrows
             navigation: {
                 nextEl: '.swiper-button-next',
@@ -331,12 +340,12 @@ function initSliders() {
             },
         });
 
-        swiper.on('resize', function() {
-            setTimeout(() => {
-                var self = this;
-                swiperLoopCheck(self);
-            }, 500);
-        });
+        // swiper.on('resize', function() {
+        //     setTimeout(() => {
+        //         var self = this;
+        //         swiperLoopCheck(self);
+        //     }, 1000);
+        // });
 
         $el.find('[data-fancybox="gallery"]').each(function() {
             var $this = $(this);

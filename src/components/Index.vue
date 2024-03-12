@@ -7,6 +7,7 @@
     </div>
 
     <div class="col12 pad-bottom-xl">
+        <!-- Highlight -->
         <div v-if="highlight" class="highlight-wrapper">
             <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
             <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
@@ -20,16 +21,17 @@
             </div>
         </div>
 
-        <template v-if="userWatchList">
+        <!-- Watch List -->
+        <template v-if="userWatchList && userWatchList.length > 0">
             <div class="currentWatch-slider marg-top-l">
                 <div class="col12">
-                    <div class="column column-space-2">
+                    <div class="column column-space">
                         <h2>Zuletzt angeschaut</h2>
                     </div>
 
                     <div class="col12">
 
-                        <div class="swiper card-slider column column-space-2">
+                        <div class="swiper card-slider column column-space">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
@@ -37,6 +39,7 @@
                                 </div>
 
                             </div>
+                            <div class="swiper-pagination"></div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
@@ -46,16 +49,17 @@
             </div>
         </template>
 
+        <!-- Genre Slider -->
         <template v-if="availableSlider && allMedia">
             <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
-                    <div class="column column-space-2">
+                    <div class="column column-space">
                         <h3>{{ slider.genre.genre_name }}</h3>
                     </div>
 
                     <div class="col12">
 
-                        <div class="swiper card-slider column column-space-2">
+                        <div class="swiper card-slider column column-space">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
@@ -66,6 +70,7 @@
                                 </div>
 
                             </div>
+                            <div class="swiper-pagination"></div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
