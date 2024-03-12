@@ -12,7 +12,6 @@ body {
     }
 
     overflow-x: hidden !important;
-    overflow-y: unset !important;
 }
 
 // #main {
@@ -22,8 +21,15 @@ body {
 
 body.active-menu,
 body.active-modal {
-    max-height: 100vh;
-    overflow-y: hidden !important;
+    overflow-y: hidden;
+}
+
+body {
+    &.active-modal {
+        @include MQ(xsmall) {
+            overflow-y: auto;
+        }
+    }
 }
 
 table,

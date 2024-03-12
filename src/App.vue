@@ -3,7 +3,6 @@
         <template v-if="$route.name !== 'Login' && $route.name !== 'Player' && $route.name !== 'PlayerMulti'">
             <header-component @mediaPopUp="updateVariable"></header-component>
         </template>
-        
         <router-view @mediaPopUp="updateVariable"></router-view>
     </div>
 
@@ -51,10 +50,12 @@ export default {
             this.media = value;
         },
         async closeMediaPopUp(event) {
+            event.preventDefault();
+            
             try {
                 await this.closePopUp(event);
                 var popUp = document.getElementById('media-content');
-                
+
                 popUp.addEventListener('transitionend', () => {
                     if ( !popUp.classList.contains('active') ) {
                         this.media = "";
@@ -62,8 +63,8 @@ export default {
                 });
             } catch (e) {
                 console.log(e);
-            }                         
-        }
+            }        
+        },
     },
     updated() {
         document.querySelectorAll('img[data-img]').forEach(function(el) {
