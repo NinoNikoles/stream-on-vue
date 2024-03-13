@@ -1,5 +1,5 @@
 /* BUTTONS */
-a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
+a.btn, .btn, button:not(.acf-button):not(.add_media), .button:not(.acf-button):not(.add_media), [type="submit"] {
     // For color-order look at buttons mixin
     @include button();
     @include button-colors(var(--white), var(--white), var(--black), var(--dark-light));
@@ -68,6 +68,12 @@ a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
 
     &.icon-only {
         min-width: unset !important;
+    }
+
+    p & {
+        margin: {
+            bottom: 0;
+        }
     }
 }
 

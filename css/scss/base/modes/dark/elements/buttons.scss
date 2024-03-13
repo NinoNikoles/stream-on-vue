@@ -1,5 +1,5 @@
 /* BUTTONS */
-a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
+a.btn, .btn, button:not(.acf-button):not(.add_media), .button:not(.acf-button):not(.add_media), [type="submit"] {
 	@include button-colors(var(--black), var(--black), var(--primary), var(--primary-dark));
 
     &.hollow { @include button-hollow(var(--primary), var(--black), var(--primary), var(--primary)); }

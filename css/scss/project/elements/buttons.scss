@@ -15,7 +15,7 @@
     }
 }
 
-a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
+a.btn, .btn, button:not(.acf-button):not(.add_media), .button:not(.acf-button):not(.add_media), [type="submit"] {
     line: {
         height: 1 !important;
     }
