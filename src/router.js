@@ -6,6 +6,7 @@ import Index from './components/Index.vue';
 import FrontendMovies from './components/frontend/Movies.vue';
 import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
+import Test from './components/Test.vue';
 import MediaBrowser from './components/Mediabrowser.vue';
 import MediaPlayer from './components/player/Player.vue';
 import MediaPlayerSession from './components/player/PlayerMulti.vue';
@@ -38,6 +39,12 @@ const router = createRouter({
             name: 'Login',
             component: Login,
             meta: { requiresAuth: false, main: false }
+        },
+        {
+            path: '/test',
+            name: name('test'),
+            component: Test,
+            meta: { requiresAuth: false, main: false } // Diese Route erfordert eine Anmeldung
         },
         {
             path: '/movies',
