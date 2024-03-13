@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import MediaContent from './includes/MediaCard.vue';
@@ -122,7 +122,7 @@ export default {
                 var slider = [];
                 var currSlider = [];
                 var media = [];
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreSlider`);
+                const response = await this.fetchDB(`genreSlider`);
                 var availableGenre = response.data;
                 this.availableGenre = availableGenre;
 
@@ -158,7 +158,7 @@ export default {
         },
         async genreMovies(genreID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreMovies?genreID=${genreID}`);
+                const response = await this.fetchDB(`genreMovies?genreID=${genreID}`);
                 return response.data;
             } catch (error) {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
@@ -167,21 +167,13 @@ export default {
         },
         async getHighlight() {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getHighlight`);
+                var response = await this.fetchDB(`getHighlight`);
             } catch (err) {
                 console.log(err);
             }
 
             this.highlight = response.data[0];
         },
-        async getGenre(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`);
-                return response.data[0].genre_name;                
-            } catch (error) {
-                console.log(error);
-            }
-        }
     },
     mounted() {
         this.sessionUser().then((userID) => {

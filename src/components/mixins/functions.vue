@@ -15,6 +15,16 @@ export default {
                 return err;
             }            
         },
+        async fetchDB(request) {
+            try {
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`);
+                return new Promise((resolve) => {
+                    resolve(response);
+                });
+            } catch(err) {
+                return err;
+            }
+        },
         tmdbIDinArray(element, arr) {
             var equal = false;
 
@@ -122,24 +132,12 @@ export default {
             return mediaInfos;
         },
         async getGenre() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
-                return response.data;
-                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
+            const response = await this.fetchDB(`allGenre`);
+            return response.data;
         },
         async getGenreName(genreID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/genreNameByID?id=${genreID}`)
-                return new Promise((resolve) => {
-                    resolve(response.data[0].genre_name);
-                });
-            } catch (error) {
-                console.log(error);
-            }
+            const response = await this.fetchDB(`genreNameByID?id=${genreID}`);
+            return response.data[0].genre_name;
         },
         toggleMainMenu(event) {
             event.preventDefault();
@@ -395,6 +393,22 @@ export default {
             } catch(err) {
                 console.log(err);
             }
+        },
+        themeChange(e) {
+            e.preventDefault();
+            const html = document.documentElement;
+            const pageTheme = 'pageTheme';
+            
+            
+            if (html.getAttribute('data-theme') !== 'light') {
+                localStorage.setItem(pageTheme, 'light');
+                html.setAttribute('data-theme', 'light');
+            } else {
+                localStorage.setItem(pageTheme, 'dark');
+                html.setAttribute('data-theme', 'dark');
+            }
+
+            console.log(html.getAttribute('data-theme'));
         }
     }
 };
