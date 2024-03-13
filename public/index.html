@@ -11,6 +11,23 @@
         <link rel="stylesheet" type="text/css" href="<%= BASE_URL %>build/style.min.css"/>
         <link rel="stylesheet" type="text/css" href="<%= BASE_URL %>build/font.min.css"/>
         <title><%= htmlWebpackPlugin.options.title %></title>
+        <script>
+            function initTheme() {
+                const pageTheme = 'pageTheme';
+                const storage = localStorage.getItem(pageTheme);
+                const html = document.documentElement;
+
+                if (storage === 'light') {
+                    html.setAttribute('data-theme', 'light');
+                } else if (storage === 'dark') {
+                    html.setAttribute('data-theme', 'dark');
+                } else {
+                    html.setAttribute('data-theme', 'dark');
+                    localStorage.setItem(pageTheme, 'dark');
+                }
+            }
+            initTheme();
+        </script>
     </head>
     <body>
         <div id="app"></div>
