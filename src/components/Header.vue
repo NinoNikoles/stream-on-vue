@@ -50,7 +50,7 @@
                     </nav>
 
                     <!-- Profil -->
-                    <button href="#" @click="userBtnTrigger()" id="user-menu-btn">
+                    <button id="user-menu-btn">
                         <figure class="square">
                             <img v-if="currentUser.activeImg" :src="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
