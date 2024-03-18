@@ -76,7 +76,7 @@
             }
         }
 
-        .search-btn {
+        #search-btn {
             background: {
                 color: transparent;
             }
@@ -138,7 +138,7 @@
                 }
             }
 
-            .search-btn {
+            #search-btn {
                 @include MQ(medium) {
                     right: rem-calc(4);
                 }
