@@ -11,16 +11,16 @@ export default {
         };
     },
     methods: {
-        async tmdbApiRequest(request, query = "", language = this.LANGUAGE) {
+        async tmdbApiRequest(request, query = null, language = this.LANGUAGE) {
             if ( this.API_KEY === null ) return false;
             var requestQuery = '';
             var requestLanguage = '';
 
-            if ( query !== "" ) {
+            if ( query ) {
                 requestQuery = `&query=${query}`;
             }
             
-            if ( language !== "" ) {
+            if ( language && language !== '') {
                 requestLanguage = `&language=${language}`;
             }
             
@@ -89,7 +89,7 @@ export default {
         // Thumbnails
         async getBackdrops(type, mediaID) {
             try {
-                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`, '', '');
+                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
                 return response.data.backdrops;
             } catch(err) {
                 console.log(err);
@@ -98,7 +98,7 @@ export default {
         // Poster
         async getPosters(type, mediaID) {
             try {
-                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`, '', '');
+                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
                 return response.data.posters;
             } catch(err) {
                 console.log(err);
@@ -110,7 +110,7 @@ export default {
         //-- Get collection movies
         async getCollectionMovies(collectionID) {
             try {
-                const response = await this.tmdbApiRequest(`collection/${collectionID}`, '');
+                const response = await this.tmdbApiRequest(`collection/${collectionID}`);
                 return response.data.parts;
             } catch(err) {
                 console.log(err);
@@ -120,7 +120,7 @@ export default {
         //-- Get simliar movies
         async getSimilarMovies(mediaID) {
             try {
-                const response = await this.tmdbApiRequest(`movie/${mediaID}/similar`, '');
+                const response = await this.tmdbApiRequest(`movie/${mediaID}/similar`);
                 return response.data;
             } catch(err) {
                 console.log(err);
