@@ -9,17 +9,19 @@
                 <div class="row">
                     <div class="col5 column marg-right-col7">
                         <p>
-                            <label for="site_title">
-                                <input type="text" v-model="title" id="site_title" :placeholder="langSnippet('page_title')" required>
-                            </label>
+                            <span class="input-wrap">
+                                <label for="site_title">{{ langSnippet('page_title') }}</label>
+                                <input type="text" v-model="title" id="site_title" required>
+                            </span>
                         </p>
                     </div>
 
                     <div class="col5 column">
                         <p>
-                            <label for="apikey">
-                                <input type="text" v-model="apikey" id="apikey" :placeholder="langSnippet('api_key')" required>
-                            </label>
+                            <span class="input-wrap">
+                                <label for="apikey">{{ langSnippet('api_key') }}</label>
+                                <input type="text" v-model="apikey" id="apikey" required>
+                            </span>
                         </p>
                         <p v-if="keyError"><span class="text-alert italic">{{ keyError }}</span></p>
                         <p>
@@ -29,13 +31,14 @@
 
                     <div class="col5 column marg-right-col7">
                         <p>
-                            <label for="language" data-form="select">
+                            <span class="input-wrap input-select">
+                                <label for="language" data-form="select">{{ langSnippet('language') }}</label>
                                 <select v-model="language" id="language">
                                     <option value="" disabled hidden>- {{ langSnippet('language') }} -</option>
                                     <option value="de-DE">Deutsch</option>
                                     <option value="en-US" selected>English</option>
                                 </select>
-                            </label>
+                            </span>
                         </p>
                     </div>
 
@@ -57,14 +60,13 @@
 </template>
 
 <script>
-import axios from 'axios';
-import tmdbAPI from '../mixins/tmdbAPI.vue';
-import langSnippet from '../mixins/language.vue';
-import mainFunctions from '../mixins/functions.vue';
+import tmdbAPI from './../mixins/tmdbAPI.vue';
+import langSnippet from './../mixins/language.vue';
+import functions from './../mixins/functions.vue';
 
 export default {
     name: 'BackendMovie',
-    mixins: [tmdbAPI,langSnippet, mainFunctions],
+    mixins: [tmdbAPI,langSnippet, functions],
     data() {
         return {
             settings: null,
@@ -100,7 +102,7 @@ export default {
                 for ( const data of settingsData ) {
                     try {
                         const [key, value ] = Object.entries(data)[0];
-                        await axios.post(`${this.$mainURL}:3000/api/db/saveSettings?fields=${fields}&whereClause=setting_name="${key}"`, { [key]: value });
+                        await this.postDB(`saveSettings?fields=${fields}&whereClause=setting_name="${key}"`, { [key]: value });
                     } catch (err) {
                         console.log(err);
                     }
@@ -116,7 +118,7 @@ export default {
         },
         async getSettings() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSettings`);
+                const response = await this.fetchDB(`getSettings`);
                 return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);

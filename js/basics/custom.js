@@ -432,6 +432,50 @@ function scrollTrigger() {
     checkVisibility('scroller'); // Überprüfe beim Laden der Seite
 }
 
+function formLabels() {
+    var inputs = [];
+    const inputTypes = [
+        'input[type="text"]',
+        'input[type="number"]',
+        'input[type="email"]',
+        'input[type="tel"]',
+        'input[type="password"]',
+        'select'
+    ];    
+
+    inputTypes.forEach(function(type) {
+        inputs.push(...document.querySelectorAll(type));
+    });
+
+    function labelFloat(input, active = true ) {
+        const inputID = input.getAttribute('id');
+        const label = document.querySelector(`label[for="${inputID}"]`);//.textContent
+        if ( !label ) return;
+
+        if (active) {
+            label.classList.add('filled');
+        } else if ( !active && input.value !== '' ) {
+            label.classList.add('filled');
+        } else {
+            label.classList.remove('filled');
+        }
+    }
+            
+    inputs.forEach((input) => {
+        labelFloat(input, input.value, false);
+
+        input.addEventListener('focus', function() {
+            labelFloat(input, true);
+        });
+        input.addEventListener('blur', function() {
+            labelFloat(input, false);
+        });
+        input.addEventListener('input', function() {
+            labelFloat(input, true);
+        });
+    })
+}
+
 function initCustomJS() {
     document.body.classList.remove('loading');
 
@@ -439,6 +483,7 @@ function initCustomJS() {
     initSliders();
     initTabs();
     scrollTrigger();
+    formLabels();
 
 
     // window.addEventListener('resize', debounce);

@@ -4,11 +4,17 @@
             <form @submit.prevent="login">
                 <h2>{{ langSnippet('login')}}</h2>
                 <p>
-                    <label><input type="text" v-model="username" :placeholder="langSnippet('username')" autocomplete="username"></label>
-                    <span class="text-alert" v-if="error && error === 'user_not_found'">{{ langSnippet(error) }}</span>
+                    <span class="input-wrap">
+                        <label for="username">{{ langSnippet('username') }}</label>
+                        <input type="text" id="username" v-model="username" autocomplete="username">
+                    </span>
+                    <span class="text-alert pad-left-xs" v-if="error && error === 'user_not_found'">{{ langSnippet(error) }}</span>
                 </p>
                 <p>
-                    <label><input type="password" v-model="password" :placeholder="langSnippet('password')" autocomplete="current-password"></label>
+                    <span class="input-wrap">
+                        <label for="password">{{ langSnippet('password') }}</label>
+                        <input type="password" id="password" v-model="password" autocomplete="current-password">
+                    </span>
                     <span class="text-alert" v-if="error && error === 'invalid_password'">{{ langSnippet(error) }}</span>
                 </p>
                 <p class="text-right marg-no">
@@ -20,12 +26,12 @@
 </template>
   
 <script>
-import axios from 'axios';
+import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
   
 export default {
     name: 'AppLogin',
-    mixins: [langSnippet],
+    mixins: [functions, langSnippet],
     data() {
         return {
             username: '',
@@ -41,7 +47,7 @@ export default {
             this.error = null;
             
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/login`, { username: username, password: password}, { withCredentials: true })
+                await this.postDB(`login`, { username: username, password: password}, { withCredentials: true })
                 .then(async() => {
                     window.location.href = this.$route.query.redirect;               
                 })
