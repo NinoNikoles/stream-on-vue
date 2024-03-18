@@ -153,15 +153,6 @@ export default {
             document.body.classList.remove('active-menu');
             menuBtn.classList.remove('active-button');
         },
-        userBtnTrigger() {
-            var userBtn = document.getElementById('user-menu-btn');
-
-            if (userBtn.classList.contains('active')) {
-                userBtn.classList.remove('active');
-            } else {
-                userBtn.classList.add('active');
-            }
-        },
         openMediaPopUp(data) {
             var media = data[0],
                 e = data[1];
