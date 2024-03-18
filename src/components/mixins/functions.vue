@@ -15,15 +15,18 @@ export default {
                 return err;
             }            
         },
-        async fetchDB(request) {
+        async fetchDB(request, values = {}, credentials = {}) {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`);
+                var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
                 return new Promise((resolve) => {
                     resolve(response);
                 });
             } catch(err) {
                 return err;
             }
+        },
+        async postDB(request, values = {}, credentials = {}) {
+            await axios.post(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
         },
         tmdbIDinArray(element, arr) {
             var equal = false;
@@ -40,7 +43,7 @@ export default {
         },
         async getSeasons(showID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
+                const response = await this.fetchDB(`getSeasons?showID=${showID}`);
                 return response.data;                
             } catch (error) {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
@@ -49,7 +52,7 @@ export default {
         },
         async getEpisodes(showID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
+                const response = await this.fetchDB(`getEpisodes?showID=${showID}`);
                 return response.data;                
             } catch (error) {
                 // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
@@ -280,7 +283,7 @@ export default {
         },
         async sessionUser() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                const response = await this.fetchDB(`session`, { withCredentials: true });
                 return new Promise((resolve) => {
                     resolve(response.data.user.id);
                 });
@@ -291,9 +294,9 @@ export default {
         },
         async checkWatchlist(mediaID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                const response = await this.fetchDB(`session`, { withCredentials: true });
                 const userID = response.data.user.id;
-                const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/getFromWatchlist?userID=${userID}&mediaID=${mediaID}`);
+                const newResponse = await this.fetchDB(`getFromWatchlist?userID=${userID}&mediaID=${mediaID}`);
                 var status = newResponse.data;
                 return status;
             } catch(err) {
@@ -305,7 +308,7 @@ export default {
             var button = document.getElementById(buttonID);
 
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
+                const response = await this.fetchDB(`updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
                 var status = response.data;
                 button.setAttribute('data-status', status);
             } catch(err) {
@@ -366,7 +369,7 @@ export default {
         //-- API --
         async fetchUserSession() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                const response = await this.fetchDB(`session`, { withCredentials: true });
                 if ( response.data.user ) {
                     const userData = {
                         isLoggedIn: response.data.user.isLoggedIn,
@@ -382,7 +385,7 @@ export default {
         },
         async logout_function() {
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/logout`, { username: '', role: ''}, { withCredentials: true })
+                await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true })
                 .then(() => {
                     window.location.href = '/';               
                 })
@@ -409,7 +412,7 @@ export default {
             }
 
             console.log(html.getAttribute('data-theme'));
-        }
+        },
     }
 };
 </script>

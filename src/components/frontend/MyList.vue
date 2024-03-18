@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 import MediaContent from './../includes/MediaCard.vue';
@@ -137,7 +136,7 @@ export default {
         },
         async getGenreAll() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
+                const response = await this.fetchDB(`allGenre`);
                 this.genres = response.data;
                 
             } catch (error) {

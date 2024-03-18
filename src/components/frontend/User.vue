@@ -99,7 +99,7 @@ export default {
     methods: {
         async checkUserInDB() {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.pageUserID}`);
+                var response = await this.fetchDB(`getUser?userID=${this.pageUserID}`);
                 return response.data;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -108,7 +108,7 @@ export default {
         },
         async fetchSessionStatus() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
+                const response = await this.fetchDB(`session`, {}, { withCredentials: true });
                 if ( response.data.user ) this.currentUser.id = response.data.user.id;             
             } catch (error) {
                 console.error('Fehler beim Abrufen des Session-Status:', error);
@@ -116,7 +116,7 @@ export default {
         },
         async getCurrentUserInfo() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.currentUser.id}`);
+                const response = await this.fetchDB(`getUser?userID=${this.currentUser.id}`);
                 const user = response.data[0];
                 this.currentUser.id = user.id;
                 this.currentUser.username = user.username;
@@ -169,7 +169,7 @@ export default {
         },
         async updateUserIMG(imgName) {
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/updateUserImg?userID=${this.currentUser.id}&img=${imgName}`).then(() => {
+                await this.postDB(`updateUserImg?userID=${this.currentUser.id}&img=${imgName}`).then(() => {
                     if ( imgName !== -1 && imgName !== null && imgName !== '' ) {
                         this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${imgName}`;
                         this.selectedImg = this.currentUser.activeImg;
@@ -187,7 +187,7 @@ export default {
         },
         async getUploads() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getUploadedUserImages?userID=${this.currentUser.id}`);
+                const response = await this.fetchDB(`getUploadedUserImages?userID=${this.currentUser.id}`);
                 if ( response.data !== null && response.data !== undefined ) this.currentUser.images = response.data;                
             } catch (err) {
                 console.log(err);
@@ -198,7 +198,7 @@ export default {
             console.log(img);
  
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/deleteUploadedUserImage?img=${img}&userID=${this.currentUser.id}`)
+                await this.postDB(`deleteUploadedUserImage?img=${img}&userID=${this.currentUser.id}`)
                 .then(() => {
                     var newImg = -1;
                     if ( this.currentUser.images.length > 1 ) {

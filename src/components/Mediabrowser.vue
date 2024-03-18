@@ -278,7 +278,7 @@ export default {
                     const mediaID = media.tmdbID
                     const videoPath = `/${path}`;
 
-                    await axios.post(`${this.$mainURL}:3000/api/db/addVideoPathToMedia`, {
+                    await this.postDB(`addVideoPathToMedia`, {
                         params: {
                             mediaType,
                             mediaID,
@@ -293,7 +293,7 @@ export default {
                     const mediaID = this.$route.params.episodeID;
                     const videoPath = `/${path}`;
 
-                    await axios.post(`${this.$mainURL}:3000/api/db/addVideoPathToMedia`, {
+                    await this.postDB(`addVideoPathToMedia`, {
                         params: {
                             mediaType,
                             mediaID,

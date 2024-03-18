@@ -100,7 +100,6 @@
 </template>
   
 <script>
-import axios from 'axios';
 import router from './../router';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
@@ -194,7 +193,7 @@ export default {
         },
         async getSeasons(showID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSeasons?showID=${showID}`);
+                const response = await this.fetchDB(`getSeasons?showID=${showID}`);
                 return response.data;                
             } catch (error) {
                 console.log(error);
@@ -202,7 +201,7 @@ export default {
         },
         async getEpisodes(showID) {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getEpisodes?showID=${showID}`);
+                const response = await this.fetchDB(`getEpisodes?showID=${showID}`);
                 return response.data;                
             } catch (error) {
                 console.log(error);
@@ -227,7 +226,7 @@ export default {
         },
         async getCurrentUserInfo() {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${this.id}`);
+                var response = await this.fetchDB(`getUser?userID=${this.id}`);
                 const user = response.data[0];
 
                 this.currentUser.id = user.id;
