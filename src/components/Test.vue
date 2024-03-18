@@ -34,13 +34,10 @@
   
 <script>
 import functions from './mixins/functions.vue';
-import ImageLoader from './includes/ImageLoader.vue';
+// import ImageLoader from './includes/ImageLoader.vue';
 
 export default {
     name: 'AppTest',
     mixins: [functions],
-    components: {
-        ImageLoader
-    }
 };
 </script>
