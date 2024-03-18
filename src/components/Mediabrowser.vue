@@ -143,10 +143,11 @@
         <div id="createFolder">
             <form @submit.prevent="createNewFolder(newFolderName)">
                 <p>
-                    <label>{{ langSnippet('folder_name') }}
+                    <span class="input-wrap">
+                        <label for="newFolderName">{{ langSnippet('folder_name') }}</label>
                         <input type="text" v-model="newFolderName" name="newFolderName" id="newFolderName">
-                        <span v-if="folderExists" class="text-alert">{{ langSnippet('folder_already_exists') }}</span>
-                    </label>
+                    </span>
+                    <span v-if="folderExists" class="text-alert formfield-alert">{{ langSnippet('folder_already_exists') }}</span>
                 </p>
                 <p class="text-right marg-no">
                     <button type="submit" class="btn btn-small btn-success icon-left icon-folder marg-no">{{ langSnippet('create_folder') }}</button>
@@ -157,10 +158,11 @@
         <div id="renameFolder">
             <form @submit.prevent="renameFolder()">
                 <p>
-                    <label>{{ langSnippet('new_folder_name') }}
+                    <span class="input-wrap">
+                        <label for="renameFolderName">{{ langSnippet('new_folder_name') }}</label>
                         <input type="text" v-model="renameFolderName" name="renameFolderName" id="renameFolderName">
-                        <span v-if="folderExists" class="text-alert">{{ langSnippet('folder_name_not_empty') }}</span>
-                    </label>
+                    </span>
+                    <span v-if="folderExists" class="text-alert">{{ langSnippet('folder_name_not_empty') }}</span>
                 </p>
                 <p class="text-right marg-no">
                     <button type="submit" class="btn btn-small btn-success icon-left icon-folder marg-no">{{ langSnippet('rename_folder') }}</button>

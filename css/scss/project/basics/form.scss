@@ -83,3 +83,13 @@ input[type="file"] {
         cursor: pointer;
     }
 }
+
+.formfield-alert {
+    margin: {
+        top: rem-calc(8);
+    }
+    padding: {
+        right: rem-calc($input-space-horizontal);
+        left: rem-calc($input-space-horizontal);
+    }
+}
