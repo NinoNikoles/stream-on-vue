@@ -17,14 +17,12 @@
     }
 
     &:hover,
+    &:focus,
     &.active {
         background: {
             color: rgba(255, 255, 255, 0.2);
         }
         cursor: pointer;
-    }
-
-    &.active {
         padding: rem-calc(10);
 
         figure {
@@ -45,15 +43,14 @@
 }
 
 .user-menu {
-    background: {
-        color: var(--header-bg);
+    padding: {
+        top: rem-calc(16 * 1.5);
+        right: 0;
+        bottom: 0;
+        left: 0;
     }
-    border: {
-        radius: rem-calc($border-radius);
-    }
-    padding: 0;
     position: absolute;
-    top: calc(100% + 8px);
+    top: 100%;
     right: 0;
     opacity: 0;
     visibility: hidden;
@@ -61,11 +58,32 @@
     overflow: hidden;
     @include transition(opacity $transition-default);
 
+    &::before {
+        content: "";
+        border: {
+            right: rem-calc(16) solid transparent;
+            bottom: rem-calc(16) solid var(--black);
+            left: rem-calc(16) solid transparent;
+        }
+        width: rem-calc(32);
+        height: rem-calc(16);
+        position: absolute;
+        top: rem-calc(16/2);
+        right: rem-calc(25);
+        transform: translateX(50%);
+    }
+
     ul {
+        border: {
+            radius: rem-calc($border-radius);
+        }
         list-style-type: none;
         margin: 0;
 
         li {
+            background: {
+                color: var(--header-bg);
+            }
 
             a {
                 display: block;
@@ -79,6 +97,7 @@
                     bottom: rem-calc(5);
                     left: rem-calc(10);
                 }
+                @include transition(background-color $transition-default);
 
                 @include MQ(medium) {
                     min-width: rem-calc(250);
