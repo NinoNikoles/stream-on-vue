@@ -339,36 +339,47 @@ select {
     cursor: pointer;
 }
 
-[data-form="select"] {
-    margin: {
-        bottom: rem-calc($global-margin);
-    }
+.input-wrap {
+    display: block;
+    width: 100%;
     position: relative;
 
-    &::after {
-        content: $icon-chevron-down;
-        font: {
-            family: $icon-font;
-            size: rem-calc(20);
-        }
+    label {
+        color: var(--input-color-placeholder);
+        line-height: 1;
         position: absolute;
         top: 50%;
-        right: rem-calc(15);
-        transform: translateY(-50%) rotate(0deg);
+        transform: translateY(-50%);
+        left: rem-calc($input-space-horizontal+$input-border-width);
         pointer-events: none;
         @include transition(all $transition-default);
-    }
 
-    p {
-        margin: {
-            bottom: 0;
+        &.filled {
+            color: var(--input-color);
+            font: {
+                size: rem-calc($input-font-size*0.8);
+            }
+            top: 0;
         }
     }
 
-    select {
-        margin: {
-            bottom: 0;
+    &.input {
+        &-select {
+            &::after {
+                font: {
+                    family: $icon-font;
+                    size: rem-calc(20);
+                }
+                position: absolute;
+                top: 50%;
+                right: rem-calc(15);
+                transform: translateY(-50%) rotate(0deg);
+                pointer-events: none;
+                @include transition(all $transition-default);
+            }
         }
+
+        &-select { &::after {content: $icon-chevron-down; } }
     }
 }
 
