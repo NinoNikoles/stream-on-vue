@@ -1,35 +1,40 @@
 <template>
     <div class="innerWrap pad-top-xl pad-bottom-l">
         <div class="col12">
-            <div class="col12">
+            <div class="col12 marg-bottom-xs">
                 <h1>{{ langSnippet('settings') }}</h1>
             </div>
 
             <div class="col12">
-                <div class="row">
-                    <div class="col5 column marg-right-col7">
+                <form class="row" onsubmit="return false;">
+                    <div class="col5 column marg-right-col7 field-wrap">
                         <p>
                             <span class="input-wrap">
                                 <label for="site_title">{{ langSnippet('page_title') }}</label>
                                 <input type="text" v-model="title" id="site_title" required>
                             </span>
+                            <span v-if="titleError" class="text-alert italic column marg-top-xxs">{{ titleError }}</span>
                         </p>
+                        <hr>
                     </div>
 
-                    <div class="col5 column">
+                    <div class="col5 marg-right-col7 column">
                         <p>
                             <span class="input-wrap">
                                 <label for="apikey">{{ langSnippet('api_key') }}</label>
                                 <input type="text" v-model="apikey" id="apikey" required>
                             </span>
+                            <span v-if="keyError" class="text-alert italic column marg-top-xxs">{{ keyError }}</span>
                         </p>
-                        <p v-if="keyError"><span class="text-alert italic">{{ keyError }}</span></p>
+                    </div>
+                    <div class="col5 marg-right-col7 column field-wrap">
                         <p>
-                            <span class="smaller" v-html="langSnippet('apikey_info')"></span>
-                        </p>                        
+                            <span class="column smaller" v-html="langSnippet('apikey_info')"></span>
+                        </p>
+                        <hr>
                     </div>
 
-                    <div class="col5 column marg-right-col7">
+                    <div class="col5 column marg-right-col7 field-wrap">
                         <p>
                             <span class="input-wrap input-select">
                                 <label for="language" data-form="select">{{ langSnippet('language') }}</label>
@@ -40,9 +45,10 @@
                                 </select>
                             </span>
                         </p>
+                        <hr>
                     </div>
 
-                    <div class="col12 column">
+                    <div class="col12 column field-wrap">
                         <p>
                             <label for="enable-edit">{{ langSnippet('enable_edit_btn') }}*
                                 <input type="checkbox" id="enable-edit" v-model="edit">
@@ -50,10 +56,10 @@
                         </p>
                     </div>
 
-                    <div class="col12 column text-right marg-top-base">
-                        <button @click="saveData" class="btn btn-small btn-success icon-left icon-save loading">{{ langSnippet('save') }}</button>
+                    <div class="col12 column text-right marg-top-base field-wrap">
+                        <input type="submit" @click="saveData($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>    
@@ -74,6 +80,7 @@ export default {
             apikey: null,
             language: "en-US",
             edit: null,
+            titleError: null,
             keyError: null,
         };
     },
@@ -81,11 +88,16 @@ export default {
         async saveData(e) {
             const saveButton = e.target;
             this.disableButton(saveButton);
+            this.titleError = null;
+            this.keyError = null;
+            
             const { title, apikey, language, edit } = this;
-
             var validKey = await this.checkApiKey(apikey);
 
-            if (validKey) {
+            if (!title) {
+                this.titleError = "Darf nicht leer sein!";
+                this.callout('alert', this.langSnippet(this.titleError));
+            } else if (validKey) {
                 this.keyError = null;
 
                 const fields = [
