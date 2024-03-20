@@ -3,10 +3,6 @@
         <div class="col12">
             <p><button id="theme-switch" class="btn" @click="themeChange($event)">Change</button></p>
         </div>
-        
-        <div class="col6">
-            <image-loader></image-loader>
-        </div>
 
         <div class="col6">
             <h1>Lorem ipsum dolor sit amet.</h1>
@@ -23,11 +19,60 @@
         </div>
 
         <div class="col6">
-            <div class="col4"><button class="btn-primray">Primary</button></div>
-            <div class="col4"><button class="btn-secondary">Secondary</button></div>
-            <div class="col4"><button class="btn-tertiary">Tertiary</button></div>
-            <div class="col4"><button class="btn-quaternary">Quaternary</button></div>
-            <div class="col4"><button class="btn-quinary">Quinary</button></div>
+            <div class="col4"><button class="btn btn-primray">Primary</button></div>
+            <div class="col4"><button class="btn btn-secondary">Secondary</button></div>
+            <div class="col4"><button class="btn btn-tertiary">Tertiary</button></div>
+            <div class="col4"><button class="btn btn-quaternary">Quaternary</button></div>
+            <div class="col4"><button class="btn btn-quinary">Quinary</button></div>
+        </div>
+
+        <div class="col12">
+            <form class="row">
+                <div class="col2 column">
+                    <p>
+                        <span class="input-wrap input-select">
+                            <label for="anrede">Anrede</label>
+                            <select id="anrede" name="anrede">
+                                <option>Frau</option>
+                                <option>Herr</option>
+                                <option>Divers</option>
+                            </select>
+                        </span>
+                    </p>
+                </div>
+                <div class="col5 column">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="vorname">Vorname</label>
+                            <input type="text" id="vorname" name="vorname">
+                        </span>
+                    </p>
+                </div>
+                <div class="col5 column">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="nachname">Nachname</label>
+                            <input type="text" id="nachname" name="nachname">
+                        </span>
+                    </p>
+                </div>
+                <div class="col4 column">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="email">E-Mail</label>
+                            <input type="email" id="email" name="email">
+                        </span>
+                    </p>
+                </div>
+                <div class="col4 column">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="tel">Telefon</label>
+                            <input type="tel" id="tel" name="tel">
+                        </span>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
 </template>

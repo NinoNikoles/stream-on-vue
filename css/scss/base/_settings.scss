@@ -182,7 +182,7 @@ $button-size: (
 
 //-- Form
 $input: (
-    background:             transparent,
+    background:             map-get(map-get($color-palette, white), base),
     border-color:           map-get($global, border-color),
     border-color-hover:     map-get($global, border-color-hover),
     border-color-focus:     map-get($global, border-color-hover),

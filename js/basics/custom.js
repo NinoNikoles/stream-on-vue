@@ -447,31 +447,69 @@ function formLabels() {
         inputs.push(...document.querySelectorAll(type));
     });
 
-    function labelFloat(input, active = true ) {
+    function labelBorderColor(input, state = 'normal') {
+        const inputID = input.getAttribute('id');
+        const label = document.querySelector(`label[for="${inputID}"]`);
+        if (!label) return;
+
+        const colors = {
+            normal: '--input-bg',
+            hover: '--input-bg-hover',
+            focus: '--input-bg-focus'
+        };
+   
+        label.style.borderColor = `var(${colors[state]})`;
+    }
+
+    function labelFloat(input, state = 'normal') {
         const inputID = input.getAttribute('id');
         const label = document.querySelector(`label[for="${inputID}"]`);//.textContent
         if ( !label ) return;
 
-        if (active) {
-            label.classList.add('filled');
-        } else if ( !active && input.value !== '' ) {
-            label.classList.add('filled');
+        if (input.value !== '') {
+            if (!label.classList.contains('filled')) label.classList.add('filled');
+            if (label.classList.contains('filled') && state === 'unset') state = 'normal';
+            else if (label.classList.contains('filled') && label.classList.contains('focus')) state = 'focus';            
         } else {
-            label.classList.remove('filled');
+            if (state === 'unset') {
+                label.classList.remove('filled');
+                state = 'normal';
+            }
+            if (!label.classList.contains('filled') && state === 'focus') {
+                label.classList.add('filled');
+                state = 'focus';
+            }
+            if (!label.classList.contains('filled') && state !== 'focus') {
+                label.classList.remove('filled');
+            }
+            if (label.classList.contains('filled') && label.classList.contains('focus')) state = 'focus';
+        }
+
+        if (state !== 'unset') {
+            label.classList.remove('hover', 'focus');
+            if (state !== 'normal') label.classList.add(state);
+            
+            labelBorderColor(input, state);
         }
     }
             
     inputs.forEach((input) => {
-        labelFloat(input, input.value, false);
+        labelFloat(input);
 
+        input.addEventListener('mouseenter', function() {
+            labelFloat(input, 'hover');
+        });
+        input.addEventListener('mouseout', function() {
+            labelFloat(input);
+        });
         input.addEventListener('focus', function() {
-            labelFloat(input, true);
+            labelFloat(input, 'focus');
         });
         input.addEventListener('blur', function() {
-            labelFloat(input, false);
+            labelFloat(input, 'unset');
         });
         input.addEventListener('input', function() {
-            labelFloat(input, true);
+            labelFloat(input, 'focus');
         });
     })
 }
