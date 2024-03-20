@@ -8,7 +8,7 @@ $border-radius: 12;
 $rounded: 12;
 
 //-- Buttons --
-$button-border-radius:      300;
+$button-border-radius:      $border-radius;
 $button-border-width:       2;
 
 $button-padding-top:        8;
@@ -19,7 +19,7 @@ $button-padding-left:       38;
 $button-font-size: 20;
 
 //-- Form Settings --
-$input-border-radius: 		0;
+$input-border-radius: 		$border-radius;
 // $input-border-style: 		form(border-style) !default;
 // $input-border-width: 		form(border-width) !default;
 // $input-font-family:	        form(font-family) !default;

@@ -339,6 +339,21 @@ select {
     cursor: pointer;
 }
 
+.field-wrap {
+    p {
+        margin: {
+            bottom: rem-calc($space-base*1.5);
+        }
+    }
+
+    hr {
+        margin: {
+            top: rem-calc($space-base*1.5);
+            bottom: rem-calc($space-base*2);
+        }
+    }
+}
+
 .input-wrap {
     display: block;
     width: 100%;
@@ -349,7 +364,7 @@ select {
         color: var(--input-color-placeholder);
         line-height: 14px;
         position: absolute;
-        top: 50%;
+        top: rem-calc($input-space-vertical+$input-border-width+$input-label-font-size);
         transform: translateY(-50%);
         left: rem-calc($input-space-horizontal+$input-border-width);
         pointer-events: none;
