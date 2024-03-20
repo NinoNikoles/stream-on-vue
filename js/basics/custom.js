@@ -440,7 +440,8 @@ function formLabels() {
         'input[type="email"]',
         'input[type="tel"]',
         'input[type="password"]',
-        'select'
+        'select',
+        'textarea'
     ];    
 
     inputTypes.forEach(function(type) {
