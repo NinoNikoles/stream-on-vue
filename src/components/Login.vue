@@ -1,25 +1,34 @@
 <template>
     <div class="innerWrap" id="loginWrap">
         <div class="col4 marg-left-col4 loginCol rounded">
-            <form @submit.prevent="login">
-                <h2>{{ langSnippet('login')}}</h2>
-                <p>
-                    <span class="input-wrap">
-                        <label for="username">{{ langSnippet('username') }}</label>
-                        <input type="text" id="username" v-model="username" autocomplete="username">
-                    </span>
-                    <span class="text-alert pad-left-xs" v-if="error && error === 'user_not_found'">{{ langSnippet(error) }}</span>
-                </p>
-                <p>
-                    <span class="input-wrap">
-                        <label for="password">{{ langSnippet('password') }}</label>
-                        <input type="password" id="password" v-model="password" autocomplete="current-password">
-                    </span>
-                    <span class="text-alert" v-if="error && error === 'invalid_password'">{{ langSnippet(error) }}</span>
-                </p>
-                <p class="text-right marg-no">
-                    <button type="submit" class="btn btn-small btn-success marg-no">{{ langSnippet('login')}}</button>
-                </p>
+            <form @submit.prevent="login" class="row">
+                <div class="col12 column">
+                    <h2>{{ langSnippet('login')}}</h2>
+                </div>
+
+                <div class="col12 column field-wrap">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="username">{{ langSnippet('username') }}</label>
+                            <input type="text" id="username" v-model="username" autocomplete="username">
+                        </span>
+                        <span class="text-alert pad-left-xs" v-if="error && error === 'user_not_found'">{{ langSnippet(error) }}</span>
+                    </p>
+                </div>
+                <div class="col12 column field-wrap">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="password">{{ langSnippet('password') }}</label>
+                            <input type="password" id="password" v-model="password" autocomplete="current-password">
+                        </span>
+                        <span class="text-alert" v-if="error && error === 'invalid_password'">{{ langSnippet(error) }}</span>
+                    </p>
+                </div>
+                <div class="col12 column field-wrap">
+                    <p class="text-right marg-no">
+                        <button type="submit" class="btn btn-small btn-success marg-no">{{ langSnippet('login')}}</button>
+                    </p>
+                </div>
             </form>
         </div>
     </div>

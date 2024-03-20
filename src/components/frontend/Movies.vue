@@ -10,26 +10,32 @@
         <div class="pad-top-xl sticky-top">
             <h1>{{ langSnippet('movies') }}</h1>
 
-            <div class="grid-row">
-                <div class="col-12 col-3-medium grid-padding marg-bottom-xs">
-                    <label class="select">
-                        <select id="genre-filter" @change="filterByGenre($event)">
-                            <option value="all">{{ langSnippet('all') }}</option>
-                            <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
-                        </select>
-                    </label>
+            <div class="grid-row marg-top-xs">
+                <div class="col-12 col-3-medium grid-padding marg-bottom-xs field-wrap">
+                    <p>
+                        <span class="input-wrap input-select">
+                            <label for="genre-filter">{{ langSnippet('filter') }}</label>
+                            <select id="genre-filter" @change="filterByGenre($event)">
+                                <option value="all">{{ langSnippet('all') }}</option>
+                                <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
+                            </select>
+                        </span>
+                    </p>
                 </div>
-                <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-xs">
-                    <label class="select">
-                        <select id="title-filter" @change="filterBySetting($event)">
-                            <option value="[title,ASC]">A - Z</option>
-                            <option value="[title,DESC]">Z - A</option>
-                            <!-- <option value="releaseDate,DESC">Neuste - Älteste</option>
-                            <option value="releaseDate,ASC">Älteste - Neuste</option> -->
-                            <option value="[rating,DESC]">Bewertung: Höchste - Niedrigste</option>
-                            <option value="[rating,ASC]">Bewertung: Niedrigste - Höchste</option>
-                        </select>
-                    </label>
+                <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-xs field-wrap">
+                    <p>
+                        <span class="input-wrap input-select">
+                            <label for="title-filter">{{ langSnippet('order') }}</label>
+                            <select id="title-filter" @change="filterBySetting($event)">
+                                <option value="[title,ASC]">A - Z</option>
+                                <option value="[title,DESC]">Z - A</option>
+                                <!-- <option value="releaseDate,DESC">Neuste - Älteste</option>
+                                <option value="releaseDate,ASC">Älteste - Neuste</option> -->
+                                <option value="[rating,DESC]">Bewertung: Höchste - Niedrigste</option>
+                                <option value="[rating,ASC]">Bewertung: Niedrigste - Höchste</option>
+                            </select>
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
