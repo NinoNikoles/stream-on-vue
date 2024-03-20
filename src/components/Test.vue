@@ -28,7 +28,7 @@
 
         <div class="col12">
             <form class="row">
-                <div class="col2 column">
+                <div class="col2 column field-wrap">
                     <p>
                         <span class="input-wrap input-select">
                             <label for="anrede">Anrede</label>
@@ -40,7 +40,7 @@
                         </span>
                     </p>
                 </div>
-                <div class="col5 column">
+                <div class="col5 column field-wrap">
                     <p>
                         <span class="input-wrap">
                             <label for="vorname">Vorname</label>
@@ -48,7 +48,7 @@
                         </span>
                     </p>
                 </div>
-                <div class="col5 column">
+                <div class="col5 column field-wrap">
                     <p>
                         <span class="input-wrap">
                             <label for="nachname">Nachname</label>
@@ -56,7 +56,7 @@
                         </span>
                     </p>
                 </div>
-                <div class="col4 column">
+                <div class="col4 column field-wrap">
                     <p>
                         <span class="input-wrap">
                             <label for="email">E-Mail</label>
@@ -64,11 +64,19 @@
                         </span>
                     </p>
                 </div>
-                <div class="col4 column">
+                <div class="col4 column  field-wrap">
                     <p>
                         <span class="input-wrap">
                             <label for="tel">Telefon</label>
                             <input type="tel" id="tel" name="tel">
+                        </span>
+                    </p>
+                </div>
+                <div class="col12 column field-wrap">
+                    <p>
+                        <span class="input-wrap">
+                            <label for="message">Nachricht</label>
+                            <textarea id="message" name="message"></textarea>
                         </span>
                     </p>
                 </div>
