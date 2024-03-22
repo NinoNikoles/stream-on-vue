@@ -9,7 +9,10 @@ export default {
     methods: {
         async get(query, like = null) {
             try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getQuery?query=${query}&like=${like}`);
+                var request = `${this.$mainURL}:3000/api/db/getQuery?query=${query}`;
+                if (like) request += `&like=${like}`;
+
+                var response = await axios.get(request);
                 return response.data;
             } catch (err) {
                 return err;
@@ -78,9 +81,11 @@ export default {
                 WHERE json_genre.value = genre.genre_id
             )`;
 
+            if (this.$data.userID && !userID) userID = this.$data.userID;
+            if (!this.$data.userID && !userID && this.$data.currentUser.id) userID = this.$data.currentUser.id;
             // Wenn nicht alle Medien ausgegeben werden sollen
             if ( !mediaWatched ) query += `
-            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$data.userID}`;
+            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
             
             // Wenn NUR geschaute Medien ausgegeben werden sollen
             if ( mediaWatched === 1 ) query += `
