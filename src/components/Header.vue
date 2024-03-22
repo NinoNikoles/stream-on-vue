@@ -246,10 +246,9 @@ export default {
             event.preventDefault();
             var searchBar = document.getElementById('search-bar');
             var liveSearch = document.getElementById('media-live-search');
-            var activeClass = 'active-search';            
+            var activeClass = 'active-search';
 
             if ( !(searchBar.classList.contains(activeClass)) ) {
-                document.body.classList.add(activeClass);
                 liveSearch.value = '';
                 searchBar.classList.add(activeClass);
             } else {
