@@ -1,5 +1,5 @@
 const axios = require('axios');
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -17,6 +17,7 @@ async function dbSetup() {
             return;
         } else {
             console.log('Verbindung zur SQLite-Datenbank hergestellt.');
+            db.loadExtension('./sqlite/win/unicode.dll');
         }
     });
 

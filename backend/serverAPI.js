@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const db = new sqlite3.Database('./database.db');
+db.loadExtension('./sqlite/win/unicode.dll');
 
 const getSession = (req, res) => {
     const sessionData = req.session;
