@@ -14,7 +14,7 @@
                 <div class="col-12 col-3-medium grid-padding marg-bottom-xs field-wrap">
                     <p>
                         <span class="input-wrap input-select">
-                            <label for="genre-filter">{{ langSnippet('filter') }}</label>
+                            <label for="genre-filter">{{ langSnippet('filter_by') }}</label>
                             <select id="genre-filter" @change="filterByGenre($event)">
                                 <option value="all">{{ langSnippet('all') }}</option>
                                 <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
@@ -25,7 +25,7 @@
                 <div class="col-12 col-3-medium marg-left-col6 grid-padding marg-bottom-xs field-wrap">
                     <p>
                         <span class="input-wrap input-select">
-                            <label for="title-filter">{{ langSnippet('order') }}</label>
+                            <label for="title-filter">{{ langSnippet('oder_filter') }}</label>
                             <select id="title-filter" @change="filterBySetting($event)">
                                 <option value="[title,ASC]">A - Z</option>
                                 <option value="[title,DESC]">Z - A</option>
@@ -49,6 +49,11 @@
                 <p id="sentinel" class="text-center marg-top-xs marg-bottom-no" style="display: none;">
                     <button id="sentinel-btn" class="btn btn-primary marg-no loading" style="opacity: 0;" @click="loadNextPage">Load more</button>
                 </p>
+            </div>
+        </template>
+        <template v-else>
+            <div class="col12">
+                <p>{{ langSnippet('no_content_existing') }}</p>
             </div>
         </template>
     </div>
