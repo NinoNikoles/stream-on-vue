@@ -46,32 +46,6 @@ function forEach(ctn, callback) {
 //             // self.fancyLoad();
 //         },
 
-//         themeChange: function () {
-//             var self = this,
-//                 pageTheme = 'pageTheme',
-//                 $themeSwitch = $('#theme-switch');
-
-//             $themeSwitch.on('click', function(e) {
-//                 e.preventDefault();
-
-//                 function getCookie(name) {
-//                     const value = `; ${document.cookie}`;
-//                     const parts = value.split(`; ${name}=`);
-//                     if (parts.length === 2) return parts.pop().split(';').shift();
-//                 }
-
-//                 expireDate = new Date(Math.floor(new Date().getTime() + (86400000 * 365)));
-
-//                 if( self.$html.attr('data-theme') === 'light' ) {
-//                     document.cookie = pageTheme + "=dark; path=/; expires=" + expireDate;
-//                     self.$html.attr('data-theme', 'dark');
-//                 } else {
-//                     document.cookie = pageTheme + "=light; path=/; expires=" + expireDate;
-//                     self.$html.attr('data-theme', 'light');
-//                 }
-//             })
-//         },
-
 //         initPlayer: function() {
 //             var self = this;
 //                 if ( $('#player').length > 0 ) {
@@ -185,39 +159,6 @@ function forEach(ctn, callback) {
 //             $divider.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth + $duration.outerWidth() ));
 //             $currTime.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth + $duration.outerWidth() + $divider.outerWidth() ));
 //         },
-
-//         highlightIFrame: function() {
-//             var player;
-
-//             if ( $('#highlightTrailer').length > 0 ) {
-//                 // Player erstellen, wenn die API bereit ist
-//                 player = new YT.Player('highlightTrailer', {
-//                     events: {
-//                     'onReady': onPlayerReady,
-//                     'onStateChange': onPlayerStateChange
-//                     }
-//                 });
-
-//                 function onPlayerReady(event) {
-//                     // Das Video ist bereit
-//                     event.target.playVideo(); // Video abspielen
-//                 }
-
-//                 function onPlayerStateChange(event) {
-//                     // Wenn das Video beendet ist
-//                     if (event.data == YT.PlayerState.ENDED) {
-//                         $('.content-wrap.desktop-only').css('opacity', '1');
-//                         $('.content-wrap.desktop-only').css('pointer-events', 'all');
-//                         player['g'].style.opacity = '0';
-
-//                         setTimeout(function() {
-//                             player['g'].style.display = 'none';
-//                         }, 300);
-//                         // Hier können Sie weitere Aktionen ausführen
-//                     }
-//                 }
-//             }
-//         }
 //     }
 
 //     page.init();
@@ -263,68 +204,32 @@ function initSliders() {
         const slider = '.swiper-' + sliderNumber;
 
         $el.addClass(sliderClass);
-        var slidesPerViewMobile = 2;
-        var slidesPerViewSmallTablet = 3;
-        var slidesPerViewTablet = 4;
-        var slidesPerViewDesktop = 6;
-        var smallTabletBP = 720;
-        var tabletBP = 1080;
-        var desktopBP = 1400;
-
-        function swiperLoopCheck(swiper) {
-            bp = window.innerWidth;
-
-            if ( bp >= desktopBP ) {
-                if ( $(slider + ' .swiper-slide').length > slidesPerViewDesktop ) {
-                    swiper.loop = true;
-                } else {
-                    swiper.loop = false;
-                }
-            } else if ( bp >= tabletBP ) {
-                if ( $(slider + ' .swiper-slide').length > slidesPerViewTablet ) {
-                    swiper.loop = true;
-                } else {
-                    swiper.loop = false;
-                }
-            } else if ( bp >= smallTabletBP ) {
-                if ( $(slider + ' .swiper-slide').length > slidesPerViewSmallTablet ) {
-                    swiper.loop = true;
-                } else {
-                    swiper.loop = false;
-                }
-            } else {
-                if ( $(slider + ' .swiper-slide').length > slidesPerViewMobile ) {
-                    swiper.loop = true;
-                } else {
-                    swiper.loop = false;
-                }
-            }
-
-            swiper.update();
-        }
-
+        var itemsMobile = 2;
+        var itemsSmallTablet = 3;
+        var itemsTablet = 4;
+        var itemsDesktop = 6;
 
         const swiper = new Swiper(slider, {
             // Optional parameters
             loop: true,
             //effect: effect,
-            slidesPerView: slidesPerViewMobile,//itemsMobile,
-            slidesPerGroup: slidesPerViewMobile,
+            slidesPerView: itemsMobile,
+            slidesPerGroup: itemsMobile,
             spaceBetween: 16,
             allowTouchMove: true,
             breakpoints: {
                 // when window width is >= 320px
                 720: {
-                    slidesPerView: slidesPerViewSmallTablet,
-                    slidesPerGroup: slidesPerViewSmallTablet,
+                    slidesPerView: itemsSmallTablet,
+                    slidesPerGroup: Math.ceil(itemsSmallTablet/2),
                 },
                 1080: {
-                    slidesPerView: slidesPerViewTablet,
-                    slidesPerGroup: slidesPerViewTablet,
+                    slidesPerView: itemsTablet,
+                    slidesPerGroup: Math.ceil(itemsTablet/2),
                 },
                 1400: {
-                    slidesPerView: slidesPerViewDesktop,
-                    slidesPerGroup: slidesPerViewDesktop,
+                    slidesPerView: itemsDesktop,
+                    slidesPerGroup: Math.ceil(itemsDesktop/2),
                 }
             },
             
