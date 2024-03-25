@@ -239,23 +239,32 @@ async function dbSetup() {
 
     async function initSettings() {
         return new Promise((resolve, reject) => {
-            const settingsData = [
-                ['one_time_setup', '0'],
-                ['api_key', null],
-                ['api_lang', 'en-US'],
-                ['site_title', 'Stream On'],
-                ['enable_edit_btn', 'false']
-            ];
-
-            const stmt = db.prepare('INSERT INTO settings (setting_name, setting_option) VALUES (?, ?)');
-
-            settingsData.forEach(data => {
-                stmt.run(data[0], data[1]);
+            db.get('SELECT * FROM settings WHERE setting_name = "one_time_setup"', (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (!row || row.setting_option !== '1') {
+                        const settingsData = [
+                            ['one_time_setup', '0'],
+                            ['api_key', null],
+                            ['api_lang', 'en-US'],
+                            ['site_title', 'Stream On'],
+                            ['enable_edit_btn', 'false'],
+                            ['design', 'false']
+                        ];
+            
+                        const stmt = db.prepare('INSERT INTO settings (setting_name, setting_option) VALUES (?, ?)');
+            
+                        settingsData.forEach(data => {
+                            stmt.run(data[0], data[1]);
+                        });
+            
+                        stmt.finalize();
+                        console.log(`${yellowColor}Einstellungen initialisiert.${resetColor}`);
+                        resolve();
+                    }
+                }
             });
-
-            stmt.finalize();
-            console.log(`${yellowColor}Einstellungen initialisiert.${resetColor}`);
-            resolve();
         });
     };
 
