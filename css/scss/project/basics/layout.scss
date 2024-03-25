@@ -74,10 +74,15 @@ label {
 }
 
 .rounded {
+    border-radius: 0;
     overflow: hidden;
 
     img {
         border-radius: 0;
+    }
+
+    #main.is-rounded & {
+        border-radius: rem-calc($rounded);
     }
 }
 

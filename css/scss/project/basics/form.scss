@@ -34,9 +34,31 @@ label {
 [data-type="file"],
 select,
 textarea {
+    border-radius: 0;
+
     &:focus {
         &::placeholder {
             color: var(--white-50);
+        }
+    }
+
+    #main.is-rounded & {
+        border-radius: rem-calc($input-border-radius);
+    }
+}
+
+input[type="checkbox"] {
+    border-radius: 0;
+
+    &::before,
+    &::after {
+        border-radius: 0;
+    }
+
+    #main.is-rounded & {
+        &::before,
+        &::after {
+            border-radius: rem-calc($input-border-radius);
         }
     }
 }

@@ -16,6 +16,7 @@
 }
 
 a.btn, .btn, button.btn:not(.acf-button):not(.add_media), .button:not(.acf-button):not(.add_media), [type="submit"] {
+    border-radius: 0;
     line: {
         height: 1 !important;
     }
@@ -30,6 +31,10 @@ a.btn, .btn, button.btn:not(.acf-button):not(.add_media), .button:not(.acf-butto
             size: rem-calc(26) !important;
         }
         //@include transition(all $transition-default);
+    }
+
+    #main.is-rounded & {
+        border-radius: rem-calc($button-border-radius);
     }
 
     &.mylist-btn {

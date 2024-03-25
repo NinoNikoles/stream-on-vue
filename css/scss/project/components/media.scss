@@ -9,9 +9,6 @@
     &-card {
         display: flex;
         flex-direction: column;
-        border: {
-            radius: rem-calc($border-radius);
-        }
         margin: {
             bottom: rem-calc($space-base);
         }
