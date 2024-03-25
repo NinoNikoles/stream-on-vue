@@ -410,7 +410,7 @@ export default {
         async getDesign() {
             try {
                 var response = await this.get(`SELECT * FROM settings WHERE setting_name ='design'`);
-                if ( response[0].setting_option ) document.getElementById('main').classList.add('is-rounded');
+                if ( response[0].setting_option === 'true' ) document.getElementById('main').classList.add('is-rounded');
             } catch(err) {
                 console.log(err);
             }
