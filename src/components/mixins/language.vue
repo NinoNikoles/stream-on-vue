@@ -99,6 +99,7 @@ const langs = [
             'select_new_poster': 'Select a new poster',
             'select_a_video_file': 'Select a video file',
             'current_selected': 'Currently selected',
+            'round_design': 'Rounded design of this site?',
 
             // Other
             'admin_setup_here': 'Please update the page settings <a href="/backend/settings"><strong>here</strong></a> to be able to add your content.',
@@ -220,6 +221,7 @@ const langs = [
             'select_new_poster': 'Wähle ein neues Poster',
             'select_a_video_file': 'Wähle eine Videodatei aus',
             'current_selected': 'Aktuell ausgewählt',
+            'round_design': 'Abgerundetes Design der Seite?',
 
             // Other
             'admin_setup_here': 'Bitte aktualisiere <a href="/backend/settings"><strong>hier</strong></a> die Seiteneinstellungen um Inhalte hinzufügen zu können.',
