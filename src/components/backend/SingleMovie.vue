@@ -97,7 +97,7 @@
                 <div class="grid-row">
                     <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
                         <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card-wrap">
-                            <figure class="media-card poster">
+                            <figure class="media-card poster rounded">
                                 <img :src="$loadImg(kMovie.poster_path)" loading="lazy" :alt="`${kMovie.title}`">
                             </figure>
                             <span class="title">{{ $truncate(kMovie.title, 15) }}</span>
@@ -121,7 +121,7 @@
                 <div class="grid-row">
                     <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
                         <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card-wrap">
-                            <figure class="media-card poster">
+                            <figure class="media-card poster rounded">
                                 <img :src="$loadImg(sMovie.poster_path)" loading="lazy" :alt="`${sMovie.title}`">
                             </figure>
                             <span class="title">{{ $truncate(sMovie.title, 15) }}</span>

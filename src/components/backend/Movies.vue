@@ -39,7 +39,7 @@
                     <div class="grid-row">
                         <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
                             <router-link :to="`/backend/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card-wrap">
-                                <figure class="media-card poster">
+                                <figure class="media-card poster rounded">
                                     <img :src="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
                                 </figure>
                                 <span class="title">{{ $truncate(movie.title, 20) }}</span>

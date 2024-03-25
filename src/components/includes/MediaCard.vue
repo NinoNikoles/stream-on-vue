@@ -1,5 +1,5 @@
 <template>        
-    <div class="media-card" v-if="mediaContent">
+    <div class="media-card rounded" v-if="mediaContent">
         <div class="media-card-wrapper">
             <template v-if="mediaContent.file_path === null">
                 <figure class="widescreen desktop-only disabled">
