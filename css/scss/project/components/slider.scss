@@ -53,7 +53,7 @@
 }
 
 .swiper-button-prev {
-    background: linear-gradient(90deg, var(--dark), transparent);
+    // background: linear-gradient(90deg, var(--dark), transparent);
     left: 0;
 
     &::after {
@@ -62,7 +62,7 @@
 }
 
 .swiper-button-next {
-    background: linear-gradient(270deg, var(--dark), transparent);
+    // background: linear-gradient(270deg, var(--dark), transparent);
     right: 0;
 
     &::after {
@@ -93,12 +93,30 @@
         height: rem-calc(5);
         margin: {
             right: 2px !important;
+            bottom: 5px !important;
             left: 2px !important;
         }
 
         &-active {
             background: {
                 color: var(--white-90);
+            }
+        }
+    }
+
+    &-bullets {
+        &-dynamic {
+            transform: translateX(0) !important;
+            width: 50% !important;
+            margin: {
+                left: 50%;
+            }
+
+            @include MQ(medium) {
+                width: 25% !important;
+                margin: {
+                    left: 75%;
+                }
             }
         }
     }
