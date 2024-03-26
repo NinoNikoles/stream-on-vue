@@ -71,6 +71,7 @@ export default {
             el.setAttribute('src', el.getAttribute('data-img'));
             el.removeAttribute('data-img');
         });
+        document.title = this.$route.name;
     },
     async mounted() {
         await this.getDesign();
