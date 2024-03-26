@@ -262,6 +262,8 @@ async function dbSetup() {
                         stmt.finalize();
                         console.log(`${yellowColor}Einstellungen initialisiert.${resetColor}`);
                         resolve();
+                    } else {
+                        resolve();
                     }
                 }
             });
