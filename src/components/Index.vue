@@ -25,13 +25,13 @@
         <template v-if="userWatchList && userWatchList.length > 0">
             <div class="currentWatch-slider marg-top-l">
                 <div class="col12">
-                    <div class="column column-space">
+                    <div class="column column-space-2">
                         <h2>Zuletzt angeschaut</h2>
                     </div>
 
                     <div class="col12">
 
-                        <div class="swiper card-slider column column-space">
+                        <div class="swiper card-slider column column-space-2">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
@@ -53,13 +53,13 @@
         <template v-if="availableSlider && allMedia">
             <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
-                    <div class="column column-space">
+                    <div class="column column-space-2">
                         <h3>{{ slider.genre.genre_name }}</h3>
                     </div>
 
                     <div class="col12">
 
-                        <div class="swiper card-slider column column-space">
+                        <div class="swiper card-slider column column-space-2">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
@@ -83,7 +83,6 @@
 </template>
 
 <script>
-// import axios from 'axios';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import MediaContent from './includes/MediaCard.vue';
@@ -99,7 +98,6 @@ export default {
     props: ['onMediaPopUp'],
     data() {
         return {
-            userID: null,
             highlight: null,
             availableGenre: null,
             availableSlider: null,
@@ -113,9 +111,6 @@ export default {
         mediaOpen(media, index) {
             this.allMedia[index].watchlist_status = media.watchlist_status;
             this.onMediaPopUp(media);
-        },
-        async watchList () {
-            this.userWatchList = await this.getAllMediaInfos(null, null, null, null, this.userID, 0, 1);
         },
         async genreSlider() {
             try {
@@ -157,35 +152,26 @@ export default {
             }
         },
         async genreMovies(genreID) {
-            try {
-                const response = await this.fetchDB(`genreMovies?genreID=${genreID}`);
-                return response.data;
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
+            const response = await this.fetchDB(`genreMovies?genreID=${genreID}`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         async getHighlight() {
-            try {
-                var response = await this.fetchDB(`getHighlight`);
-            } catch (err) {
-                console.log(err);
-            }
-
-            this.highlight = response.data[0];
+            var response = await this.fetchDB(`getHighlight`);
+            return new Promise((resolve) => {
+                resolve(response.data[0]);
+            });
         },
     },
-    mounted() {
-        this.sessionUser().then((userID) => {
-            this.userID = userID;
-
-            this.getHighlight();
-            this.watchList();
-            this.genreSlider().then(() => {
-                this.availableSliderContent = this.availableSlider;
-                document.getElementById('loader').classList.add('hidden');
-            });
-        });       
+    async mounted() {
+        this.highlight = await this.getHighlight();
+        this.userWatchList = await this.getAllMediaInfos(null, null, null, null, 0, 1);
+        await this.genreSlider().then(() => {
+            this.availableSliderContent = this.availableSlider;
+            document.getElementById('loader').classList.add('hidden');
+            this.initSliders();
+        });
     }
 };
 </script>

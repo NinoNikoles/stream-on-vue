@@ -25,7 +25,9 @@ export default {
             }
             
             const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
-            return response;
+            return new Promise((resolve) => {
+                resolve(response);
+            });
         },
         async checkApiKey(key) {
             try {
@@ -47,23 +49,33 @@ export default {
             const genres = [].concat (movieGenre.data.genres, tvGenre.data.genres);
             const uniqueGenresSet = new Set(genres.map(genre => JSON.stringify(genre)));
             const uniqueGenresArray = Array.from(uniqueGenresSet).map(genre => JSON.parse(genre));
-            return uniqueGenresArray;
+            return new Promise((resolve) => {
+                resolve(uniqueGenresArray);
+            });
         },
         async searchMovies(query) {
             const movies = await this.tmdbApiRequest(`search/movie`, query);
-            return movies.data.results;
+            return new Promise((resolve) => {
+                resolve(movies.data.results);
+            });
         },
         async searchMovieByID(movieID) {
             const movie = await this.tmdbApiRequest(`movie/${movieID}`);
-            return movie.data;
+            return new Promise((resolve) => {
+                resolve(movie.data);
+            });
         },
         async searchShows(query) {
             const shows = await this.tmdbApiRequest(`search/tv`, query);
-            return shows.data.results;
+            return new Promise((resolve) => {
+                resolve(shows.data.results);
+            });
         },
         async searchShowByID(showID) {
             const show = await this.tmdbApiRequest(`tv/${showID}`);
-            return show.data;
+            return new Promise((resolve) => {
+                resolve(show.data);
+            });
         },
         async searchSeasonByNumber(showID, seasonNumber) {
             const season = await this.tmdbApiRequest(`tv/${showID}/season/${seasonNumber}`);
@@ -77,7 +89,9 @@ export default {
                 episodes.push(dataEpisode.data);
             }
             
-            return episodes;
+            return new Promise((resolve) => {
+                resolve(episodes);
+            });
         },
 
         //--- Details ---
@@ -88,81 +102,47 @@ export default {
         },
         // Thumbnails
         async getBackdrops(type, mediaID) {
-            try {
-                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
-                return response.data.backdrops;
-            } catch(err) {
-                console.log(err);
-            }
+            const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
+            return new Promise((resolve) => {
+                resolve(response.data.backdrops);
+            });
         },
         // Poster
         async getPosters(type, mediaID) {
-            try {
-                const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
-                return response.data.posters;
-            } catch(err) {
-                console.log(err);
-            }
+            const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
+            return new Promise((resolve) => {
+                resolve(response.data.posters);
+            });
         },
 
 
 
         //-- Get collection movies
         async getCollectionMovies(collectionID) {
-            try {
-                const response = await this.tmdbApiRequest(`collection/${collectionID}`);
-                return response.data.parts;
-            } catch(err) {
-                console.log(err);
-            }
+            const response = await this.tmdbApiRequest(`collection/${collectionID}`);
+            return new Promise((resolve) => {
+                resolve(response.data.parts);
+            });
         },
 
         //-- Get simliar movies
         async getSimilarMovies(mediaID) {
-            try {
-                const response = await this.tmdbApiRequest(`movie/${mediaID}/similar`);
-                return response.data;
-            } catch(err) {
-                console.log(err);
-            }
+            const response = await this.tmdbApiRequest(`movie/${mediaID}/similar`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-        async getSettings() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getSettings`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
-        },
         async checkIfMediaIsInDB(mediaArray) {
             const newCheckedArray = [];
 
             // Verwende map anstelle von forEach, um ein Array von Promises zu erhalten
             const promises = mediaArray.map(async (media) => {
-            try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${media.id}"`);
                 if (response.data.length === 0) newCheckedArray.push(media);
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                    // Wirf einen Fehler, um zu signalisieren, dass etwas schief gelaufen ist
-                    throw error;
-                }
             });
 
             // Warte auf Abschluss aller Promises
@@ -170,12 +150,10 @@ export default {
             return newCheckedArray;
         },
     },
-    mounted() {
-        this.getSettings().then(settings => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            this.API_KEY = settings[1].setting_option;
-            this.LANGUAGE = settings[2].setting_option;
-        });
+    async mounted() {
+        var settings = await this.getSettings();
+        this.API_KEY = settings[1].setting_option;
+        this.LANGUAGE = settings[2].setting_option;
     }
 };
 </script>

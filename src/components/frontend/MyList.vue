@@ -73,7 +73,6 @@ export default {
     props: ['onMediaPopUp'],
     data() {
         return {
-            userID: null,
             mediaAll: null,
             url: window.location.protocol + '//' + window.location.hostname,
             genres: null,
@@ -116,7 +115,6 @@ export default {
                 if(this.page >= this.totalPages) {
                     this.sentinelElement.remove();
                 }
-                
             }, timeOut);
         },
         handleIntersect(entries) {
@@ -137,23 +135,13 @@ export default {
             this.onMediaPopUp(media);
         },
         async getMedia() {
-            this.mediaAll = await this.getAllMediaInfos('title', 'ASC', null, null, this.userID, 1);
+            this.mediaAll = await this.getAllMediaInfos('title', 'ASC', null, null, 1);
 
             this.totalPages = Math.ceil(this.mediaAll.length/20);
             this.visibleMedia = this.mediaAll.slice(0, this.page * this.pageSize);
         },
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.userID, mediaID, buttonID);
-        },
-        async getGenreAll() {
-            try {
-                const response = await this.fetchDB(`allGenre`);
-                this.genres = response.data;
-                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
+            this.watchListTrigger(this.$user.id, mediaID, buttonID);
         },
         async popUpTrigger(index, media, event) {
             var status =  await this.checkWatchlist(media.tmdbID);
@@ -162,17 +150,13 @@ export default {
             this.openMediaPopUp(media, event);
         },
     },
-    mounted() {
-        this.sessionUser().then(async(userID) => {
-            this.userID = userID;
+    async mounted() {
+        this.genres = await this.getGenre();
+        await this.getMedia().then(() => {
+            document.getElementById('loader').classList.add('hidden');
 
-            this.genres = await this.getGenre();
-            this.getMedia().then(() => {
-                document.getElementById('loader').classList.add('hidden');
-
-                this.sentinelElement = document.getElementById('sentinel');
-                this.setupIntersectionObserver();
-            });
+            this.sentinelElement = document.getElementById('sentinel');
+            this.setupIntersectionObserver();
         });
     }
 };

@@ -56,13 +56,12 @@ export default {
     },
     methods: {
         async outPutHighlights() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getAllHighlights`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/getAllHighlights`);
+            var data = response.data;
+            return new Promise((resolve) => {
+                if (data.length === 0) data = null;
+                resolve(data);
+            }); 
         },
         async changeHighlightStatus(e) {
             const input = e.target;
@@ -87,28 +86,14 @@ export default {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteHighlight?id=${id}`);
 
-                this.outPutHighlights().then(highlights => {
-                    // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-                    if ( highlights.length > 0 ) {
-                        this.highlights = highlights;
-                    } else {
-                        this.highlights = null;
-                    }            
-                });
+                this.highlights = await this.outPutHighlights();
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
             }
         }
     },
-    mounted() {
-        this.outPutHighlights().then(highlights => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            if ( highlights.length > 0 ) {
-                this.highlights = highlights;
-            } else {
-                this.highlights = null;
-            }            
-        });
+    async mounted() {
+        this.highlights = await this.outPutHighlights();
     }
 };
 </script>

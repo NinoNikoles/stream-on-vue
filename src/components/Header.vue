@@ -1,5 +1,5 @@
 <template>
-    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="isLoggedIn">
+    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="this.$user">
         <div class="row header--content">
             <div class="col12 column header--content--nav">
 
@@ -34,7 +34,7 @@
                                 <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                             </li>
 
-                            <div class="col12 mobile-only marg-top-m" v-if="this.role === 'superadmin' || this.role === 'admin'">
+                            <div class="col12 mobile-only marg-top-m" v-if="this.$user.role === 'superadmin' || this.$user.role === 'admin'">
                                 <li class="menu-item spacer"><span>{{ langSnippet('admin') }}</span></li>
                             </div>
 
@@ -52,7 +52,7 @@
                     <!-- Profil -->
                     <button id="user-menu-btn">
                         <figure class="square">
-                            <img v-if="currentUser.activeImg" :src="`${currentUser.activeImg}`" loading="lazy" alt="" id="userIcon">
+                            <img v-if="this.$user.activeImg" :src="`${this.$user.activeImg}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
@@ -61,7 +61,7 @@
                                     <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                                 </li>
                                 
-                                <li class="menu-item"><router-link :to="`/user/${id}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
+                                <li class="menu-item"><router-link :to="`/user/${this.$user.id}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
                             </ul>
                         </menu>
@@ -81,10 +81,10 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-bottom-l bg-dark">
-            <div class="innerWrap pad-top-xl sticky-top">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-bottom-l bg-dark" :style="`height: ${resultsHeight}px`">
+            <div class="innerWrap pad-top-s sticky-top">
                 <div class="col12">
-                    <h1>Suchergebnisse für: {{ searchInput }}</h1>
+                    <h2>Suchergebnisse für: {{ searchInput }}</h2>
                 </div>
             </div>
 
@@ -117,10 +117,7 @@ export default {
     props: ['onMediaPopUp'],
     data() {
         return {
-            id: null,
-            username: '',
-            role: 'user',
-            isLoggedIn: null,
+            resultsHeight: null,
             mainRoutes: null,
             backendRoutes: null,
             router: router, // Greife auf die Routen des router-Objekts zu
@@ -131,14 +128,6 @@ export default {
             selectedMedia: null,
             selectedMediaGenre: null,
             selectMediaWatchlist: null,
-            currentUser: {
-                id: null,
-                username: null,
-                activeImg: null,
-                images: [],
-            },
-            mediaPath: 'media',
-            userUploadPath: 'user_uploads',
         };
     },
     methods: {
@@ -153,7 +142,7 @@ export default {
         },
         async backendRouter() {
             return this.routes.filter(route => {
-                if ( this.role === 'superadmin' || this.role === 'admin') return route.meta.backend;                
+                if ( this.$user.role === 'superadmin' || this.$user.role === 'admin') return route.meta.backend;                
             });
         },
         async handleSearchInput() {
@@ -191,56 +180,8 @@ export default {
                 }, 1000);
             });
         },
-        async getSeasons(showID) {
-            try {
-                const response = await this.fetchDB(`getSeasons?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        async getEpisodes(showID) {
-            try {
-                const response = await this.fetchDB(`getEpisodes?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async logout() {
             await this.logout_function();
-        },
-        async fetchSessionStatus() {
-            const userData = await this.fetchUserSession();
-            if ( typeof userData === 'object' ) {
-                    this.isLoggedIn = userData.isLoggedIn;
-                    this.id = userData.id;
-                    this.username = userData.name;
-                    this.role = userData.role;
-            } else {
-                // if ( this.$route !== 'Login') {
-                //     console.log(this.mainRoutes);
-                //     this.callout('error', 'Fehler!');
-                // }               
-            }
-        },
-        async getCurrentUserInfo() {
-            try {
-                var response = await this.fetchDB(`getUser?userID=${this.id}`);
-                const user = response.data[0];
-
-                this.currentUser.id = user.id;
-                this.currentUser.username = user.username;
-                this.currentUser.activeImg = `/${this.mediaPath}/avatar.webp`;
-                if ( user.img !== '-1' ) this.currentUser.activeImg = `/${this.mediaPath}/${this.userUploadPath}/${this.currentUser.id}/${user.img}`;
-                this.selectedImg = this.currentUser.activeImg;
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return [];
-            }
-        },
-        async isAdminOrSuperadmin() {
-            return this.role;
         },
         searchTrigger(event) {
             event.preventDefault();
@@ -265,22 +206,31 @@ export default {
             this.openMediaPopUp(media, event);
         },
     },
-    mounted() {
-        this.fetchSessionStatus()
-        .then(() => {
-            if ( this.isLoggedIn === true ) {
-                this.mainRouter().then(routes => {
-                    // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-                    this.mainRoutes = routes;
-                });
-                this.backendRouter().then(routes => {
-                    // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-                    this.backendRoutes = routes;
-                });
-                this.getCurrentUserInfo();
-                this.handleSearchInput();
+    updated() {
+        var resultWrap = document.getElementById('searchResults');
+        console.log(resultWrap);
+        if (this.searchResults) {
+            this.resultsHeight = window.innerHeight-100;
+            if ( document.getElementById('media-list').clientHeight > this.resultsHeight ) {
+                if (resultWrap) resultWrap.style.overflowY = 'scroll';
+            } else {
+                if (resultWrap) resultWrap.style.overflowY = 'hidden';
             }
-        });
+        }
+    },
+    async mounted() {
+        if ( this.$user && this.$user.isLoggedIn === true ) {
+            await this.mainRouter().then(routes => {
+                // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
+                this.mainRoutes = routes;
+            });
+            await this.backendRouter().then(routes => {
+                // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
+                this.backendRoutes = routes;
+            });
+            await this.getCurrentUserInfos();
+            await this.handleSearchInput();
+        }
     }
 };
 </script>

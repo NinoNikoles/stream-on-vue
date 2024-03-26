@@ -1,6 +1,7 @@
 <script>
 import langSnippet from './language.vue';
 import axios from 'axios';
+import { Swiper } from 'swiper';
 
 export default {
     name: 'MainFunctions',
@@ -19,17 +20,19 @@ export default {
             }            
         },
         async fetchDB(request, values = {}, credentials = {}) {
-            try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
-                return new Promise((resolve) => {
-                    resolve(response);
-                });
-            } catch(err) {
-                return err;
-            }
+            var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
+            return new Promise((resolve, reject) => {
+                if (response.name === 'AxiosError') {
+                    reject(response);
+                }
+                resolve(response);
+            });
         },
         async postDB(request, values = {}, credentials = {}) {
-            await axios.post(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
+            var response = await axios.post(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
+            return new Promise((resolve) => {
+                resolve(response);
+            });
         },
         tmdbIDinArray(element, arr) {
             var equal = false;
@@ -62,7 +65,7 @@ export default {
                 console.log(error);
             }
         },
-        async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, userID = null, watchlist = null, mediaWatched = null) {
+        async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, watchlist = null, mediaWatched = null) {
             var mediaInfos = [];
             let query =
             `SELECT media.*, json_group_array(genre.genre_name) AS genre_names,
@@ -74,22 +77,20 @@ export default {
 
             query +=
             ` FROM media
-            LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${userID}
+            LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${this.$user.id}
             LEFT JOIN genre ON EXISTS (
                 SELECT 1
                 FROM json_each(media.genres) AS json_genre
                 WHERE json_genre.value = genre.genre_id
             )`;
 
-            if (this.$data.userID && !userID) userID = this.$data.userID;
-            if (!this.$data.userID && !userID && this.$data.currentUser.id) userID = this.$data.currentUser.id;
             // Wenn nicht alle Medien ausgegeben werden sollen
             if ( !mediaWatched ) query += `
-            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
+            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$user.id}`;
             
             // Wenn NUR geschaute Medien ausgegeben werden sollen
             if ( mediaWatched === 1 ) query += `
-            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${userID}`;
+            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$user.id}`;
 
             // Wenn bestimmte Medien ausgewählt werden sollen
             if ( type || ids || watchlist === 1 ) query += `
@@ -141,7 +142,9 @@ export default {
         },
         async getGenre() {
             const response = await this.fetchDB(`allGenre`);
-            return response.data;
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         async getGenreName(genreID) {
             const response = await this.fetchDB(`genreNameByID?id=${genreID}`);
@@ -363,21 +366,23 @@ export default {
 
 
         //-- API --
-        async fetchUserSession() {
+        async getCurrentUserInfos() {
             try {
-                const response = await this.fetchDB(`session`, { withCredentials: true });
-                if ( response.data.user ) {
-                    const userData = {
-                        isLoggedIn: response.data.user.isLoggedIn,
-                        id: response.data.user.id,
-                        username: response.data.user.name,
-                        role: response.data.user.role
-                    }
-                    return userData;
-                }               
+                var response = await this.fetchDB(`getUser?userID=${this.$user.id}`);
+                const user = response.data[0];
+
+                this.$user.activeImg = `/media/avatar.webp`;
+                if ( user.img !== '-1' ) this.$user.activeImg = `/media/user_uploads/${this.$user.id}/${user.img}`;
             } catch (error) {
-                return error;
+                console.error(error);
+                return [];
             }
+        },
+        async getSettings() {
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/getSettings`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         async logout_function() {
             try {
@@ -415,6 +420,55 @@ export default {
                 console.log(err);
             }
         },
+        initSliders() {
+            let sliderNumber = 0;
+            const swipers = document.querySelectorAll('.swiper');
+
+            swipers.forEach(function (swiperElement) {
+                const sliderClass = 'swiper-' + sliderNumber;
+                const slider = '.' + sliderClass;
+
+                swiperElement.classList.add(sliderClass);
+                const itemsMobile = 2;
+                const itemsSmallTablet = 3;
+                const itemsTablet = 4;
+                const itemsDesktop = 6;
+
+                new Swiper(slider, {
+                    loop: true,
+                    slidesPerView: itemsMobile,
+                    slidesPerGroup: 1,
+                    spaceBetween: 16,
+                    allowTouchMove: true,
+                    breakpoints: {
+                        720: {
+                            slidesPerView: itemsSmallTablet,
+                        },
+                        1080: {
+                            slidesPerView: itemsTablet,
+                        },
+                        1400: {
+                            slidesPerView: itemsDesktop,
+                        }
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        dynamicBullets: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
+
+                const fancyboxItems = swiperElement.querySelectorAll('[data-fancybox="gallery"]');
+                fancyboxItems.forEach(function (item) {
+                    item.setAttribute('data-fancybox', sliderClass);
+                });
+
+                sliderNumber++;
+            });
+        }
     }
 };
 </script>

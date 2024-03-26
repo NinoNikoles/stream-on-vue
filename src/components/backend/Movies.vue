@@ -78,8 +78,7 @@ export default {
     },
     methods: {
         handleInputChange() {
-            // Hier können Sie die eingegebenen Daten bearbeiten und in outputText speichern
-            this.outputText = this.inputText; //.toUpperCase(); // Beispiel: Text in Großbuchstaben anzeigen
+            this.outputText = this.inputText;
             this.searchAndDisplayMovies(this.outputText);
         },
         async searchAndDisplayMovies(title) {
@@ -91,9 +90,6 @@ export default {
                 } else {
                     this.movies = null;
                 }
-
-                //this.genre = await this.getGenre(this.movie);
-                //this.saveData(this.movie); // Speichern Sie die Daten nach dem Abrufen
             } catch (error) {
                 console.error('Fehler beim Abrufen der Daten:', error);
             }
@@ -106,16 +102,16 @@ export default {
                     filteredMovies.push(movie);
                 }
             }
-            return filteredMovies;
+
+            return new Promise((resolve) => {
+                resolve(filteredMovies);
+            });
         },
         async checkIfMovieExistsInDatabase(tmdbID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${tmdbID}"`);
-                return response.data.length > 0;
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return false;
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${tmdbID}"`);
+            return new Promise((resolve) => {
+                resolve(response.data.length > 0);
+            });
         },
         async saveData(data) {
             document.getElementById('loader').classList.remove('hidden');
@@ -123,15 +119,9 @@ export default {
             const genres = movie.genres.map(genre => genre.id);
 
             let date = movie.release_date;
-            let parsedDate = '';
+            let parsedDate = new Date();
 
-            if ( date != '' ) {
-                parsedDate = new Date(date);
- 
-                
-            } else {
-                parsedDate = new Date();
-            }
+            if ( date != '' ) parsedDate = new Date(date);
 
             let day = parsedDate.getDate();
             let month = parsedDate.getMonth() + 1;
@@ -139,11 +129,7 @@ export default {
             let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
             var collection = null;
 
-            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
-                collection = movie.belongs_to_collection.id;
-            } else {
-                collection = null;
-            }
+            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) collection = movie.belongs_to_collection.id;
             
             var media = {
                 tmdbID: movie.id,
@@ -168,67 +154,41 @@ export default {
             }
             
             this.clearSearch();
-            this.outPutMovies().then(outputMovies => {
-                // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
-                this.outputMovies = outputMovies;
-                this.searchAndDisplayMovies(this.outputText);
-                this.callout('success', 'Movie added successfully');
-            });
+            this.outputMovies = await this.outPutMovies();
+            await this.searchAndDisplayMovies(this.outputText);
+            this.callout('success', 'Movie added successfully');
         },
         async sendMedia(media) {
-            try {
-                var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
-
-                if ( response.data.message === true ) {
-                    document.getElementById('loader').classList.add('hidden');
-                }
-            } catch (err) {
-                console.log(err);
+            var response = await axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
+            if ( response.data.message === true ) {
+                document.getElementById('loader').classList.add('hidden');
             }
         },
         async outPutMovies() {
             var order = 'title';
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="movie"&orderBy=${order}&order=ASC`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="movie"&orderBy=${order}&order=ASC`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         clearSearch() {
             this.inputText = "";
             this.outputText = this.inputText;
         },
         async outPutGenres() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
+            var genre = response.data;
+            this.genreAvailable = false;
+            if ( genre.length > 0 ) this.genreAvailable = true;
+
+            return new Promise((resolve) => {    
+                resolve(genre);
+            });
         }
     },
-    mounted() {
-        this.outPutGenres().then(genres => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            if ( genres.length > 0 ) {
-                this.genreAvailable = true;
-            } else {
-                this.genreAvailable = false;
-            }            
-        });
-        this.outPutMovies().then(outputMovies => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            this.outputMovies = outputMovies;
-        });
+    async mounted() {
+        await this.outPutGenres()
+        this.outputMovies = await this.outPutMovies();
     }
 };
 </script>
-
-<style>
-#app {
-
-}
-</style>

@@ -25,12 +25,11 @@
                 <router-link v-else-if="mediaContent.media_type === 'show' && mediaContent['episodes'][0].file_path" :to="`/watch?id=${mediaContent['episodes'][0].tmdbID}`" :title="`${mediaContent['episodes'][0].title}`" class="play-trigger"></router-link>
                 
                 <button @click="popUpTrigger(mediaContent, mediaIndex, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
-                <router-link :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                <router-link v-if="$pageSettings[4].setting_option === 'true' && ($user.role ==='superadmin' || $user.role === 'admin')" :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>
         <!-- <div v-if="mediaWatchList" class="watched-bar">
             <p class="smaller marg-bottom-xxs">{{ mediaContent.title }}</p>
-            
         </div> -->
     </div>
 </template>
@@ -55,9 +54,8 @@ export default {
             const currTime = parseFloat(watchedTime);
             const totalLength = parseFloat(totalDuration);
             const watchedInPercent = (currTime/totalLength)*100;
-
             return watchedInPercent;
         }
-    }
+    },
 }
 </script>

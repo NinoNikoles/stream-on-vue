@@ -252,14 +252,14 @@ export default {
         langSnippet(snippet, content = '' ) {
             const browserLanguage = navigator.language || navigator.userLanguage;
             var langObject = langs.find(lang => lang.locale === browserLanguage);
+            let langsnippet = snippet;
+
             if (langObject && langObject.translations[snippet]) {
-                let langsnippet = langObject.translations[snippet];
+                langsnippet = langObject.translations[snippet];
 
                 if ( content !== '' && langsnippet.includes("$content") ) {
                     langsnippet = langsnippet.replace("$content", content);
                 }
-
-                return langsnippet;
             } else {
                 langObject = langs.find(lang => lang.locale === 'en-US');
                 if (langObject && langObject.translations[snippet]) {
@@ -268,11 +268,10 @@ export default {
                     if ( content !== '' && langsnippet.includes("$content") ) {
                         langsnippet = langsnippet.replace("$content", content);
                     }
-
-                    return langsnippet;
                 }
-                return snippet;
-            }            
+            }
+
+            return langsnippet;
         },
     },
 };

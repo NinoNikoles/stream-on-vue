@@ -64,7 +64,7 @@ export default {
             } catch (e) {
                 console.log(e);
             }        
-        },
+        }
     },
     updated() {
         document.querySelectorAll('img[data-img]').forEach(function(el) {
@@ -72,8 +72,8 @@ export default {
             el.removeAttribute('data-img');
         });
     },
-    mounted() {
-        this.getDesign();
+    async mounted() {
+        await this.getDesign();
         Fancybox.bind('[data-fancybox]', {
             dragToClose: false,
         });

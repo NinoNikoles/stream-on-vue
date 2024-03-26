@@ -78,9 +78,8 @@ export default {
             }
         }
     },
-    mounted() {
-        this.outPutGenres().then(genres => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
+    async mounted() {
+        await this.outPutGenres().then(genres => {
             if ( genres.length > 0 ) {
                 this.genre = genres;
             } else {
@@ -90,9 +89,3 @@ export default {
     }
 };
 </script>
-
-<style>
-#app {
-
-}
-</style>

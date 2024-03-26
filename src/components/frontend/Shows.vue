@@ -76,7 +76,6 @@ export default {
     props: ['onMediaPopUp'],
     data() {
         return {
-            userID: null,
             shows: null,
             url: window.location.protocol + '//' + window.location.hostname,
             genres: null,
@@ -118,7 +117,6 @@ export default {
                 if(this.page >= this.totalPages) {
                     this.sentinelElement.remove();
                 }
-                
             }, timeOut);
         },
         handleIntersect(entries) {
@@ -139,26 +137,22 @@ export default {
             this.onMediaPopUp(media);
         },
         async getShows() {
-            this.shows = this.movies = await this.getAllMediaInfos('title', 'ASC', null, 'show', this.userID);
+            this.shows = this.movies = await this.getAllMediaInfos('title', 'ASC', null, 'show');
 
             this.totalPages = Math.ceil(this.shows.length/20);
             this.visibleMedia = this.shows.slice(0, this.page * this.pageSize);
         },
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.userID, mediaID, buttonID);
+            this.watchListTrigger(this.$user.id, mediaID, buttonID);
         },
     },
-    mounted() {
-        this.sessionUser().then(async(userID) => {
-            this.userID = userID;
+    async mounted() {
+        this.genres = await this.getGenre();
+        await this.getShows().then(() => {
+            document.getElementById('loader').classList.add('hidden');
 
-            this.genres = await this.getGenre();
-            this.getShows().then(() => {
-                document.getElementById('loader').classList.add('hidden');
-
-                this.sentinelElement = document.getElementById('sentinel');
-                this.setupIntersectionObserver();
-            });
+            this.sentinelElement = document.getElementById('sentinel');
+            this.setupIntersectionObserver();
         });
     }
 };

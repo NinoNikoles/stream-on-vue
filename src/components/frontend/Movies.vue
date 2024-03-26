@@ -15,7 +15,7 @@
                     <p>
                         <span class="input-wrap input-select">
                             <label for="genre-filter">{{ langSnippet('filter_by') }}</label>
-                            <select id="genre-filter" @change="filterByGenre($event)">
+                            <select id="genre-filter" v-if="genres" @change="filterByGenre($event)">
                                 <option value="all">{{ langSnippet('all') }}</option>
                                 <option v-for="(genre, index) in genres" :key="index" :value="`${genre.genre_id}`">{{ genre.genre_name }}</option>
                             </select>
@@ -75,7 +75,6 @@ export default {
     props: ['onMediaPopUp'],
     data() {
         return {
-            userID: null,
             movies: null,
             url: window.location.protocol + '//' + window.location.hostname,
             genres: null,
@@ -117,7 +116,6 @@ export default {
                 if(this.page >= this.totalPages) {
                     this.sentinelElement.remove();
                 }
-                
             }, timeOut);
         },
         handleIntersect(entries) {
@@ -144,7 +142,7 @@ export default {
             this.visibleMedia = this.movies.slice(0, this.page * this.pageSize);
         },
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.userID, mediaID, buttonID);
+            this.watchListTrigger(this.$user.id, mediaID, buttonID);
         },
         async popUpTrigger(index, media, event) {
             var status =  await this.checkWatchlist(media.tmdbID);
@@ -153,17 +151,13 @@ export default {
             this.openMediaPopUp(media, event);
         }
     },
-    mounted() {
-        this.sessionUser().then(async(userID) => {
-            this.userID = userID;
+    async mounted() {
+        this.genres = await this.getGenre();
+        await this.getMovies().then(() => {
+            document.getElementById('loader').classList.add('hidden');
 
-            this.genres = await this.getGenre();
-            this.getMovies().then(() => {
-                document.getElementById('loader').classList.add('hidden');
-
-                this.sentinelElement = document.getElementById('sentinel');
-                this.setupIntersectionObserver();
-            });
+            this.sentinelElement = document.getElementById('sentinel');
+            this.setupIntersectionObserver();
         });
     },
 };

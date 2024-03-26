@@ -12,11 +12,10 @@
                         <div class="col12 field-wrap">
                             <p>
                                 <span class="input-wrap input-select">
-                                    <label for="language" data-form="select">{{ langSnippet('language') }}</label>
+                                    <label for="language" data-form="select">{{ langSnippet('language') }} (API)</label>
                                     <select v-model="language" id="language">
-                                        <option value="" disabled hidden>- {{ langSnippet('language') }} -</option>
                                         <option value="de-DE">Deutsch</option>
-                                        <option value="en-US" selected>English</option>
+                                        <option value="en-US">English</option>
                                     </select>
                                 </span>
                             </p>
@@ -71,7 +70,7 @@
                         </div>
 
                         <div class="col12 text-right marg-top-base field-wrap">
-                            <input type="submit" @click="saveData($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">
+                            <button type="submit" @click="saveData($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">{{ langSnippet('save') }}</button>
                         </div>
                     </div>
                     
@@ -92,11 +91,11 @@ export default {
     data() {
         return {
             settings: null,
-            title: null,
-            apikey: null,
-            language: "en-US",
-            edit: null,
-            design: null,
+            title: this.$pageSettings[3].setting_option,
+            apikey: this.$pageSettings[1].setting_option,
+            language: this.$pageSettings[2].setting_option,
+            edit: this.$pageSettings[4].setting_option,
+            design: this.$pageSettings[5].setting_option,
             titleError: null,
             keyError: null,
         };
@@ -122,60 +121,37 @@ export default {
                 ]
 
                 const settingsData = [
-                    {site_title: `"${title}"`},
-                    {api_key: `"${apikey}"`},
-                    {api_lang: `"${language}"`},
-                    {enable_edit_btn: `"${edit}"`},
-                    {design: `"${design}"`},
+                    {site_title: `'${title}'`},
+                    {api_key: `'${apikey}'`},
+                    {api_lang: `'${language}'`},
+                    {enable_edit_btn: `'${edit}'`},
+                    {design: `'${design}'`},
                 ]
 
-                for ( const data of settingsData ) {
-                    try {
-                        const [key, value ] = Object.entries(data)[0];
-                        await this.postDB(`saveSettings?fields=${fields}&whereClause=setting_name="${key}"`, { [key]: value });
-                    } catch (err) {
-                        console.log(err);
-                    }
-                }
+                settingsData.map(async (data) => {
+                    const [key, value] = Object.entries(data)[0];
+                    var response = await this.postDB(`saveSettings?fields=${fields}&whereClause=setting_name="${key}"`, { [key]: value });
+                    return new Promise((resolve) => {
+                        resolve(response);
+                    });
+                });
+
+                this.$pageSettings = this.settings = await this.getSettings();
 
                 this.callout('success', this.langSnippet('save'));
             } else {
                 this.keyError = "API Key is not valid!";
                 this.callout('alert', this.langSnippet(this.keyError));
             }
-            
+
             this.enableButton(saveButton);
-            if ( design ) {
+
+            if ( design && design !== 'false' ) {
                 document.getElementById('main').classList.add('is-rounded');
             } else {
                 document.getElementById('main').classList.remove('is-rounded');
             }
         },
-        async getSettings() {
-            try {
-                const response = await this.fetchDB(`getSettings`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
-        }
     },
-    mounted() {
-        this.getSettings().then(settings => {
-            // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-            this.apikey = settings[1].setting_option;
-            this.language = settings[2].setting_option;
-            this.title = settings[3].setting_option;
-            this.edit = settings[4].setting_option;
-            this.design = settings[5].setting_option;
-        });
-    }
 };
 </script>
-
-<style>
-#app {
-
-}
-</style>

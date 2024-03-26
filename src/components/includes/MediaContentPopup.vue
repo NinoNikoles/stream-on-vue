@@ -115,7 +115,6 @@
 </template>
 
 <script>
-//import axios from 'axios';
 import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 
@@ -123,20 +122,10 @@ export default {
     name: 'MediaContentPopup',
     mixins: [functions, langSnippet],
     props: ['media'],
-    data() {
-        return {
-            userID: null,
-        }
-    },
     methods: {
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.userID, mediaID, buttonID);
+            this.watchListTrigger(this.$user.id, mediaID, buttonID);
         }
-    },
-    updated() {
-        this.sessionUser().then((userID) => {
-            this.userID = userID;
-        });
-    },
+    }
 }
 </script>
