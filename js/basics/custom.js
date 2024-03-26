@@ -164,13 +164,13 @@ function forEach(ctn, callback) {
 //     page.init();
 // });
 
-// var resizeTimer,
-// debounce = function(e) {
-//     clearTimeout(resizeTimer);
-//     resizeTimer = setTimeout(function() {
-//         page.resizeHook();
-//     }, 50);
-// };
+var resizeTimer,
+debounce = function(e) {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+        resizeElementHeight();
+    }, 50);
+};
 
 var resizeTimerScroll,
 debounceScroll = function(e){
@@ -180,6 +180,51 @@ debounceScroll = function(e){
         scrollTrigger();
 	}, 10);
 };
+
+const resizeElementHeight = () => {
+    var loginWrap = document.getElementById('loginWrap');
+    if (loginWrap) {
+        const windowHeight = window.innerHeight;
+        loginWrap.style.height = `${windowHeight}px`;
+    }
+
+    var body = document.body;
+    var navMain = document.getElementById('navMain');
+    
+    if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
+        const windowHeight = window.innerHeight;
+        body.style.height = `${windowHeight}px`;
+        if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
+    } else {
+        body.style.height = '';
+        if(navMain) navMain.style.height = '';
+    }
+};
+
+var mobileBodyHeightFix = function() {
+    var body = document.body;
+    var navMain = document.getElementById('navMain');
+
+    const observer = new MutationObserver((mutations) => {
+        // Überprüfen, ob sich die Klassen geändert haben
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
+                    const windowHeight = window.innerHeight;
+                    body.style.height = `${windowHeight}px`;
+                    if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
+                } else {
+                    body.style.height = '';
+                    if(navMain) navMain.style.height = '';
+                }
+            }
+        });
+    });
+    const config = { attributes: true };
+
+    // Observer starten und das Ziel-Element und die Konfiguration übergeben
+    observer.observe(body, config);
+}
 
 var checkPosition = function(e) {
     var header = document.querySelector('header'),
@@ -214,27 +259,25 @@ function initSliders() {
             loop: true,
             //effect: effect,
             slidesPerView: itemsMobile,
-            slidesPerGroup: itemsMobile,
+            slidesPerGroup: 1,
             spaceBetween: 16,
             allowTouchMove: true,
             breakpoints: {
                 // when window width is >= 320px
                 720: {
                     slidesPerView: itemsSmallTablet,
-                    slidesPerGroup: Math.ceil(itemsSmallTablet/2),
                 },
                 1080: {
                     slidesPerView: itemsTablet,
-                    slidesPerGroup: Math.ceil(itemsTablet/2),
                 },
                 1400: {
                     slidesPerView: itemsDesktop,
-                    slidesPerGroup: Math.ceil(itemsDesktop/2),
                 }
             },
             
             pagination: {
                 el: '.swiper-pagination',
+                dynamicBullets: true
                 // clickable: true
             },
 
@@ -424,13 +467,14 @@ function initCustomJS() {
     document.body.classList.remove('loading');
 
     checkPosition();
-    initSliders();
+    // initSliders();
     initTabs();
     scrollTrigger();
     formLabels();
+    resizeElementHeight();
+    mobileBodyHeightFix();
 
-
-    // window.addEventListener('resize', debounce);
+    window.addEventListener('resize', debounce);
     window.addEventListener('scroll', debounceScroll);
     window.scrollTo({
        behavior: 'instant' 
