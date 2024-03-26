@@ -385,18 +385,8 @@ export default {
             });
         },
         async logout_function() {
-            try {
-                await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true })
-                .then(() => {
-                    window.location.href = '/';               
-                })
-                .catch((error) => {
-                    // Fehler bei der Anmeldung
-                    console.error('Logout failed', error);
-                });
-            } catch(err) {
-                console.log(err);
-            }
+            await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true });
+            window.location.href = '/';
         },
         themeChange(e) {
             e.preventDefault();
