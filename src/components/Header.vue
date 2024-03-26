@@ -62,7 +62,7 @@
                                 </li>
                                 
                                 <li class="menu-item"><router-link :to="`/user/${this.$user.id}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
-                                <li class="menu-item"><a href="#" @click="logout()" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</a></li>
+                                <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
                             </ul>
                         </menu>
                     </button>
