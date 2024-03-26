@@ -6,6 +6,7 @@ import Index from './components/Index.vue';
 import FrontendMovies from './components/frontend/Movies.vue';
 import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
+import Logout from './components/Logout.vue';
 import Test from './components/Test.vue';
 import MediaBrowser from './components/Mediabrowser.vue';
 import MediaPlayer from './components/player/Player.vue';
@@ -39,6 +40,12 @@ const router = createRouter({
             name: 'Login',
             component: Login,
             meta: { requiresAuth: false, main: false }
+        },
+        {
+            path: '/logout',
+            name: 'Logout',
+            component: Logout,
+            meta: { requiresAuth: true, main: false }
         },
         {
             path: '/test',
