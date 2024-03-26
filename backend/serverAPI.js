@@ -57,6 +57,7 @@ function getQueryFunction(query) {
         });
     });
 }
+
 const getQuery = async(req, res) => {
     const { query, like } = req.query;
     let queryString = query;
@@ -948,11 +949,9 @@ const getUploadedUserImages = (req, res) => {
             imageList.sort((a, b) => b.date - a.date);
 
             // Sende die Bildinformationen als JSON zurück
-            console.log(imageList);
             res.json(imageList);
         });
     } catch (error) {
-        console.error('Fehler beim Lesen des Bilderordners:', error);
         res.status(500).json({ error: 'Interner Serverfehler' });
     }
 }
