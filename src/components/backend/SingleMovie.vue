@@ -344,13 +344,15 @@ export default {
             let year = parsedDate.getFullYear();
             let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
             var collection = null;
+            var trailer = null;
 
             if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
                 collection = movie.belongs_to_collection.id;
             } else {
                 collection = null;
             }
-            
+            if ( movie.videos.results.length > 0 ) trailer = movie.videos.results[0].key;
+
             var media = {
                 tmdbID: movie.id,
                 title: movie.title,
@@ -364,6 +366,7 @@ export default {
                 rating: movie.vote_average.toFixed(2),
                 release_date: formattedDate,
                 media_type: "movie",
+                trailer: trailer,
                 created: new Date()
             }
 

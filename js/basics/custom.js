@@ -2,168 +2,6 @@ function forEach(ctn, callback) {
     return Array.prototype.forEach.call(ctn, callback);
 }
 
-// $(document).ready(function() {
-//     page = {
-//         $window: $(window),
-//         $html: $('html'),
-//         $body: $('body'),
-//         $header: $('header'),
-//         $masterWrap: $('#masterWrap'),
-//         $menuButton: $('.menu-button'),
-
-//         mobileSize: 1080,
-//         tabletSize: 1600,
-//         activeClass: 'is-active',
-//         activeMenu: 'active-menu',
-//         activeButton:'active-button',
-//         src: "data-desktop-src",
-//         videosrc: "desktop-src",
-
-//         init: function () {
-//             var self = this;
-
-//             // self.initApp();
-//             // self.bindHandlers();
-//             self.themeChange();
-//             // self.desktopViewportCheck();
-//             //self.fixedHeader();
-//             //self.navMobile();
-//             self.pageReady();
-//         },
-
-//         bindHandlers: function () {
-//             var self = this;
-
-//             //window.addEventListener('resize', debounce);
-//             // window.addEventListener('scroll', debounceScroll);
-//         },
-
-//         pageReady: function() {
-//             var self = this;
-//             // $('#loader').addClass('hidden');
-//             $("body").removeClass('loading');
-            
-//             // self.fancyLoad();
-//         },
-
-//         initPlayer: function() {
-//             var self = this;
-//                 if ( $('#player').length > 0 ) {
-//                     var player = videojs('player');
-//                     video = $('video')[0];
-    
-//                     // Warten Sie auf das "loadedmetadata"-Ereignis, um sicherzustellen, dass das Video geladen ist
-//                     video.addEventListener("loadedmetadata", function() {
-//                         $('#player-back-btn').appendTo(".video-js");
-//                         $('#player-session-btn').appendTo(".video-js");
-//                         $('#chat-open').appendTo(".video-js");
-//                         $('#player-sek-forward').appendTo(".video-js .vjs-control-bar");
-//                         $('#player-sek-back').appendTo(".video-js .vjs-control-bar");
-                        
-//                         if ( $('#next-episode-btn').length > 0 ) {
-//                             $('#next-episode-btn').appendTo(".video-js");
-//                         }
-//                         if ( $('#show-container').length > 0 ) {
-//                             $('#show-container').appendTo(".video-js");
-//                         }
-//                         if ( $('#show-eps-btn').length > 0 ) {
-//                             $('#show-eps-btn').appendTo(".video-js .vjs-control-bar");
-//                         }
-                        
-//                     });
-    
-//                     player.on('play', function() {
-//                         self.repositionPlayerButtons();
-//                     });                
-    
-//                     $nextEpisodeBtn = $("#next-episode-btn");
-    
-//                     if ( $nextEpisodeBtn ){
-//                         video.addEventListener("timeupdate", function() {
-//                             const currentTime = video.currentTime;
-//                             const duration = video.duration;
-//                             const last20Seconds = duration - 20;
-    
-//                             if (currentTime >= last20Seconds) {
-//                                 $nextEpisodeBtn.addClass("visible");
-//                             }
-    
-//                             if (currentTime <= last20Seconds && $nextEpisodeBtn.hasClass("visible") ) {
-//                                 $nextEpisodeBtn.removeClass("visible");
-//                             }
-//                         });
-//                     }
-    
-//                     showContainer = '#show-container';
-    
-//                     $(showContainer+' .menu li>a').on('click', function(e) {
-//                         e.preventDefault();
-    
-//                         $(showContainer).addClass('active-submenu');
-//                         listID = $(this).attr('data-id');
-    
-//                         $(showContainer+' ul.sub-menu#'+listID).addClass('active');
-//                     });
-    
-//                     $(showContainer+' .sub-menu .back').on('click', function(e) {
-//                         e.preventDefault();
-    
-//                         $(showContainer).removeClass('active-submenu');
-    
-//                         $(showContainer+' ul.sub-menu').removeClass('active');
-//                     });
-    
-//                     $('a#show-eps-btn').on('click', function(e) {
-//                         e.preventDefault();
-    
-//                         $(showContainer).toggleClass('visible');
-//                     });
-    
-//                     $('#player-sek-forward').on('click', function(e) {
-//                         e.preventDefault();
-    
-//                         player.currentTime(player.currentTime() + 10);
-//                     });
-    
-//                     $('#player-sek-back').on('click', function(e) {
-//                         e.preventDefault();
-    
-//                         player.currentTime(player.currentTime() - 10);
-//                     });
-    
-//                     $('#chat-open').on('click', function(e) {
-//                         e.preventDefault();
-//                         $('#chat').toggleClass('hidden');
-//                     });
-    
-//                     $('#chat-close').on('click', function() {
-//                         $('#chat').toggleClass('hidden');
-//                     });
-//                 }
-//         },
-
-//         repositionPlayerButtons: function() {
-//             $fullscreen = $('.vjs-fullscreen-control');
-//             $currTime = $('.vjs-current-time');
-//             $divider = $('.vjs-time-divider');
-//             $duration = $('.vjs-duration');
-
-//             if ( $('#show-eps-btn').length > 0 ) {
-//                 $epsBtnWidth = $('#show-eps-btn').outerWidth();
-//                 $('#show-eps-btn').css('right', $fullscreen.outerWidth());
-//             } else {
-//                 $epsBtnWidth = 0;
-//             }
-
-//             $duration.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth ));
-//             $divider.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth + $duration.outerWidth() ));
-//             $currTime.css('right', ( $fullscreen.outerWidth() + $epsBtnWidth + $duration.outerWidth() + $divider.outerWidth() ));
-//         },
-//     }
-
-//     page.init();
-// });
-
 var resizeTimer,
 debounce = function(e) {
     clearTimeout(resizeTimer);
@@ -242,66 +80,66 @@ var checkPosition = function(e) {
 
 function initSliders() {
     // Slider
-    sliderNumber = 0;
-    $(".swiper").each(function () {
-        var $el = $(this);
-        const sliderClass = 'swiper-' + sliderNumber;
-        const slider = '.swiper-' + sliderNumber;
+    // sliderNumber = 0;
+    // $(".swiper").each(function () {
+    //     var $el = $(this);
+    //     const sliderClass = 'swiper-' + sliderNumber;
+    //     const slider = '.swiper-' + sliderNumber;
 
-        $el.addClass(sliderClass);
-        var itemsMobile = 2;
-        var itemsSmallTablet = 3;
-        var itemsTablet = 4;
-        var itemsDesktop = 6;
+    //     $el.addClass(sliderClass);
+    //     var itemsMobile = 2;
+    //     var itemsSmallTablet = 3;
+    //     var itemsTablet = 4;
+    //     var itemsDesktop = 6;
 
-        const swiper = new Swiper(slider, {
-            // Optional parameters
-            loop: true,
-            //effect: effect,
-            slidesPerView: itemsMobile,
-            slidesPerGroup: 1,
-            spaceBetween: 16,
-            allowTouchMove: true,
-            breakpoints: {
-                // when window width is >= 320px
-                720: {
-                    slidesPerView: itemsSmallTablet,
-                },
-                1080: {
-                    slidesPerView: itemsTablet,
-                },
-                1400: {
-                    slidesPerView: itemsDesktop,
-                }
-            },
+    //     const swiper = new Swiper(slider, {
+    //         // Optional parameters
+    //         loop: false,
+    //         //effect: effect,
+    //         slidesPerView: itemsMobile,
+    //         slidesPerGroup: 1,
+    //         spaceBetween: 16,
+    //         allowTouchMove: true,
+    //         breakpoints: {
+    //             // when window width is >= 320px
+    //             720: {
+    //                 slidesPerView: itemsSmallTablet,
+    //             },
+    //             1080: {
+    //                 slidesPerView: itemsTablet,
+    //             },
+    //             1400: {
+    //                 slidesPerView: itemsDesktop,
+    //             }
+    //         },
             
-            pagination: {
-                el: '.swiper-pagination',
-                dynamicBullets: true
-                // clickable: true
-            },
+    //         pagination: {
+    //             el: '.swiper-pagination',
+    //             dynamicBullets: true
+    //             // clickable: true
+    //         },
 
-            // Navigation arrows
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
+    //         // Navigation arrows
+    //         navigation: {
+    //             nextEl: '.swiper-button-next',
+    //             prevEl: '.swiper-button-prev',
+    //         },
+    //     });
 
-        // swiper.on('resize', function() {
-        //     setTimeout(() => {
-        //         var self = this;
-        //         swiperLoopCheck(self);
-        //     }, 1000);
-        // });
+    //     // swiper.on('resize', function() {
+    //     //     setTimeout(() => {
+    //     //         var self = this;
+    //     //         swiperLoopCheck(self);
+    //     //     }, 1000);
+    //     // });
 
-        $el.find('[data-fancybox="gallery"]').each(function() {
-            var $this = $(this);
-            $this.attr('data-fancybox', sliderClass);
-        })
+    //     $el.find('[data-fancybox="gallery"]').each(function() {
+    //         var $this = $(this);
+    //         $this.attr('data-fancybox', sliderClass);
+    //     })
         
-        sliderNumber++;
-    });
+    //     sliderNumber++;
+    // });
 }
 
 function initTabs() {

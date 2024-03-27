@@ -22,7 +22,6 @@ function truncate(string, length = 100, append = "...") {
     return string;
 }
 
-
 async function fetchSessionStatus(mainURL) {
     async function getSession(mainURL) {
         return new Promise((resolve, reject) => {

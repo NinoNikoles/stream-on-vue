@@ -11,7 +11,15 @@
 
     .column {
         .swiper-slide {
+            opacity: 1;
             z-index: 0;
+            @include transition(opacity $transition-default);
+
+            &-prev,
+            &-active,
+            &-next {
+                opacity: 1;
+            }
         }
     }
 }

@@ -118,15 +118,17 @@ export default {
         async saveData(data) {
             document.getElementById('loader').classList.remove('hidden');
             this.showProgressBar = true;
+
             const show = await this.searchShowByID(data.id);
             const genres = show.genres.map(genre => genre.id);
-
             let date = show.first_air_date;
             let parsedDate = new Date(date);
             let day = parsedDate.getDate();
             let month = parsedDate.getMonth() + 1;
             let year = parsedDate.getFullYear();
             let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
+            var trailer = null;
+            if ( show.videos.results.length > 0 ) trailer = show.videos.results[0].key;
 
             var media = {
                 tmdbID: show.id,
@@ -140,7 +142,8 @@ export default {
                 release_date: formattedDate,
                 show_season_count: show.number_of_seasons,
                 show_episodes_count: show.number_of_episodes,
-                media_type: "show"
+                media_type: "show",
+                trailer: trailer
             }
 
             try {

@@ -1,7 +1,7 @@
 <script>
 import langSnippet from './language.vue';
 import axios from 'axios';
-import { Swiper } from 'swiper';
+import Swiper from 'swiper/bundle';
 
 export default {
     name: 'MainFunctions',
@@ -424,12 +424,20 @@ export default {
                 const itemsTablet = 4;
                 const itemsDesktop = 6;
 
-                new Swiper(slider, {
+                const swiper = new Swiper(slider, {
                     loop: true,
                     slidesPerView: itemsMobile,
                     slidesPerGroup: 1,
                     spaceBetween: 16,
                     allowTouchMove: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        dynamicBullets: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
                     breakpoints: {
                         720: {
                             slidesPerView: itemsSmallTablet,
@@ -441,15 +449,9 @@ export default {
                             slidesPerView: itemsDesktop,
                         }
                     },
-                    pagination: {
-                        el: '.swiper-pagination',
-                        dynamicBullets: true
-                    },
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
                 });
+
+                swiper;
 
                 const fancyboxItems = swiperElement.querySelectorAll('[data-fancybox="gallery"]');
                 fancyboxItems.forEach(function (item) {

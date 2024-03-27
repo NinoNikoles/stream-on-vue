@@ -1,9 +1,14 @@
 <template>
     <div id="main">
-        <template v-if="$route.name !== 'Login' && $route.name !== 'Player' && $route.name !== 'PlayerMulti'">
-            <header-component @mediaPopUp="updateVariable"></header-component>
+        <template v-if="$route.name !== 'Login' && $route.name !== 'Player' && $route.name !== 'PlayerMulti' && $route.name !== langSnippet('home') && $route.name !== langSnippet('movies') && $route.name !== langSnippet('shows') && $route.name !== langSnippet('my_list')">
+            <header-component></header-component>
+            <router-view></router-view>
         </template>
-        <router-view @mediaPopUp="updateVariable"></router-view>
+        <template v-else>
+            <header-component @mediaPopUp="updateVariable"></header-component>
+            <router-view @mediaPopUp="updateVariable"></router-view>
+        </template>
+        
     </div>
 
     <template v-if="$route.name !== 'Player' && $route.name !== 'PlayerMulti'">
@@ -18,7 +23,7 @@
         <div class="modal-wrap large">
             <div class="modal-inner-wrap rounded">
                 <a href="#" class="modal-close" @click="closeMediaPopUp($event)"></a>
-                <media-content-popup :media="media"></media-content-popup>
+                <media-content-popup :media="media" v-if="media"></media-content-popup>
             </div>
         </div>
     </div>
@@ -35,6 +40,7 @@ import MediaContentPopupComponent from './components/includes/MediaContentPopup.
 export default {
     name: 'AppIndex',
     mixins: [functions, tmdbAPI, langSnippet],
+    emits: ['mediaPopUp'],
     components: {
         'header-component': Header,
         'media-content-popup': MediaContentPopupComponent,

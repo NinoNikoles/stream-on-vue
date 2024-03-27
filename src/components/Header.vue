@@ -208,7 +208,7 @@ export default {
     },
     updated() {
         var resultWrap = document.getElementById('searchResults');
-        console.log(resultWrap);
+
         if (this.searchResults) {
             this.resultsHeight = window.innerHeight-100;
             if ( document.getElementById('media-list').clientHeight > this.resultsHeight ) {

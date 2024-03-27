@@ -1149,66 +1149,6 @@ $(document).ready(function() {
                 });
             });
         },
-
-        mediaPopUp: function() {
-            // var self = this;
-
-            // if ( !($('#modal').length > 0) ) {
-            //     self.$body.append('<div class="modal" id="modal"><div class="modal-overlay"></div><div class="modal-wrap large"><div class="modal-inner-wrap"></div><a href="#" class="modal-close"></a></div></div>');
-            // }
-
-            // $modal = $('#modal');
-            // $modalWrap = $('#modal .modal-wrap');
-            // $modalInnerWrap = $('#modal .modal-inner-wrap');
-            // $modalOverlay = $('#modal .modal-overlay');
-            //$modalCloseBtn = $('#modal .modal-close');
-
-            // $(document).on('click', '.info-trigger', function(e) {
-            //     e.preventDefault();
-            //     var id = $(this).attr('data-src');
-
-            //     if ( $('#'+id).length == 0 ) {
-            //         $.ajax({
-            //             url: '/media-popup',
-            //             type: 'post',
-            //             data: { 
-            //                 mediaID: id
-            //             },
-            //             success: function(response) {
-            //                 var mediaSrc = response;
-            //                 $('body').append(mediaSrc);
-            //                 $modalInnerWrap.empty();
-            //                $('.modal-inner-wrap').append(mediaSrc);
-            //                 $('body').addClass('active-modal');
-            //                 $modal.addClass('active');
-            //                 self.fancyLoad();
-
-            //             }, error: function(xhr, status, error) {
-            //                 // Hier wird eine Fehlermeldung ausgegeben
-            //                 console.log('Fehler: ' + error);
-            //             }
-            //         });
-            //     } else {
-            //         var mediaSrc = $('#'+id);
-            //         $modalInnerWrap.empty();
-            //         mediaSrc.clone().appendTo('.modal-inner-wrap');
-            //         $('body').addClass('active-modal');
-            //         $modal.addClass('active');
-            //     }
-            // });
-
-            // $modalOverlay.on('click', function() {
-            //     $modal.removeClass('active');
-            //     $('body').removeClass('active-modal');
-            // });
-
-            // $modalCloseBtn.on('click', function(e) {
-            //     e.preventDefault();
-            //     $modal.removeClass('active');
-            //     // $('body').removeClass('active-modal');
-            // });
-        },
-
         sorting: function() {
             var self = this;
 

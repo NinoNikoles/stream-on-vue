@@ -11,20 +11,17 @@ export default {
         };
     },
     methods: {
-        async tmdbApiRequest(request, query = null, language = this.LANGUAGE) {
+        async tmdbApiRequest(request, query = null, append = null ) {
             if ( this.API_KEY === null ) return false;
             var requestQuery = '';
             var requestLanguage = '';
+            var requestAppend = '';
 
-            if ( query ) {
-                requestQuery = `&query=${query}`;
-            }
-            
-            if ( language && language !== '') {
-                requestLanguage = `&language=${language}`;
-            }
-            
-            const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}`);
+            if ( query ) requestQuery = `&query=${query}`;
+            if ( this.LANGUAGE && this.LANGUAGE !== '') requestLanguage = `&language=${this.LANGUAGE}`;
+            if ( append ) requestAppend = `&append_to_response=${append}`;
+
+            const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}${requestAppend}`);
             return new Promise((resolve) => {
                 resolve(response);
             });
@@ -60,7 +57,7 @@ export default {
             });
         },
         async searchMovieByID(movieID) {
-            const movie = await this.tmdbApiRequest(`movie/${movieID}`);
+            const movie = await this.tmdbApiRequest(`movie/${movieID}`, null, 'videos');
             return new Promise((resolve) => {
                 resolve(movie.data);
             });
@@ -72,7 +69,7 @@ export default {
             });
         },
         async searchShowByID(showID) {
-            const show = await this.tmdbApiRequest(`tv/${showID}`);
+            const show = await this.tmdbApiRequest(`tv/${showID}`, null, 'videos');
             return new Promise((resolve) => {
                 resolve(show.data);
             });
