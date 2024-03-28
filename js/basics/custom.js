@@ -301,6 +301,87 @@ function formLabels() {
     })
 }
 
+function YTplayer() {
+    var playerIframe = document.getElementById('player');
+    var highlight = document.getElementById('highlight');
+
+    if (playerIframe) {
+        var videoID = playerIframe.getAttribute('data-trailer-id');
+        const muteBtn = document.getElementById('player-btn');
+
+        const player = new YT.Player('player', {
+            height: '360',
+            width: '640',
+            videoId: videoID,
+            playerVars: {
+                'enablejsapi': 1,
+                'controls': 0, // Steuerelemente deaktivieren
+                'disablekb': 1, // Tastatursteuerung deaktivieren
+                'modestbranding': 1, // YouTube-Logo im Player deaktivieren
+                'rel': 0, // Verwandte Videos am Ende deaktivieren
+                'showinfo': 0, // Videoinformationen beim Start deaktivieren
+                'autoplay': 1, // Autoplay aktivieren
+                'loop': 0,
+                'cc_load_policy': 0,
+                'iv_load_policy': 3, // Video wiederholen
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+
+        console.log(player);
+
+        function startVideo() {
+            player.playVideo();
+        }
+
+        function onPlayerReady(event) {
+            player.mute();
+            if (event.data == null) {
+                setTimeout(function() {
+                    startVideo();
+                }, 1000);
+            }
+        }
+
+        var done = false;
+        function onPlayerStateChange(event) {
+            if (player.isMuted()) {
+                muteBtn.classList.remove('unmute');
+                muteBtn.classList.add('mute');
+            } else {
+                muteBtn.classList.remove('mute');
+                muteBtn.classList.add('unmute');
+            }
+
+            if (event.data == YT.PlayerState.ENDED && !done && highlight) {
+                setTimeout(hideVideo, 1000);
+                done = true;
+            }
+        }
+
+        function hideVideo() {
+            document.getElementById('player-wrap').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('player-wrap').style.display = 'none';
+            }, 350);
+        }
+
+        muteBtn.addEventListener('click', function() {
+            this.classList.toggle('unmute');
+            this.classList.toggle('mute');
+
+            if (this.classList.contains('mute')) {
+                player.mute();
+            } else {
+                player.unMute();
+            }
+        });
+    }
+}
+
 function initCustomJS() {
     document.body.classList.remove('loading');
 
