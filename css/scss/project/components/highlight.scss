@@ -140,5 +140,76 @@
                 z-index: 1;
             }
         }
+
+        #player-wrap {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 1;
+            @include transition(opacity $transition-default);
+
+            iframe {
+                aspect-ratio: 16 / 9;
+                width: auto !important;
+                min-width: 100% !important;
+                max-width: unset !important;
+                height: auto !important;
+                min-height: 100% !important;
+                max-height: unset !important;
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                object-fit: cover;
+            }
+        }
+
+        #player-btn {
+            aspect-ratio: 1;
+            background: {
+                color: var(--black-80);
+            }
+            border: {
+                radius: 300px 0 0 300px;
+            }
+            color: var(--white);
+            width: rem-calc(96);
+            height: rem-calc(64);
+            margin: 0;
+            padding: rem-calc(30);
+            position: absolute;
+            top: 30%;
+            right: 0;
+            z-index: 1;
+
+            &::before {
+                border: {
+                    color: var(--white);
+                    radius: 300px;
+                    style: solid;
+                    width: 2px;
+                }
+                font-size: rem-calc(50) !important;
+                line-height: rem-calc(58);
+                width: rem-calc(64);
+                height: rem-calc(64);
+                left: -2px;
+                transform: translate(0, -50%);
+            }
+
+            &.mute {
+                &::before {
+                    content: $icon-volume-off;
+                }
+            }
+
+            &.unmute {
+                &::before {
+                    content: $icon-volume-up;
+                }
+            }
+        }
     }
 }
