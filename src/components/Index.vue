@@ -8,17 +8,25 @@
 
     <div class="col12 pad-bottom-xl">
         <!-- Highlight -->
-        <div v-if="highlight" class="highlight-wrapper">
-            <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
-            <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
-            <div class='content-wrap mobile-only'>
-                <h1 class="h1 text-center">{{  highlight.title }}</h1>
-                <p class="small">{{  highlight.overview }}</p>
+        <div v-if="highlight" class="highlight-wrapper" id="highlight">
+            
+
+            <div id="highlight-content">
+                <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
+                <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
+                <div class='content-wrap mobile-only'>
+                    <!-- <h1 class="h1 text-center">{{  highlight.title }}</h1> -->
+                    <!-- <p class="small">{{  highlight.overview }}</p> -->
+                </div>
+                <div class='content-wrap desktop-only'>
+                    <h1 class="h2 text-center">{{  highlight.title }}</h1>
+                    <!-- <p>{{  highlight.overview }}</p> -->
+                </div>
             </div>
-            <div class='content-wrap desktop-only'>
-                <h1 class="h2 text-center">{{  highlight.title }}</h1>
-                <p>{{  highlight.overview }}</p>
-            </div>
+            <figure v-if="highlight.trailer" id="player-wrap">
+                <div id="player" :data-trailer-id="highlight.trailer"></div>
+                <button id="player-btn" class="btn btn-transparent icon mute"></button>
+            </figure>            
         </div>
 
         <!-- Watch List -->
@@ -172,6 +180,8 @@ export default {
             document.getElementById('loader').classList.add('hidden');
             this.initSliders();
         });
+
+        window.YTplayer();
     }
 };
 </script>
