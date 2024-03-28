@@ -15,12 +15,12 @@
                 <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
                 <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
                 <div class='content-wrap mobile-only'>
-                    <!-- <h1 class="h1 text-center">{{  highlight.title }}</h1> -->
-                    <!-- <p class="small">{{  highlight.overview }}</p> -->
+                    <h1 class="h1 text-center">{{  highlight.title }}</h1>
+                    <p class="small">{{  highlight.overview }}</p>
                 </div>
                 <div class='content-wrap desktop-only'>
                     <h1 class="h2 text-center">{{  highlight.title }}</h1>
-                    <!-- <p>{{  highlight.overview }}</p> -->
+                    <p>{{  highlight.overview }}</p>
                 </div>
             </div>
             <figure v-if="highlight.trailer" id="player-wrap">
