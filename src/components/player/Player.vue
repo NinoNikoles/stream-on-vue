@@ -1,9 +1,29 @@
 <template>
     <div id="mainPlayer" class="mainPlayer fullscreen" v-if="media">
         <figure>
-            <video-player :options="videoOptions" v-if="videoOptions.sources[0].src !== ''"></video-player>
+            <video-player :options="player.options" v-if="player.options.sources[0].src"></video-player>
             <a :href="`/watchTogether?id=${$route.query.id}&uuid=${uuid}`" id="player-session-btn" title="Group session" v-if="uuid"></a>
+            <button id="chat-open" @click="toggleChat($event)"></button>
         </figure>
+
+        <!-- <div id="chat">    
+            <div class="chat-wrap grid-padding">
+                <p id="chat-headline" class="text-center pad-top-xs pad-bottom-xs"><button id="chat-close" class="icon icon-close" @click="toggleChat($event)"></button>Chat</p> -->
+                
+                <!--- Messages will be displayed here --->
+                <!-- <div id="message-wrap"></div> -->
+                <!--- --->
+
+                <!-- <div id="input-wrap" class="pad-top-xs marg-top-xs marg-bottom-xs">
+                    <label for="message-input" class="marg-right-xs">
+                        <input type="text" id="message-input" name="message-input" class="marg-no" :placeholder="langSnippet('message')">
+                    </label>
+                    <input type="number" style="display:none;" id="message-use-id" name="message-use-id" :value="user.id">
+                    <input type="text" style="display:none;" id="message-use-name" name="message-use-name" :value="user.username">
+                    <button class="btn btn-small btn-white marg-no" id="chatMSG">{{ langSnippet('send') }}</button>
+                </div> -->
+            <!-- </div> -->
+        <!-- </div> -->
 
         <!-- <span :data-time="`${watchedTime}`" :data-media="`${mediaID}`" :data-volume="`${volume}`" id="time"></span> -->
     </div>
@@ -26,64 +46,57 @@ export default {
     },
     data() {
         return {
-            mediaID: this.$route.query.id,
+            mediaID: null,
             uuid: null,
             media: null,
             seasons: null,
             show: null,
-            type: null,
-            player: null,
-            videoOptions: {
-                controls: true,
-                duration: true,
-                preload: 'auto',
-                autoplay: false,
-                controlBar: {
-                    skipButtons: {
-                        forward: 10,
-                        backward: 10
+            player: {
+                el: null,
+                currentTime: null,
+                duration: null,
+                ended: false,
+                options: {
+                    controls: true,
+                    duration: true,
+                    preload: 'auto',
+                    autoplay: false,
+                    controlBar: {
+                        skipButtons: {
+                            forward: 10,
+                            backward: 10
+                        },
+                        volumePanel: {
+                            inline: false,
+                        },
+                        pictureInPictureToggle: false,
                     },
-                    volumePanel: {
-                        inline: false,
-                    },
-                    pictureInPictureToggle: false,
-                },
-                sources: [
-                    {
-                        src: '',
-                        type: 'video/mp4'
+                    sources: [
+                        {
+                            src: null,
+                            type: 'video/mp4'
+                        }
+                    ],
+                    userActions: {
+                        click: true
                     }
-                ],
-                userActions: {
-                    click: true
-                }
+                },
             },
-            user: {
-                id: null,
-                username: null,
-                volume: null,
-            },
-            currentTime: null,
-            duration: null,
-            isVideoEnded: false
         };
     },
     methods: {
+        async definePlayer() {
+            var playerClass = document.getElementsByClassName('video-js');
+            this.player.el = videojs(playerClass[0].id);
+        },
         async getMedia(tmdbID) {
             if ( tmdbID !== null && tmdbID !== undefined ) {
                 try {
-                    const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID=${tmdbID}`);
-
-                    if ( response.data.length > 0 ) {
-                        this.media = response.data[0];
-                        this.type = 'movie';
-                        this.videoOptions.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
-                    } else {
-                        const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
-                        this.media = newResponse.data[0];
-                        this.type = 'show';
-                        this.videoOptions.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
-                    }
+                    var response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID=${tmdbID}`);
+                    if ( response.data.length === 0) response = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
+                    this.media = response.data[0];
+                    console.log(this.media);
+                    this.player.options.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
 
                 } catch (error) {
                     console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
@@ -105,26 +118,7 @@ export default {
                 this.uuid = uuidv4();
             }
         },
-        async definePlayer() {
-            var playerClass = document.getElementsByClassName('video-js');
-            this.player = videojs(playerClass[0].id);
-        },
-        async fetchSessionStatus() {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/session`, { withCredentials: true });
-                
-                if ( response.data.user ) {
-                    const newResponse = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${response.data.user.id}`);
-                    const user = newResponse.data[0];
-                    this.user.id = user.id;
-                    this.user.username = user.username;
-                    this.user.volume = user.media_volume;
-                    if ( this.user.volume === null ) this.user.volume = 1;
-                }               
-            } catch (error) {
-                console.error('Fehler beim Abrufen des Session-Status:', error);
-            }
-        },
+
         async saveTime(currentTime) {
             this.duration = this.player.duration();
             var showID = null;
@@ -168,110 +162,126 @@ export default {
                 console.log(err);
             }
         },
-        async setStartTime() {
+        async setPlayerTime(time = 0, duration = null) {
+            this.player.currentTime = time;
+            this.player.el.currentTime(time);
+            this.player.duration = duration;
+        },
+        async setPlayerStartTime() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.mediaID}&userID=${this.user.id}`);
-                var data = response.data
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.mediaID}&userID=${this.$user.id}`);
 
-                if ( data ) {
-                    this.currentTime = data.watched_seconds;
-                    this.duration = data.total_length;
-                    this.player.currentTime(this.currentTime);
-                } else {
-                    this.currentTime = 0;
-                    this.player.currentTime(0);
-                }
+                await this.setPlayerTime();
+                if ( response.data ) this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
 
-                this.player.play();
-                
             } catch(err) {
                 console.log(err);
             }
         },
         async saveUserVolume() {
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/saveUserVolume?userID=${this.user.id}&volume=${this.user.volume}`);
+                await axios.post(`${this.$mainURL}:3000/api/db/saveUserVolume?userID=${this.$user.id}&volume=${this.$user.volume}`);
             } catch(err) {
                 console.log(err);
+            }
+        },
+
+        async setUpPlayer(mediaID) {
+            try {
+                await this.getMedia(mediaID);
+                console.log(this.media.media_type);
+                if ( this.media.media_type === 'show') await this.getShow(this.media.show_id);
+
+                await this.definePlayer();
+
+                this.player.el.ready(async() => {
+                    console.log('ready');
+
+                    await this.setPlayerStartTime();
+
+                    this.player.el.on('durationchange', async () => {
+                        if ( this.$user.volume === undefined ) this.$user.volume = 1;
+
+                        await this.playerFunctions();
+                    });
+                });
+
+                await this.generateUUID();
+            } catch(err) {
+                console.log(err);
+            }
+        },
+
+        async playerFunctions() {
+            var playerEL = this.player.el;
+            var player = this.player;
+
+            playerEL.volume(this.$user.volume);
+
+            player.duration = playerEL.duration();
+
+            if ( player.currentTime === player.duration ) {
+                player.currentTime = 0;
+            }
+
+            playerEL.currentTime(player.currentTime);
+            var interval = false;
+
+            playerEL.on('play', () => {
+                this.isVideoEnded = false;
+                clearInterval(interval);
+                this.saveTime(playerEL.currentTime());
+                interval = setInterval(() => {
+                    this.saveTime(playerEL.currentTime());
+                }, 30000);
+            });
+
+            playerEL.on('seeking', () => {
+                var playerClass = document.getElementsByClassName('video-js');
+                var newPlayer = document.getElementById(playerClass[0].id);
+
+                if ( newPlayer.classList.contains('vjs-scrubbing') ) {
+                    clearInterval(interval);
+                    this.saveTime(playerEL.currentTime());
+                    interval = setInterval(() => {
+                        this.saveTime(playerEL.currentTime());
+                    }, 30000);
+                }            
+            });
+
+            playerEL.on('ended', () => {
+                this.isVideoEnded = true;
+                clearInterval(interval);
+                this.saveTime(player.duration);
+            });
+
+            playerEL.on('pause', () => {     
+                clearInterval(interval);                   
+                if ( playerEL.currentTime() !== player.duration) {
+                    this.saveTime(playerEL.currentTime());
+                } else {
+                    this.isVideoEnded = true;
+                    this.saveTime(player.duration);
+                }
+            });
+
+            playerEL.on('volumechange', () => {
+                this.$user.volume = playerEL.volume();
+                this.saveUserVolume();
+            });
+        },
+    },
+    watch: {
+        '$route'(to, from) {
+            // Überprüfe, ob sich die ID geändert hat
+            if (to.query.id !== from.query.id) {
+                // Führe deine Funktion aus
+                this.setUpPlayer(this.$route.query.id);
             }
         }
     },
     mounted() {
-        this.getMedia(this.mediaID).then(() => {
-            if ( this.type === 'show' ) {
-                this.getShow(this.media.show_id);
-            }
-
-            // Sets player
-            this.definePlayer().then(() => {
-                // When all player informations are loaded
-                this.player.ready(() => {
-                    // Get user data
-                    this.fetchSessionStatus().then(() => {
-                        // Sets start time for video
-                        this.setStartTime().then(() => {
-                            this.player.on('durationchange', () => {
-                                this.player.volume(this.user.volume);
-
-                                this.duration = this.player.duration();
-
-                                if ( this.currentTime === this.duration ) {
-                                    this.currentTime = 0;
-                                }
-
-                                this.player.currentTime(this.currentTime);
-                                var interval = false;
-
-                                this.player.on('play', () => {
-                                    this.isVideoEnded = false;
-                                    clearInterval(interval);
-                                    this.saveTime(this.player.currentTime());
-                                    interval = setInterval(() => {
-                                        this.saveTime(this.player.currentTime());
-                                    }, 30000);
-                                });
-
-                                this.player.on('seeking', () => {
-                                    var playerClass = document.getElementsByClassName('video-js');
-                                    var newPlayer = document.getElementById(playerClass[0].id);
-
-                                    if ( newPlayer.classList.contains('vjs-scrubbing') ) {
-                                        clearInterval(interval);
-                                        this.saveTime(this.player.currentTime());
-                                        interval = setInterval(() => {
-                                            this.saveTime(this.player.currentTime());
-                                        }, 30000);
-                                    }            
-                                });
-
-                                this.player.on('ended', () => {
-                                    this.isVideoEnded = true;
-                                    clearInterval(interval);
-                                    this.saveTime(this.duration);
-                                });
-
-                                this.player.on('pause', () => {     
-                                    clearInterval(interval);                   
-                                    if ( this.player.currentTime() !== this.duration) {
-                                        this.saveTime(this.player.currentTime());
-                                    } else {
-                                        this.isVideoEnded = true;
-                                        this.saveTime(this.duration);
-                                    }
-                                });
-
-                                this.player.on('volumechange', () => {
-                                    this.user.volume = this.player.volume();
-                                    this.saveUserVolume();
-                                });
-                            })
-                        });
-                    });
-                });
-            });
-        });
-
-        this.generateUUID();
+        this.setUpPlayer(this.$route.query.id);
     }
 };
 </script>

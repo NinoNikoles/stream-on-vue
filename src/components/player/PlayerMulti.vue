@@ -146,7 +146,7 @@ export default {
                 var response = await axios.get(`${this.$mainURL}:3000/api/db/getUser?userID=${userID}`);
                 var user = response.data[0];
 
-                if ( user.img !== '-1' ) return `${this.$mainURL}/public/media/user_uploads/${user.id}/${user.img}`;
+                if ( user.img !== '-1' ) return user.img;
                 return `${this.$mainURL}/public/media/avatar.webp`;
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
