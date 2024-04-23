@@ -1,6 +1,7 @@
 <template>
     <div id="main">
-        <header-component></header-component>
+        <header-component v-if="!noHeader"></header-component>
+        
         <router-view></router-view>
     </div>
 
@@ -29,18 +30,16 @@ import tmdbAPI from './components/mixins/tmdbAPI.vue';
 import functions from './components/mixins/functions.vue';
 import langSnippet from './components/mixins/language.vue';
 import { Fancybox } from "@fancyapps/ui";
-// import MediaContentPopupComponent from './components/includes/MediaContentPopup.vue';
 
 export default {
     name: 'AppIndex',
     mixins: [functions, tmdbAPI, langSnippet],
-    // emits: ['mediaPopUp'],
     components: {
-        'header-component': Header,
-        // 'media-content-popup': MediaContentPopupComponent,
+        'header-component': Header
     },
     data() {
         return {
+            noHeader: true,
             modalActive: false,
             media: null,
         };
@@ -72,6 +71,15 @@ export default {
             el.removeAttribute('data-img');
         });
         document.title = this.$route.name;
+    },
+    watch: {
+        '$route'(to) {
+            if (to.meta.noHeader) {
+                this.noHeader = true;
+            } else {
+                this.noHeader = false;
+            }
+        }
     },
     async mounted() {
         await this.getDesign();
