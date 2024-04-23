@@ -8,12 +8,10 @@ const fs = require('fs');
 
 const app = express();
 
-const corsOptions = {
+app.use(cors({
     origin: true,
     credentials: true
-};
-
-app.use(cors(corsOptions));
+}));
 app.use(express.static(
     '/build', {
         type: 'text/css',
@@ -34,12 +32,6 @@ app.use(bodyParser.json());
 const { dbSetup } = require('./backend/db-setup');
 const serverAPI = require('./backend/serverAPI');
 const mediabrowserAPI = require('./backend/mediabrowserAPI');
-
-const resetColor = "\x1b[0m";
-const redColor = "\x1b[31m";
-const greenColor = "\x1b[32m";
-const yellowColor = "\x1b[33m";
-const blueColor = "\x1b[34m";
 
 // Connects / Init database
 dbSetup();
@@ -117,7 +109,6 @@ app.post('/renameFolder', mediabrowserAPI.renameFolder);
 app.post('/deleteFolder', mediabrowserAPI.deleteFolder);
 app.post('/uploadVideo', mediabrowserAPI.uploadVideo);
 
-
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const clients = {};
@@ -151,6 +142,6 @@ wss.on('connection', (ws, req) => {
 });
 
 const port = process.env.PORT || 3000;
-server.listen(3000, () => {
+server.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 });
