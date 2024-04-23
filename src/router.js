@@ -120,7 +120,7 @@ const router = createRouter({
             meta: { requiresAuth: true, main: true, backend: false }
         },
         {
-            path: '/user/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            path: '/u/:username', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('profile'),
             component: User,
             meta: { requiresAuth: true, backend: false  }
@@ -135,7 +135,7 @@ const router = createRouter({
             path: '/watch',
             name: 'Player',
             component: MediaPlayer,
-            meta: { requiresAuth: true, backend: false }
+            meta: { requiresAuth: true, backend: false, noHeader: true }
         },
         {
             path: '/watchTogether',
