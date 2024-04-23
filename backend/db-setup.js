@@ -44,7 +44,7 @@ async function dbSetup() {
                 username varchar(255) UNIQUE,
                 firstname varchar(255),
                 lastname varchar(255),
-                password TEXT,
+                password varchar(255),
                 img TEXT,
                 uploads TEXT,
                 role VARCHAR(10),
