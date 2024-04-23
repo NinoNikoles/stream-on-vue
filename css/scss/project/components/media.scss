@@ -281,6 +281,12 @@
 }
 
 .info-popup {
+    display: none;
+
+    .modal & {
+        display: block;
+    }
+
     .media-card-episode:last-of-type {
         padding: {
             bottom: 0;

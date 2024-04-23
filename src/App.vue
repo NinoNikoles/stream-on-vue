@@ -9,13 +9,12 @@
             <p id="callout-content">test</p>
         </div>
 
-        <div class="modal" :id="`media-content`">
+        <div class="modal" id="media-content-modal">
             <div class="modal-overlay"></div>
             
             <div class="modal-wrap large">
-                <div class="modal-inner-wrap rounded">
-                    <a href="#" class="modal-close" @click="closeMediaPopUp($event)"></a>
-                    <!-- <media-content-popup :media="media" v-if="media"></media-content-popup> -->
+                <div class="modal-inner-wrap rounded" id="media-content">
+                    <a href="#" class="modal-close" @click="closePopUp($event, 'media-content-modal')"></a>
                 </div>
             </div>
         </div>

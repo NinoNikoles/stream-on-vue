@@ -39,15 +39,14 @@ async function fetchSessionStatus(mainURL) {
             var response = await axios.get(`${mainURL}:3000/api/db/getUser?userID=${user.id}`);
             var userData = response.data[0];
             var userInfos = {
-                activeImg: '',
-                uploads: JSON.parse(userData.uploads),
+                img: '',
                 volume: userData.media_volume
             };
 
             if ( this.userInfos.volume === undefined ) this.userInfos.volume = 1;
 
-            userInfos.activeImg = `/media/avatar.webp`;
-            if ( userData.img !== '-1' ) userInfos.activeImg = `${userData.img}`;
+            userInfos.img = `/media/avatar.webp`;
+            if ( userData.img !== '-1' ) userInfos.img = `${userData.img}`;
 
             return userInfos;
         } catch (error) {

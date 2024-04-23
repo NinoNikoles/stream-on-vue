@@ -81,7 +81,8 @@
             </div>
         </div>
 
-        <div v-if="searchResults !== null" id="searchResults" class="pad-bottom-l bg-dark" :style="`height: ${resultsHeight}px`">
+        <div v-if="searchResults !== null" id="searchResults" class="pad-bottom-l bg-dark" :style="`height: ${resultsHeight}px; width: ${space}`">
+            
             <div class="innerWrap pad-top-s sticky-top">
                 <div class="col12">
                     <h2>Suchergebnisse für: {{ searchInput }}</h2>
@@ -134,6 +135,7 @@ export default {
             selectedMedia: null,
             selectedMediaGenre: null,
             selectMediaWatchlist: null,
+            space: null
         };
     },
     methods: {
@@ -165,6 +167,8 @@ export default {
                     const input = searchInputField.value;
 
                     if (input !== '') {
+                        var scrollDiv = this.scrollDiv();
+                        document.body.style.paddingRight = scrollDiv+'px';
                         document.body.classList.add('active-search');
 
                         var mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE title $$$$ ORDER BY title ASC`, input);
@@ -178,7 +182,8 @@ export default {
                         var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
                         this.searchResults = await this.getAllMediaInfos('title', 'ASC', ids);
                     } else {
-                        document.body.classList.remove('active-search');
+                        document.body.style.paddingRight = '';
+                        document.body.classList.remove('active-search');                        
                         this.searchResults = null;
                     }
 
@@ -222,6 +227,16 @@ export default {
             } else {
                 if (resultWrap) resultWrap.style.overflowY = 'hidden';
             }
+        }
+    },
+    watch: {
+        searchResults: {
+            handler(newValue) {
+                if ( newValue !== null ) {
+                    this.space = `calc(100% + ${document.body.style.paddingRight})`;
+                }
+            },
+            immediate: false // Falls du möchtest, dass die Methode auch bei der Komponenteninitialisierung aufgerufen wird
         }
     },
     async mounted() {

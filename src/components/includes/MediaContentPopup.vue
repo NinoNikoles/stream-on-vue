@@ -1,14 +1,8 @@
 <template>
     <template v-if="media">
-        <div class="modal" :id="id">
-            <div class="modal-overlay"></div>
-            
-            <div class="modal-wrap large">
-                <div class="modal-inner-wrap rounded">
-                    <a href="#" class="modal-close" @click="closePopUp($event, id)"></a>
 
                         <!-- content -->
-                        <div class="info-popup">
+                        <div class="info-popup" :id="id">
                             <div class="col12 marg-bottom-xs mobile-only">
                                 <figure class="widescreen">
                                     <img :src="$loadImg(media.backdrop)" loading="lazy" importance="low" alt="">
@@ -120,9 +114,7 @@
                             </div>
                         </div>
 
-                </div>
-            </div>
-        </div>
+
     </template>
 </template>
 
