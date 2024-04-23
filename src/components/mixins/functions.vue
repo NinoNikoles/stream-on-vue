@@ -153,35 +153,44 @@ export default {
         toggleMainMenu(event) {
             event.preventDefault();
             var menuBtn = document.getElementById('menu-button');
+            var scrollDiv = this.scrollDiv();
+            document.body.style.paddingRight = scrollDiv+'px';
             document.body.classList.toggle('active-menu');
             menuBtn.classList.toggle('active-button');
         },
         closeMainMenu() {
             var menuBtn = document.getElementById('menu-button');
             document.body.classList.remove('active-menu');
+            document.body.style.paddingRight = '';
             menuBtn.classList.remove('active-button');
         },
-        openMediaPopUp(data) {
-            var media = data[0],
-                e = data[1];
-            this.$emit('mediaPopUp', media);
-            this.openPopUp(e);
+        scrollDiv() {
+            return window.innerWidth - document.documentElement.clientWidth;
         },
-        openPopUp(event) {
+        openPopUp(event, id) {
             event.preventDefault();
-            var body = document.body;
-            var modal = document.getElementById('media-content');
-            
-            body.classList.add('active-modal');
+            var modal = document.getElementById('media-content-modal');
+            var modalContent = document.getElementById('media-content');
+            var content = document.getElementById(id);
+
+            var clonedElement = content.cloneNode(true);
+            modalContent.appendChild(clonedElement);
+
+            var scrollDiv = this.scrollDiv();
+            document.body.style.paddingRight = scrollDiv+'px';          
+
+            document.body.classList.add('active-modal');
             modal.classList.add('active');
         },
-        async closePopUp(event) {
+        async closePopUp(event, id) {
             event.preventDefault();
-            this.$emit('data-fetched', null);
-            var modal = document.getElementById('media-content');
+            var modal = document.getElementById(id);
+            var content = document.querySelector('#media-content .info-popup');
 
             document.body.classList.remove('active-modal');
+            document.body.style.paddingRight = '';
             modal.classList.remove('active');
+            content.remove();
         },
         disableButton(button) {
             button.disabled = true;
@@ -372,7 +381,7 @@ export default {
                 const user = response.data[0];
 
                 this.$user.activeImg = `/media/avatar.webp`;
-                if ( user.img !== '-1' ) this.$user.activeImg = `/media/user_uploads/${this.$user.id}/${user.img}`;
+                if ( user.img !== '-1' ) this.$user.activeImg = user.img;
             } catch (error) {
                 console.error(error);
                 return [];
