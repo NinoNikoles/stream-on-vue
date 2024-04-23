@@ -52,7 +52,7 @@
                     <!-- Profil -->
                     <button id="user-menu-btn">
                         <figure class="square">
-                            <img v-if="this.$user.activeImg" :src="`${this.$user.activeImg}`" loading="lazy" alt="" id="userIcon">
+                            <img v-if="this.$user.img" :src="`${this.$user.img}`" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
