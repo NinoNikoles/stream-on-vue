@@ -95,7 +95,6 @@ export default {
                     var response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID=${tmdbID}`);
                     if ( response.data.length === 0) response = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
                     this.media = response.data[0];
-                    console.log(this.media);
                     this.player.options.sources[0].src = `${this.$mainURL}:8080/${this.media.file_path.replace('/public/', '')}`;
 
                 } catch (error) {
@@ -120,7 +119,7 @@ export default {
         },
 
         async saveTime(currentTime) {
-            this.duration = this.player.duration();
+            this.player.duration = this.player.el.duration();
             var showID = null;
             var watched = 0;
             if ( this.show !== null ) showID = this.show.tmdbID;
@@ -144,18 +143,18 @@ export default {
                 //     nextWatched = 0;
                 // }
             }
-
+            
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
-                    userID: this.user.id,
-                    mediaID: this.mediaID,
+                    userID: this.$user.id,
+                    mediaID: this.media.tmdbID,
                     nextMediaID: nextMediaID,
                     showID: showID,
                     currentTime: currentTime,
                     nextTime: nextCurrentSecond,
                     watched: watched,
                     nextWatched: nextWatched,
-                    totalLength: this.duration,
+                    totalLength: this.player.duration,
                     nextTotalLength: nextTotalDuration,
                 });
             } catch(err) {
@@ -169,9 +168,9 @@ export default {
         },
         async setPlayerStartTime() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.mediaID}&userID=${this.$user.id}`);
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.media.tmdbID}&userID=${this.$user.id}`);
 
-                await this.setPlayerTime();
+                await this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
                 if ( response.data ) this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
 
             } catch(err) {
