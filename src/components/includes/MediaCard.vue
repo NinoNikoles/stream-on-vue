@@ -1,37 +1,38 @@
 <template>        
-    <div class="media-card rounded" v-if="mediaContent">
+    <div class="media-card rounded" v-if="media">
         <div class="media-card-wrapper">
-            <template v-if="mediaContent.file_path === null">
+            <template v-if="media.file_path === null">
                 <figure class="widescreen desktop-only disabled">
-                    <img :src="$loadImg(mediaContent.backdrop)" :alt="`${mediaContent.title}`">
+                    <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
                 </figure>
                 <figure class="poster mobile-only disabled">
-                    <img :src="$loadImg(mediaContent.poster)" :alt="`${mediaContent.title}`">
+                    <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
                 </figure>
             </template>
 
             <template v-else>
                 <figure class="widescreen desktop-only">
-                    <img :src="$loadImg(mediaContent.backdrop)" :alt="`${mediaContent.title}`">
+                    <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
                 </figure>
                 <figure class="poster mobile-only">
-                    <img :src="$loadImg(mediaContent.poster)" :alt="`${mediaContent.title}`">
+                    <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
                 </figure>
             </template>
             
             <div class="link-wrapper">
-                <progress v-if="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)" max="100" :value="getWatchedTime(mediaContent.watched_seconds, mediaContent.total_length)"></progress>
-                <router-link v-if="mediaContent.file_path && mediaContent.media_type === 'movie'" :to="`/watch?id=${mediaContent.tmdbID}`" :title="`${mediaContent.title}`" class="play-trigger"></router-link>
-                <router-link v-else-if="mediaContent.media_type === 'show' && mediaContent['episodes'][0].file_path" :to="`/watch?id=${mediaContent['episodes'][0].tmdbID}`" :title="`${mediaContent['episodes'][0].title}`" class="play-trigger"></router-link>
+                <progress v-if="getWatchedTime(media.watched_seconds, media.total_length)" max="100" :value="getWatchedTime(media.watched_seconds, media.total_length)"></progress>
+                <router-link v-if="media.file_path && media.media_type === 'movie'" :to="`/watch?id=${media.tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
+                <router-link v-else-if="media.media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
                 
-                <button @click="popUpTrigger(mediaContent, mediaIndex, $event)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
-                <router-link v-if="$pageSettings[4].setting_option === 'true' && ($user.role ==='superadmin' || $user.role === 'admin')" :to="`/backend/${mediaContent.media_type}/${mediaContent.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                <button @click="openPopUp($event, id)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
+                <router-link v-if="$pageSettings[4].setting_option === 'true' && ($user.role ==='superadmin' || $user.role === 'admin')" :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>
-        <!-- <div v-if="mediaWatchList" class="watched-bar">
-            <p class="smaller marg-bottom-xxs">{{ mediaContent.title }}</p>
-        </div> -->
+        <div v-if="mediaWatchList" class="watched-bar">
+            <p class="smaller marg-bottom-xxs">{{ media.title }}</p>
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -42,7 +43,7 @@ import langSnippet from '../mixins/language.vue';
 export default {
     name: 'MediaCard',
     mixins: [functions, langSnippet],
-    props: ['mediaContent', 'mediaIndex', 'mediaWatchList', 'onPopUpTrigger'],
+    props: ['media', 'id', 'mediaWatchList'],
     methods: {
         async popUpTrigger(media, index, event) {
             var status =  await this.checkWatchlist(media.tmdbID);

@@ -79,7 +79,7 @@
 
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
                                     <template v-for="(media, index) in allMedia" :key="index">
-                                        <media-content v-if="media.tmdbID === id" :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
+                                        <media-card v-if="media.tmdbID === id" :media="media" :id="media.tmdbID+'-'+index+'-'+slider.genre.genre_name"></media-card>
                                         <template v-else></template>
                                     </template>
                                 </div>
@@ -89,6 +89,12 @@
                             <div :class="`swiper-button-prev`"></div>
                             <div :class="`swiper-button-next`"></div>
                         </div>
+
+                        <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
+                            <template v-for="(media, index) in allMedia" :key="index">
+                                <media-content :media="media" :id="media.tmdbID+'-'+index+'-'+slider.genre.genre_name"  v-if="media.tmdbID === id"></media-content>
+                            </template>
+                        </div>                        
 
                     </div>
                 </div>
@@ -100,7 +106,8 @@
 <script>
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
-import MediaContent from './includes/MediaCard.vue';
+import MediaCard from './includes/MediaCard.vue';
+import MediaContent from './includes/MediaContentPopup.vue';
 
 let mediaInfos = []
 
@@ -108,9 +115,9 @@ export default {
     name: 'AppIndex',
     mixins: [functions, langSnippet],
     components: {
+        'media-card': MediaCard,
         'media-content': MediaContent,
     },
-    props: ['onMediaPopUp'],
     data() {
         return {
             highlight: null,
