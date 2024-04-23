@@ -43,7 +43,7 @@ async function fetchSessionStatus(mainURL) {
                 volume: userData.media_volume
             };
 
-            if ( this.userInfos.volume === undefined ) this.userInfos.volume = 1;
+            if ( userInfos.volume === undefined ) userInfos.volume = 1;
 
             userInfos.img = `/media/avatar.webp`;
             if ( userData.img !== '-1' ) userInfos.img = `${userData.img}`;
@@ -62,14 +62,14 @@ async function fetchSessionStatus(mainURL) {
                 id: response.data.user.id,
                 username: response.data.user.name,
                 role: response.data.user.role,
-                activeImg: '',
+                img: '',
                 uploads: [],
                 volume: null
             }
 
             try {
                 var userDbData = await getCurrentUserInfos(mainURL, userData);
-                userData.activeImg = userDbData.activeImg;
+                userData.img = userDbData.img;
                 userData.uploads = userDbData.uploads;
                 userData.volume = userDbData.volume;
 
@@ -95,7 +95,6 @@ async function fetchPageSettings(mainURL) {
         return error;
     }   
 }
-
 
 var user = await fetchSessionStatus(mainURL);
 var pageSettings = await fetchPageSettings(mainURL);
