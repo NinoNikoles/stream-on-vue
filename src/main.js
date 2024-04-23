@@ -44,8 +44,10 @@ async function fetchSessionStatus(mainURL) {
                 volume: userData.media_volume
             };
 
+            if ( this.userInfos.volume === undefined ) this.userInfos.volume = 1;
+
             userInfos.activeImg = `/media/avatar.webp`;
-            if ( userData.img !== '-1' ) userInfos.activeImg = `/media/user_uploads/${user.id}/${userData.img}`;
+            if ( userData.img !== '-1' ) userInfos.activeImg = `${userData.img}`;
 
             return userInfos;
         } catch (error) {
@@ -55,7 +57,7 @@ async function fetchSessionStatus(mainURL) {
 
     try {
         const response = await getSession(mainURL);
-        if ( response.data.user ) {
+        if ( response.data.user && response.data.user.isLoggedIn) {
             var userData = {
                 isLoggedIn: response.data.user.isLoggedIn,
                 id: response.data.user.id,
@@ -113,7 +115,7 @@ app.mixin({
             var user = await fetchSessionStatus(mainURL);
             var pageSettings = await fetchPageSettings(mainURL);
             
-            app.config.globalProperties.$user = user;
+            if (user) app.config.globalProperties.$user = user;
             app.config.globalProperties.$pageSettings = pageSettings;
         });
     }
