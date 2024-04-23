@@ -4,6 +4,7 @@
         left: rem-calc($grid-padding);
     }
     position: sticky !important;
+    @include transition(background-color $transition-default);
 
     .logo {
         height: rem-calc(50);
@@ -23,7 +24,9 @@
         } 
     }
 
-
+    .active-modal & {
+        z-index: 0;
+    }
 }
 
 .menu-item {

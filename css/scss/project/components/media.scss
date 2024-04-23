@@ -488,3 +488,40 @@
     min-width: 0px;
     padding: 0;
 }
+
+.userImgContainer {
+    img {
+        z-index: 0;
+        @include transition(filter $transition-default);
+    }
+    > span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1;
+        @include transition(opacity $transition-default);
+    }
+    input {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: 3;
+    }
+
+    &:hover {
+        img {
+            filter: brightness(0.5);
+        }
+        > span {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}

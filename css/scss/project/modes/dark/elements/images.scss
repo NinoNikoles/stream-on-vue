@@ -1,9 +1,7 @@
-img {
-    @include transition(all $transition-default !important);
-
+img {    
     &[loading="lazy"] {
         background: {
-            color: var(--black-25);
+            color: var(--white-25);
             // image: url('/build/css/images/img_preview.webp');
             position: center;
             size: cover;

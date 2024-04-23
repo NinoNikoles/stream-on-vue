@@ -43,10 +43,10 @@ figure,
     position: relative;
     overflow: hidden;
 
-    > div {
-        width: unset !important;
-        height: unset !important;
-    }
+    // > div {
+        // width: unset !important;
+        // height: unset !important;
+    // }
 
     img {
         object-fit: cover;
@@ -83,5 +83,17 @@ a {
 .disabled {
     img {
         filter: grayscale(1);
+    }
+}
+
+.cropper {
+    img {
+        transition: unset;
+    }
+
+    &-crop-box {
+        span {
+            margin: 0;
+        }
     }
 }
