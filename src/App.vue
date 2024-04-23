@@ -21,7 +21,7 @@
         </div>
     </template>
 
-    <router-link style="position:fixed;z-index: 10000;" to="/watch?id=503314" title="Next">#Next</router-link>
+    <!-- <router-link style="position:fixed;z-index: 10000;" to="/watch?id=503314" title="Next">#Next</router-link> -->
 </template>
   
 <script>
