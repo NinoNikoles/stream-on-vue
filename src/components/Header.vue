@@ -1,5 +1,5 @@
 <template>
-    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="this.$user">
+    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="this.$user && $route.meta.noHeader !== true">
         <div class="row header--content">
             <div class="col12 column header--content--nav">
 
@@ -61,14 +61,14 @@
                                     <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                                 </li>
                                 
-                                <li class="menu-item"><router-link :to="`/user/${this.$user.id}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
+                                <li class="menu-item"><router-link :to="`/u/${this.$user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
                             </ul>
                         </menu>
                     </button>
 
                     <!-- Theme Switch button -->
-                    <!--<a href="#" id="theme-switch" class="icon"></a>-->
+                    <a href="#" id="theme-switch" class="icon" @click="themeChange($event)"></a>
 
                     <!-- Mobile Menu Button -->
                     <a href="#" @click="toggleMainMenu($event)" id="menu-button" class="nav-trigger menu-button" title="Menü öffnen">
@@ -91,12 +91,17 @@
             <div class="innerWrap">
                 <div class="grid-row" id="media-list">
                     <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
-                        <media-content :mediaContent="media" :mediaIndex="index" @popUpTrigger="mediaOpen"></media-content>
+                        <media-card :media="media" :id="media.tmdbID+'-search'"></media-card>
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <template v-for="(media, index) in searchResults" :key="index">
+        <media-content :media="media" :id="media.tmdbID+'-search'"></media-content>
+    </template>
+    
 </template>
   
 <script>
@@ -104,7 +109,8 @@ import router from './../router';
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
-import MediaContent from './includes/MediaCard.vue';
+import MediaCard from './includes/MediaCard.vue';
+import MediaContent from './includes/MediaContentPopup.vue';
 
 let mediaInfos = [];
 
@@ -112,9 +118,9 @@ export default {
     name: 'AppHeader',
     mixins: [functions, langSnippet, tmdb],
     components: {
+        'media-card': MediaCard,
         'media-content': MediaContent,
     },
-    props: ['onMediaPopUp'],
     data() {
         return {
             resultsHeight: null,
