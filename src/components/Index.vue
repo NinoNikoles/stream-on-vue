@@ -50,7 +50,7 @@
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
-                                    <media-content :mediaContent="media" :mediaIndex="index" :mediaWatchList="1" @popUpTrigger="mediaOpen"></media-content>
+                                    <media-card :media="media" :id="media.tmdbID+'-last'"></media-card>
                                 </div>
 
                             </div>
@@ -58,6 +58,10 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
+
+                        <template v-for="(media, index) in userWatchList" :key="index">
+                            <media-content :media="media" :id="media.tmdbID+'-last'"></media-content>
+                        </template>
 
                     </div>
                 </div>
