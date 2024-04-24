@@ -3,9 +3,9 @@
 </template>
   
 <script>
-  import videojs from 'video.js';
+import videojs from 'video.js';
   
-  export default {
+export default {
     name: 'VideoPlayer',
     props: {
         options: {
@@ -25,6 +25,8 @@
     methods: {
         moveButtons(playerID) {
             var player = document.getElementById(playerID)
+            var backButton = document.getElementById('player-back-btn');
+            player.appendChild(backButton);
 
             if ( document.getElementById('player-session-btn') ) {
                 var sessionBtn = document.getElementById('player-session-btn');
@@ -39,7 +41,7 @@
         this.player = videojs(this.$refs.videoPlayer, this.options, () => {
             this.player.ready(() => {
                 this.moveButtons(this.player.id_);
-            });            
+            });
         });
     },
     beforeUnmount() {
@@ -47,5 +49,5 @@
             this.player.dispose();
         }
     }
-  }
+}
 </script>
