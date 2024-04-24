@@ -1,4 +1,5 @@
 <template>
+
     <div id="main">
         <header-component v-if="!noHeader"></header-component>
         
@@ -9,19 +10,18 @@
         <div id="callout" data-time="0" data-id="0">
             <p id="callout-content">test</p>
         </div>
-
-        <div class="modal" id="media-content-modal">
-            <div class="modal-overlay"></div>
-            
-            <div class="modal-wrap large">
-                <div class="modal-inner-wrap rounded" id="media-content">
-                    <a href="#" class="modal-close" @click="closePopUp($event, 'media-content-modal')"></a>
-                </div>
-            </div>
-        </div>
     </template>
 
-    <!-- <router-link style="position:fixed;z-index: 10000;" to="/watch?id=503314" title="Next">#Next</router-link> -->
+    <div class="modal" id="media-content-modal">
+        <div class="modal-overlay"></div>
+        
+        <div class="modal-wrap large">
+            <div class="modal-inner-wrap rounded" id="media-content">
+                <a href="#" class="modal-close" @click="closePopUp($event, 'media-content-modal')"></a>
+            </div>
+        </div>
+    </div>
+
 </template>
   
 <script>
