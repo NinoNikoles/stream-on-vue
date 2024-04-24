@@ -2,8 +2,11 @@
     <div id="mainPlayer" class="mainPlayer fullscreen" v-if="media">
         <figure>
             <video-player :options="player.options" v-if="player.options.sources[0].src"></video-player>
-            <a :href="`/watchTogether?id=${$route.query.id}&uuid=${uuid}`" id="player-session-btn" title="Group session" v-if="uuid"></a>
-            <button id="chat-open" @click="toggleChat($event)"></button>
+
+            <router-link id="player-back-btn" :to="lastPath" title=""></router-link>
+            <router-link id="player-session-btn" :to="`/watch?id=${$route.query.id}&uuid=${uuid}`" title="Group session" v-if="uuid && !$route.query.uuid"></router-link>
+            
+            <button id="chat-open" @click="toggleChat($event)" v-show="multiWatch"></button>
         </figure>
 
         <!-- <div id="chat">    
@@ -46,11 +49,13 @@ export default {
     },
     data() {
         return {
+            lastPath: '/',
             mediaID: null,
             uuid: null,
             media: null,
             seasons: null,
             show: null,
+            multiWatch: false,
             player: {
                 el: null,
                 currentTime: null,
@@ -113,7 +118,7 @@ export default {
             }
         },
         async generateUUID() {
-            if ( this.$route.query.uuid === null || this.$route.query.uuid === undefined) {
+            if ( !this.$route.query.uuid ) {
                 this.uuid = uuidv4();
             }
         },
@@ -272,14 +277,18 @@ export default {
     },
     watch: {
         '$route'(to, from) {
-            // Überprüfe, ob sich die ID geändert hat
-            if (to.query.id !== from.query.id) {
-                // Führe deine Funktion aus
+            if (to.query.id !== from.query.id && (to.query.uuid || !to.query.uuid)) {
                 this.setUpPlayer(this.$route.query.id);
             }
+
+            this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
+            this.multiWatch = (this.$route.query.uuid ? true : false);
         }
     },
     mounted() {
+        this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
+        this.multiWatch = (this.$route.query.uuid ? true : false);
+
         this.setUpPlayer(this.$route.query.id);
     }
 };
