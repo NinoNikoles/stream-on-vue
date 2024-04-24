@@ -80,8 +80,14 @@
                     @include transition(all 0.2s cubic-bezier(0,1.35,0,1));
                 }
             }
-        
             
+            &:hover {
+                .vjs-icon-placeholder {
+                    &::before {
+                        transform: translate(-50%, -50%) scale(0.9);
+                    }
+                }
+            }
         }
 
         .vjs-control  {
@@ -288,11 +294,17 @@
             }
         }
 
-        .vjs-current-time,
-        .vjs-duration {
+        .vjs-current-time {
             margin: {
                 right: rem-calc(5);
                 left: rem-calc(10);
+            }
+        }
+
+        .vjs-duration {
+            margin: {
+                right: rem-calc(10);
+                left: rem-calc(5);
             }
         }
 
@@ -304,13 +316,13 @@
         .vjs-progress-control {
             width: calc(100% - 32px);
             padding: {
-                top: rem-calc(10);
-                bottom: rem-calc(10);
+                top: rem-calc(10) !important;
+                bottom: rem-calc(10) !important;
             }
             margin: {
-                top: rem-calc(19);
+                top: rem-calc(0) !important; //19
                 right: rem-calc(16);
-                bottom: rem-calc(19);
+                bottom: rem-calc(0) !important; //19
                 left: rem-calc(16);
             }
             position: absolute;
@@ -504,6 +516,7 @@
             family: $icon-font;
             size: rem-calc(40);
         }
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
         line-height: 1;
         position: absolute;
         top: 50%;
