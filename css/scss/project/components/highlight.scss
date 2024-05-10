@@ -32,10 +32,24 @@
             }
         }
 
+        #highlight-content {
+            height: 100%;
+            width: 100%;
+
+            figure {
+                height: 100%;
+                width: 100%;
+
+                img {
+                    height: 100%;
+                }
+            }
+        }
+
         .poster {
             display: flex;
 
-            @include MQ(xxsmall) {
+            @include MQ(medium) {
                 display: none;
                 width: 25%;
             }            
@@ -45,7 +59,7 @@
             display: none;
             width: 100%;
 
-            @include MQ(xxsmall) {
+            @include MQ(medium) {
                 display: flex;
             }          
         }
