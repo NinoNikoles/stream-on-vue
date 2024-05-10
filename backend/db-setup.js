@@ -224,8 +224,8 @@ async function dbSetup() {
                 show_id INTEGER,
                 watched_seconds DECIMAL(10, 6),
                 total_length DECIMAL(10, 6),
-                watched" INTEGER,
-                last_watched" TIMESTAMP,
+                watched INTEGER,
+                last_watched TIMESTAMP,
                 FOREIGN KEY(user_id) REFERENCES users(id),
                 UNIQUE(user_id, media_id)
             )`, async function(err) {
