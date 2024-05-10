@@ -13,7 +13,7 @@
     </template>
 
     <div class="modal" id="media-content-modal">
-        <div class="modal-overlay"></div>
+        <div class="modal-overlay" id="modal-overlay"></div>
         
         <div class="modal-wrap large">
             <div class="modal-inner-wrap rounded" id="media-content">
