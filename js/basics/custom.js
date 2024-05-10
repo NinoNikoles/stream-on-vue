@@ -310,8 +310,8 @@ function YTplayer() {
         const muteBtn = document.getElementById('player-btn');
 
         const player = new YT.Player('player', {
-            height: '360',
-            width: '640',
+            height: '1920',
+            width: '1080',
             videoId: videoID,
             playerVars: {
                 'enablejsapi': 1,
@@ -330,8 +330,6 @@ function YTplayer() {
                 'onStateChange': onPlayerStateChange
             }
         });
-
-        console.log(player);
 
         function startVideo() {
             player.playVideo();
