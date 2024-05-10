@@ -14,13 +14,8 @@
             <div id="highlight-content">
                 <figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy" :alt="`${highlight.title}`"></figure>
                 <figure class="poster"><img :src="$loadImg(highlight.poster)" loading="lazy" :alt="`${highlight.title}`"></figure>
-                
-                <figure v-if="highlight.trailer" id="player-wrap" class="poster mobile-only">
-                    <div id="player" :data-trailer-id="highlight.trailer"></div>
-                    <button id="player-btn" class="btn btn-transparent icon mute"></button>
-                </figure>
 
-                <figure v-if="highlight.trailer" id="player-wrap" class="poster dekstop-only">
+                <figure v-if="highlight.trailer" id="player-wrap" class="">
                     <div id="player" :data-trailer-id="highlight.trailer"></div>
                     <button id="player-btn" class="btn btn-transparent icon mute"></button>
                 </figure>
