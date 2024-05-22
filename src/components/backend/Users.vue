@@ -43,7 +43,7 @@
                         </td>
                         <td v-else></td>
 
-                        <td v-if="user.role !== 'superadmin'">
+                        <td v-if="user.role !== 'superadmin' && user.username !== this.$user.username">
                             <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
                         </td>
                         <td v-else></td>
@@ -54,56 +54,70 @@
             <!-- Add user -->
             <div id="add-user" style="display:none;">
                 <p>{{ langSnippet('add_user') }}</p>
-                <form @submit.prevent="addUser">
+                <form onsubmit="return false;" >
+                    <span v-if="newUserError" :class="`box-callout ${newUserError[1]}`">{{ newUserError[0] }}</span>
                     <p>
-                        <label for="newUsername" >
-                        <input v-model="newUser.name" type="text" id="newUsername" autocomplete="username" name="newUsername" :placeholder="langSnippet('username')" required></label>
+                        <span class="input-wrap">
+                            <label for="newUsername">{{ langSnippet('username') }}</label>
+                            <input v-model="newUser.name" type="text" id="newUsername" autocomplete="username" name="newUsername" required>
+                        </span>
                     </p>
                     <p>
-                        <label for="newUserpassword">
-                        <input v-model="newUser.password" type="password" id="newUserpassword" autocomplete="new-password" name="newUserpassword" :placeholder="langSnippet('password')" required></label>
+                        <span class="input-wrap">
+                            <label for="newUserpassword">{{ langSnippet('password') }}</label>
+                            <input v-model="newUser.password" type="password" id="newUserpassword" autocomplete="new-password" name="newUserpassword" required>
+                        </span>                        
                     </p>
                     <p>
                         <label for="newUserrole" class="checkbox-label">{{ langSnippet('admin') }}
                         <input v-model="newUser.role" type="checkbox" id="newUserrole" name="newUserrole"></label>
                     </p>
                     <p class="text-right">
-                        <button class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
+                        <button @click="addUser($event)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
                     </p>
                 </form>
             </div>
+
             <!-- Edit user -->
             <div id="edit-user" style="display:none;">
                 <p v-html="langSnippet('edit_user', selectedUser.name)"></p>
-                <form @submit.prevent="editUser(selectedUser)">
+                <form onsubmit="return false;">
+                    <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span>
                     <p>
-                        <label for="username" >
-                        <input v-model="selectedUser.name" type="text" id="username" autocomplete="username" name="username" :placeholder="langSnippet('username')" required></label>
+                        <span class="input-wrap">
+                            <label for="username">{{ langSnippet('username') }}</label>
+                            <input v-model="selectedUser.name" type="text" id="username" autocomplete="username" name="username" required>
+                        </span>
                     </p>
                     <p>
                         <label for="role" class="checkbox-label">{{ langSnippet('admin') }}
                         <input v-model="selectedUser.role" type="checkbox" id="role" name="role" ></label>
                     </p>
                     <p class="text-right">
-                        <button class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
+                        <button @click="editUser(selectedUser)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
                     </p>
                 </form>
             </div>
             <!-- Change password of user -->
             <div id="change-password" style="display:none;">
                 <p v-html="langSnippet('new_password')"></p>
-                <form @submit.prevent="changeUserPassword(selectedUser.id)">
+                <form onsubmit="return false;">
+                    <span v-if="newPasswordError" :class="`box-callout ${newPasswordError[1]}`">{{ newPasswordError[0] }}</span>
                     <input v-model="selectedUser.name" type="text" name="username" autocomplete="username" :placeholder="langSnippet('username')" style="display:none; visibility: hidden;" disabled>
-                    <p>
-                        <label for="new-password">
-                        <input v-model="newPassword" type="password" id="new-password" autocomplete="new-password" name="new-password" :placeholder="langSnippet('password')" required></label>
+                    <p> 
+                        <span class="input-wrap">
+                            <label for="new-password">{{ langSnippet('password') }}</label>
+                            <input v-model="newPassword" type="password" id="new-password" autocomplete="new-password" name="new-password" required>
+                        </span>
                     </p>
                     <p>
-                        <label for="new-password-check">
-                        <input v-model="newPasswordCheck" type="password" id="new-password-check" autocomplete="new-password" name="new-password-check" :placeholder="langSnippet('password_repeate')" required></label>
+                        <span class="input-wrap">
+                            <label for="new-password-check">{{ langSnippet('password_repeate') }}</label>
+                            <input v-model="newPasswordCheck" type="password" id="new-password-check" autocomplete="new-password" name="new-password-check" required>
+                        </span>
                     </p>
                     <p class="text-right marg-no">
-                        <button type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
+                        <button @click="changeUserPassword(selectedUser.id)" type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
                     </p>
                 </form>
             </div>
@@ -139,6 +153,9 @@ export default {
                 password: null,
                 role: 'user'
             },
+            newUserError: null,
+            editUserError: null,
+            newPasswordError: null,
             selectedUser: {
                 id: null,
                 name: null,
@@ -150,32 +167,10 @@ export default {
     },
     methods: {
         async getUsers() {
-            try {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/getAllUsers`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
-        },
-        async addUser() {            
-            try {
-                await axios.post(`${this.$mainURL}:3000/api/db/addUser?username=${this.newUser.name}&password=${this.newUser.password}&role=${this.newUser.role}`)
-                .then(() => {
-                    this.newUser.name = null;
-                    this.newUser.password = null;
-                    this.newUser.role = null;
-
-                    Fancybox.close();
-
-                    this.getUsers().then(users => {
-                        this.users = users;
-                    });
-                });
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/getAllUsers`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         selectUser(user) {
             this.selectedUser.id = user.id;
@@ -187,61 +182,88 @@ export default {
                 this.selectedUser.role = false;
             }
         },
+        async addUser() {
+            this.newUserError = null;
+
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/addUser?username=${this.newUser.name}&password=${this.newUser.password}&role=${this.newUser.role}`)
+
+                this.newUser.name = null;
+                this.newUser.password = null;
+                this.newUser.role = null;
+
+                Fancybox.close();
+                this.callout('success', this.langSnippet('saved'));
+
+                this.getUsers().then(users => {
+                    this.users = users;
+                });
+            } catch (error) {
+                console.log(error);
+                if (error.response.status === 400) this.newUserError = [this.langSnippet('username_already_exists'), 'warning'];
+                if (error.response.status === 500) this.newUserError = [this.langSnippet('an_error_occured'), 'alert'];
+                return;
+            }
+        },
         async editUser(user) {
-            if ( this.user.id !== null && this.user.name !== '' ) {
+            this.editUserError = null;
+
+            if ( user.id !== null && user.name !== '' ) {
                 try {
                     await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${user.id}&username=${user.name}&role=${user.role}`)
-                    .then(() => {
-                        this.selectedUser.id = null;
-                        this.selectedUser.name = null;
-                        this.selectedUser.role = null;
+                    this.callout('success', `${this.langSnippet('settings')} ${this.langSnippet('saved')}`);
+                    this.selectedUser.id = null;
+                    this.selectedUser.name = null;
+                    this.selectedUser.role = null;
 
-                        Fancybox.close();
+                    Fancybox.close();
 
-                        this.getUsers().then(users => {
-                            this.users = users;
-                        });
+                    this.getUsers().then(users => {
+                        this.users = users;
                     });
                 } catch (error) {
-                    console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                    return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
+                    console.log(error);
+                    this.editUserError = [this.langSnippet('an_error_occured'), 'alert'];
+                    return;
                 }
-            } else {
-                alert('Password empty');
             }
         },
         async changeUserPassword(userID) {
+            this.newPasswordError = null;
+
             if ( this.newPassword !== '' && this.newPasswordCheck !== '' ) {
                 if ( this.newPassword === this.newPasswordCheck && this.selectedUser.id !== null ) {
                     try {
                         await axios.post(`${this.$mainURL}:3000/api/db/changeUserPassword?userID=${userID}&password=${this.newPassword}`)
-                        .then(() => {
-                            this.selectedUser.id = null;
-                            this.selectedUser.name = null;
-                            this.selectedUser.role = null;
+                        
+                        this.selectedUser.id = null;
+                        this.selectedUser.name = null;
+                        this.selectedUser.role = null;
 
-                            this.newPassword = null;
-                            this.newPasswordCheck = null;
+                        this.newPassword = null;
+                        this.newPasswordCheck = null;
 
-                            Fancybox.close();
-                        });
+                        Fancybox.close();
+                        this.callout('success', `${this.langSnippet('password')} ${this.langSnippet('saved')}`);
+
                     } catch (error) {
-                        console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                        return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
+                        console.log('Fehler beim Überprüfen des Films in der Datenbank:', error);
+                        this.newPasswordError = [this.langSnippet('an_error_occured'), 'alert'];
+                        return;
                     }
                 } else {
                     this.newPassword = null;
                     this.newPasswordCheck = null;
-                    alert('Password wrong');
+                    this.newPasswordError = [this.langSnippet('passwords_not_identical'), 'alert'];
+                    return;
                 }
-            } else {
-                alert('Password empty');
             }
         },
         async deleteUser(userID) {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteUser?userID=${userID}`)
                 .then(() => {
+                    this.callout('success', `${this.selectedUser.name} ${this.langSnippet('deleted')}`);
                     this.selectedUser.id = null;
                     this.selectedUser.name = null;
                     this.selectedUser.role = null;
@@ -253,8 +275,7 @@ export default {
                     });
                 });
             } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
+                console.log(error);
             }
         },
         async saveData(e) {
