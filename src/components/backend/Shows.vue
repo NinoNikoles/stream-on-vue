@@ -12,7 +12,7 @@
                 <h1>{{ langSnippet('shows') }}</h1>
             </div>
 
-            <div class="col12">
+            <div v-if="genreAvailable" class="col12">
                 <div id="searchbar">
                     <label for="show-api-search">
                         <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" :placeholder="langSnippet('search')+` ...`" required>
@@ -48,6 +48,10 @@
                     </div>
                 </div>
             </div>
+
+            <div v-else class="col12 marg-bottom-m">
+                <p>Please setup Genre</p>
+            </div>
         </div>
     </div>    
 </template>
@@ -70,31 +74,26 @@ export default {
             genre: null,
             showProgressBar: false,
             progressBarWidth: '0%',
+            genreAvailable: false
         };
     },
     methods: {
         handleInputChange() {
-            // Hier können Sie die eingegebenen Daten bearbeiten und in outputText speichern
-            this.outputText = this.inputText; //.toUpperCase(); // Beispiel: Text in Großbuchstaben anzeigen
+            this.outputText = this.inputText;
             this.searchAndDisplayShows(this.outputText);
         },
         async searchAndDisplayShows(title) {
             const query = title;
             try {
-                if ( query.length > 0 ) {
+                if ( query.length > 0 && query !== '' && query !== null && query !== undefined ) {
                     const shows = await this.searchShows(query);
                     this.shows = await this.filterShowsWithExistingIDs(shows);
                 } else {
                     this.shows = null;
                 }
-
-                //this.genre = await this.getGenre(this.show);
-                //this.saveData(this.show); // Speichern Sie die Daten nach dem Abrufen
             } catch (error) {
-                console.error('Fehler beim Abrufen der Daten:', error);
+                console.log(error);
             }
-
-            
         },
         async filterShowsWithExistingIDs(shows) {
             const filteredshows = [];
@@ -104,16 +103,16 @@ export default {
                     filteredshows.push(show);
                 }
             }
-            return filteredshows;
+
+            return new Promise((resolve) => {
+                resolve(filteredshows);
+            });
         },
         async checkIfShowExistsInDatabase(tmdbID) {
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${tmdbID}"`);
-                return response.data.length > 0;
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return false;
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID="${tmdbID}"`);
+            return new Promise((resolve) => {
+                resolve(response.data.length > 0);
+            });
         },
         async saveData(data) {
             document.getElementById('loader').classList.remove('hidden');
@@ -150,18 +149,14 @@ export default {
                 var seasons = await this.saveSeasons(show.seasons, show.id);
                 var episodes = await this.saveEpisodes(show.id, show.seasons);
                 await this.sendMedia(media, seasons, episodes);
-
-                this.clearSearch();
-                this.outPutShows().then(outputShows => {
-                    // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
-                    this.outputShows = outputShows;
-                    this.searchAndDisplayShows(this.outputText);
-                    this.callout('success', 'Show added successfully');
-                });
             } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
+                console.log(error);
             }
+
+            this.clearSearch();
+            this.outputShows = await this.outPutShows();
+            await this.searchAndDisplayShows(this.outputText);
+            this.callout('success', 'Show added successfully');
         },
         async saveSeasons(seasons, showID) {
             var dataSeasons = [];
@@ -221,58 +216,38 @@ export default {
             return dataEpisodes;
         },
         async sendMedia(media, seasons, episodes) {
-            try {
-                var response = await axios.post(`${this.$mainURL}:3000/api/db/show?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media, seasons: seasons, episodes: episodes, });
-                
-                if ( response.data.message === true ) {
-                    document.getElementById('loader').classList.add('hidden');
-                }
-            } catch (err) {
-                console.error('Fehler beim Speichern der Daten:', err);
-            } finally {
-                this.showProgressBar = false;
-                this.progressBarWidth = '0%';
+            var response = await axios.post(`${this.$mainURL}:3000/api/db/show?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media, seasons: seasons, episodes: episodes, });   
+            if ( response.data.message === true ) {
+                document.getElementById('loader').classList.add('hidden');
             }
         },
         async outPutShows() {
             var order = 'title';
-            try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="show"&orderBy=${order}&order=ASC`);
-                return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
-            }
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="show"&orderBy=${order}&order=ASC`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         clearSearch() {
             this.inputText = "";
             this.outputText = this.inputText;
         },
+        async genreCheck() {
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
+            var genre = response.data;
+
+            return new Promise((resolve, reject) => {
+                if (genre.length > 0) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            });
+        }
     },
-    mounted() {
-        this.outPutShows().then(outputShows => {
-            // Verwenden Sie outputshows hier, um die Daten in Ihrer Komponente zu verwenden
-            this.outputShows = outputShows;
-        });
+    async mounted() {
+        this.genreAvailable = await this.genreCheck();
+        this.outputShows = await this.outPutShows();
     }
 };
 </script>
-
-<style>
-#app {
-
-}
-
-.progress-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #f0f0f0;
-    margin-top: 10px;
-}
-
-.progress {
-    height: 100%;
-    background-color: #4caf50;
-    transition: width 0.3s ease;
-}
-</style>
