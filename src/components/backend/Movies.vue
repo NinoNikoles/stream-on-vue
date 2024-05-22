@@ -91,7 +91,7 @@ export default {
                     this.movies = null;
                 }
             } catch (error) {
-                console.error('Fehler beim Abrufen der Daten:', error);
+                console.log(error);
             }
         },
         async filterMoviesWithExistingIDs(movies) {
@@ -179,19 +179,21 @@ export default {
             this.inputText = "";
             this.outputText = this.inputText;
         },
-        async outPutGenres() {
+        async genreCheck() {
             const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
             var genre = response.data;
-            this.genreAvailable = false;
-            if ( genre.length > 0 ) this.genreAvailable = true;
 
-            return new Promise((resolve) => {    
-                resolve(genre);
+            return new Promise((resolve, reject) => {
+                if (genre.length > 0) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
             });
         }
     },
     async mounted() {
-        await this.outPutGenres()
+        this.genreAvailable = await this.genreCheck();
         this.outputMovies = await this.outPutMovies();
     }
 };
