@@ -114,3 +114,44 @@
         }
     }
 }
+
+.box-callout {
+    display: flex;
+    align-items: center;
+    color: var(--black);
+    line-height: 1;
+    min-height: rem-calc(64);
+    padding: {
+        top: rem-calc(6);
+        right: rem-calc(20);
+        bottom: rem-calc(6);
+        left: rem-calc(68);
+    }
+    position: relative;
+
+    &::before {
+        content: "";
+        width: rem-calc(48);
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &::after {
+        content: "";
+        color: var(--white);
+        font: {
+            family: $icon-font;
+            size: rem-calc(28);
+        }
+        position: absolute;
+        top: 50%;
+        left: rem-calc(24);
+        transform: translate(-50%, -50%);
+    }
+
+    &.success { background-color: var(--success-light); &::before { background-color: var(--success); } &::after { content: $icon-check; } }
+    &.warning { background-color: var(--warning-light); &::before { background-color: var(--warning); } &::after { content: $icon-info; } }
+    &.alert { background-color: var(--alert-light); &::before { background-color: var(--alert); } &::after { content: $icon-error; } }
+}
