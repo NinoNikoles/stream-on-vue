@@ -394,8 +394,13 @@ export default {
             });
         },
         async logout_function() {
-            await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true });
-            window.location.href = '/';
+            await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true })
+            .then(() => {
+                this.$user.username = null;
+                this.$user.role = null;
+                this.$user.isLoggedIn = false;
+                window.location.href = '/';
+            });
         },
         themeChange(e) {
             e.preventDefault();

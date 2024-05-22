@@ -14,7 +14,7 @@ export default {
     name: 'AppIndex',
     mixins: [functions],
     async mounted() {
-        this.logout_function();
+        await this.logout_function();
     }
 };
 </script>
