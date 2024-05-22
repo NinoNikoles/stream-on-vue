@@ -298,7 +298,30 @@ function formLabels() {
         input.addEventListener('input', function() {
             labelFloat(input, 'focus');
         });
-    })
+    });
+
+    var passwordInputs = document.querySelectorAll('input[type="password"]');
+    passwordInputs.forEach((input) => {
+        const parentElement = input.parentElement;
+        const existingCheckbox = parentElement.querySelector('input[type="checkbox"]');
+        parentElement.classList.add('password-wrap');
+
+        if (!existingCheckbox) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.classList.add('show-psswd');
+    
+            input.insertAdjacentElement('afterend', checkbox);
+    
+            checkbox.addEventListener('change', function(event) {
+                if (input.type === "password") {
+                    input.type = "text";
+                } else {
+                    input.type = "password";
+                }
+            });
+        }
+    });
 }
 
 function YTplayer() {
@@ -378,6 +401,104 @@ function YTplayer() {
             }
         });
     }
+
+    function observeDOMChanges(targetNode, callback) {
+        // Erstellen eines MutationObservers mit einer Callback-Funktion
+        const observer = new MutationObserver((mutationsList, observer) => {
+          // Durchlaufe jede Mutation in der Liste
+          for (const mutation of mutationsList) {
+            // Führe die Callback-Funktion aus, wenn sich die Struktur des Zielknotens ändert
+            if (mutation.type === 'childList') {
+              callback();
+              break; // Beende die Schleife, sobald eine Änderung festgestellt wurde
+            }
+          }
+        });
+      
+        // Konfigurationsoptionen für den Observer
+        const config = { childList: true, subtree: true };
+      
+        // Starte die Überwachung des Zielknotens mit den angegebenen Konfigurationsoptionen
+        observer.observe(targetNode, config);
+      
+        // Rückgabe des Observers für spätere Verwendung oder Anhalten der Überwachung
+        return observer;
+      }
+      
+      // Beispielaufruf der Funktion
+      const targetNode = document.getElementById('media-content'); // Zielknoten, dessen Struktur überwacht werden soll
+      const callback = () => {
+    var player = document.querySelector('.modal .player');
+    if (player) player.classList.remove('player');
+    var ambientlight = document.querySelector('.modal .player-copy');
+    if (ambientlight) ambientlight.classList.remove('player-copy');
+    
+    
+
+    if (player) {
+        var videoID = player.id;
+        var ambientReady;
+        ambientReady = false;
+
+        player = new YT.Player(player, {
+            height: '1920',
+            width: '1080',
+            videoId: videoID,
+            playerVars: {
+                'enablejsapi': 1,
+                'origin': 'http://localhost:8080/'
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange,
+                // 'onPlaybackRateChange': onPlaybackRateChange
+            }
+        });
+
+        ambientlight = new YT.Player(ambientlight, {
+            height: '1920',
+            width: '1080',
+            videoId: videoID,
+            playerVars: {
+                'enablejsapi': 1,
+                'mute': 1,
+                'origin': 'http://localhost:8080/'
+            },
+            events: {
+                'onReady': onCopyReady
+            }
+        });
+    }
+
+    
+    function onPlayerReady(event) {
+        console.log('rdy');
+    }
+    
+    function onCopyReady() {
+        ambientReady = true;
+        ambientlight.mute();
+    }
+
+    function onPlayerStateChange(event) {
+        // if (!ambientReady) return;
+        console.log('Player state changed:', event.data);
+        switch (event.data) {
+            case YT.PlayerState.PLAYING:
+            ambientlight.playVideo();
+            break;
+            case YT.PlayerState.PAUSED:
+            ambientlight.pauseVideo();
+            break;
+            case YT.PlayerState.ENDED:
+            ambientlight.seekTo(0);
+            ambientlight.pauseVideo();
+            break;
+        }
+    }
+      };
+      
+      observeDOMChanges(targetNode, callback);
 }
 
 function initCustomJS() {
