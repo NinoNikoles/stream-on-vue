@@ -4,11 +4,21 @@
         <!-- content -->
         <div class="info-popup" :id="id">
             <div class="col12">
-                <figure v-if="media.trailer" class="widescreen">
-                    <div :id="`trailer-${media.trailer}`"></div>
-                    <!-- <iframe width="1920" height="1080" :src="`https://www.youtube.com/embed/${media.trailer}`" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                </figure>
+
             </div>
+            <div class="col12 ambient-wrap pad-top-s pad-bottom-s">
+                <figure v-if="media.trailer" class="widescreen ambient">
+                    <div :id="`trailer-copy`" class="player-copy"></div>
+                </figure>
+                <div class="innerWrap">
+                    <div class="col12 pad-left-s pad-right-s">
+                        <figure v-if="media.trailer" class="widescreen">
+                            <div :id="`${media.trailer}`" class="player"></div>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
             <div class="innerWrap">
                 <div class="col12 marg-top-s pad-left-base pad-right-base">
                     <div class="col12">
@@ -122,81 +132,115 @@ export default {
     name: 'MediaContentPopup',
     mixins: [functions, langSnippet],
     props: ['media', 'id'],
+    data() {
+        return {
+            player: null,
+            ambientlight: null,
+            videoID: null
+        }
+    },
     methods: {
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.$user.id, mediaID, buttonID);
         },
-        // test() {
-        //     var video;
-        //     var ambilight;
-        //     var videoId = this.media.trailer;
-        //     if (this.media !== null) {
-        //         console.log(videoId);
-        //         video = new YT.Player('trailer-'+videoId, {
-        //             videoId,
-        //             events: {
-        //                 onReady: videoReady,
-        //                 onStateChange: videoStateChange,
-        //             },
-        //         });
+        // initYT() {
+        //     if (!window.YT) {
+        //         const tag = document.createElement('script');
+        //         tag.src = "https://www.youtube.com/iframe_api";
+        //         const firstScriptTag = document.getElementsByTagName('script')[0];
+        //         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        //         console.log(tag);
+        //         // Warten auf die Initialisierung der API
+        //         window.onYouTubeIframeAPIReady = this.initializePlayers;
+        //         // this.initPlayer();
 
-        //         ambilight = new YT.Player('media-content', {
-        //             videoId,
-        //             events: {
-        //                 onReady: ambilightReady,
-        //                 onStateChange: ambilightStateChange,
-        //             },
-        //         });
-
-        //         function videoReady(event) {
-        //             // event.target.setPlaybackQuality("default");
-        //         }
-
-        //         function videoStateChange(event) {
-        //             switch (event.data) {
-        //                 case YT.PlayerState.PLAYING:
-        //                     ambilight.seekTo(event.target.getCurrentTime());
-        //                     ambilight.playVideo();
-        //                     break;
-        //                 case YT.PlayerState.PAUSED:
-        //                     ambilight.seekTo(event.target.getCurrentTime());
-        //                     ambilight.pauseVideo();
-        //                     break;
-        //             }
-        //         }
-
-        //         function optimizeAmbilight(event) {
-        //             var qualityLevels = event.target.getAvailableQualityLevels();
-        //             event.target.mute();
-        //             if (qualityLevels && qualityLevels.length && qualityLevels.length > 0) {
-        //                 qualityLevels.reverse();
-        //                 var lowestLevel = qualityLevels[qualityLevels.findIndex((q) => q !== 'auto')];
-        //                 event.target.setPlaybackQuality(lowestLevel);
-        //             }
-        //         }
-
-        //         function ambilightReady(event) {
-        //             optimizeAmbilight(event);
-        //         }
-
-        //         function ambilightStateChange(event) {
-        //             switch (event.data) {
-        //                 case YT.PlayerState.BUFFERING:
-        //                 case YT.PlayerState.PLAYING:
-        //                     optimizeAmbilight(event);
-        //                     break;
-        //             }
-        //         }
-
-        //         function step() {
-        //             ambilight.seekTo(video.getCurrentTime());
-        //             window.requestAnimationFrame(step);
-        //         }
+        //     } else {
+                
         //     }
-        // }
+        // },
+        // async initPlayer() {
+        //     this.videoID = this.media.trailer;
+        //     // var player;
+        //     // var ambientlight;
+        //     // var ambientReady = false;
+
+        //     const player = new window.YT.Player('trailer-'+this.videoID, {
+        //         height: '1920',
+        //         width: '1080',
+        //         videoId: this.videoID,
+        //         playerVars: {
+        //             'enablejsapi': 1,
+        //             'origin': 'http://localhost:8080/'
+        //         },
+        //         events: {
+        //             'onReady': onPlayerReady,
+        //             'onStateChange': onPlayerStateChange,
+        //             'onPlaybackRateChange': onPlaybackRateChange
+        //         }
+        //     });
+
+        //     const ambientlight = new window.YT.Player('trailer-copy', {
+        //         height: '1920',
+        //         width: '1080',
+        //         videoId: this.videoID,
+        //         playerVars: {
+        //             'enablejsapi': 1,
+        //             'mute': 1,
+        //             'origin': 'http://localhost:8080/'
+        //         },
+        //         events: {
+        //             'onReady': onCopyReady
+        //         }
+        //     });
+
+        //     function onPlayerReady() {
+        //         console.log('rdy');
+        //     }
+            
+        //     function onCopyReady() {
+        //         // Das kopierte Video ist bereit
+        //         // ambientReady = true;
+        //         ambientlight.mute();
+        //     }
+
+        //     function onPlayerStateChange(event) {
+        //         // if (!ambientReady) return;
+        //         console.log('Player state changed:', event.data);
+        //         // switch (event.data) {
+        //         //     case window.YTplayer.PlayerState.PLAYING:
+        //         //     ambientlight.playVideo();
+        //         //     break;
+        //         //     case window.YT.PlayerState.PAUSED:
+        //         //     ambientlight.pauseVideo();
+        //         //     break;
+        //         //     case window.YT.PlayerState.ENDED:
+        //         //     ambientlight.seekTo(0);
+        //         //     ambientlight.pauseVideo();
+        //         //     break;
+        //         // }
+
+        //         // if (event.data == YT.PlayerState.ENDED && !done && highlight) {
+        //         //     setTimeout(hideVideo, 1000);
+        //         //     done = true;
+        //         // }
+        //     }
+
+        //     // function onPlaybackRateChange() {
+        //     //     if (!ambientlight) return;
+        //     //     ambientlight.setPlaybackRate(player.getPlaybackRate());
+        //     // }
+
+        //     // setInterval(function() {
+        //     //     if (!ambientlight) return;
+        //     //     var currentTime = player.getCurrentTime();
+        //     //     if (Math.abs(currentTime - ambientlight.getCurrentTime()) > 0.5) {
+        //     //         ambientlight.seekTo(currentTime, true);
+        //     //     }
+        //     // }, 100);
+        // }        
     },
     mounted() {
-        // this.test(); // Direkter Aufruf der test-Funktion beim Laden der Komponente
+        window.YTplayer();
     }
 }
 </script>
