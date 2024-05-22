@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const { parseJSON } = require('jquery');
 const saltRounds = 10;
 
 const db = new sqlite3.Database('./database.db');
@@ -92,11 +93,12 @@ const logout = (req, res) => {
 
     req.session.user = {
         name: username,
+        id: username,
         role: role,
         isLoggedIn: false
     }
     req.session.save();
-    res.json({message: 'logout_successful'});
+    res.json(req.session);
 }
 
 // Settings
@@ -777,23 +779,26 @@ const getUser = (req, res) => {
     });
 }
 
-const addUser = (req, res) => {
+const addUser = async (req, res) => {
     const { username, password, role } = req.query;
-
-    let query = `INSERT INTO users 
-    (username, password, role, user_img) VALUES (?, ?, ?, ?)`;
 
     const hashed_password = bcrypt.hashSync(password, saltRounds);
     var stringRole = 'user';
     if ( role ===  'true' || role ===  true ) stringRole = 'admin';
     const img = '/media/avatar.webp';
 
-    db.all(query,  [username, hashed_password, stringRole, img], (err, rows) => {
-        if (err) {
-            // res.status(500).send(err);
-            return;
+    db.run(`INSERT INTO users (username, password, role, img) VALUES (?, ?, ?, ?)`, [username, hashed_password, stringRole, img], (error, rows) => {
+        
+        if (error) {
+            if (error['message'] === 'SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username') {
+                // Username already exists!
+                res.status(400).send(error);
+            } else {
+                res.status(500).send(error);
+            }
+        } else {
+            res.json({ message: 'User added successfully!' });
         }
-        res.json(rows);
     });
 }
 
