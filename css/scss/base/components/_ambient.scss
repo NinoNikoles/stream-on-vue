@@ -1,0 +1,34 @@
+.ambient-wrap {
+    position: relative;
+
+    .ambient {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+
+        iframe {
+            filter: blur(25px);
+        }
+
+        &::after {
+            content: "";
+            -webkit-box-shadow: inset 0px 0px 50px 10px rgba(18,18,18,1);
+            -moz-box-shadow: inset 0px 0px 50px 10px rgba(18,18,18,1);
+            box-shadow: inset 0px 0px 50px 10px rgba(18,18,18,1);
+
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+    }
+}
+
+.info-popup .widescreen:not(.ambient)::after {
+    display: none !important;
+}
