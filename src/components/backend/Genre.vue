@@ -73,7 +73,7 @@ export default {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
                 return response.data; // Geben Sie die Daten aus der Antwort zurück, nicht die gesamte Antwort
             } catch (error) {
-                console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
+                console.log(error);
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
         }
