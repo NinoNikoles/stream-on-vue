@@ -172,9 +172,11 @@ input[type="date"] {
     }
 }
 
-//input[type="dropdown"] {
-//
-//}
+input[type="password"] {
+    padding: {
+        right: rem-calc($input-space-horizontal*3);
+    }
+}
 
 input[type="checkbox"] {
     display: flex;
@@ -247,6 +249,44 @@ input[type="checkbox"] {
 
     &:hover {
         cursor: pointer;
+    }
+
+    &.show-psswd {
+        aspect-ratio: 1;
+        width: auto;
+        min-width: unset;
+        height: 100%;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+    
+        &::before {
+            content: $icon-eye;
+            font: {
+                family: $icon-font;
+            }
+        }
+
+        &::after {
+            display: none;
+        }
+    }
+}
+
+.password-wrap {
+    &::after {
+        content: $icon-eye;
+        color: var(--font-color);
+        font: {
+            family: $icon-font;
+        }
+        position: absolute;
+        top: 50%;
+        right: rem-calc($input-space-horizontal/2);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
     }
 }
 
