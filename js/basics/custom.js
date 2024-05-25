@@ -19,6 +19,41 @@ debounceScroll = function(e){
 	}, 10);
 };
 
+function domObserver() {
+    function observeDOMChanges(targetNode, callback) {
+        // Erstellen eines MutationObservers mit einer Callback-Funktion
+        const observer = new MutationObserver((mutationsList, observer) => {
+            // Durchlaufe jede Mutation in der Liste
+            for (const mutation of mutationsList) {
+                // Führe die Callback-Funktion aus, wenn sich die Struktur des Zielknotens ändert
+                if (mutation.type === 'childList') {
+                    callback();
+                    break; // Beende die Schleife, sobald eine Änderung festgestellt wurde
+                }
+            }
+        });
+      
+        // Konfigurationsoptionen für den Observer
+        const config = { childList: true, subtree: true };
+      
+        // Starte die Überwachung des Zielknotens mit den angegebenen Konfigurationsoptionen
+        observer.observe(targetNode, config);
+      
+        // Rückgabe des Observers für spätere Verwendung oder Anhalten der Überwachung
+        return observer;
+    }
+
+    // Beispielaufruf der Funktion
+    // Zielknoten, dessen Struktur überwacht werden soll
+    const ambientNode = document.getElementById('media-content');
+
+    const ambientCallback = () => {
+        ambientInit();
+    }
+    
+    observeDOMChanges(ambientNode, ambientCallback);  
+}
+
 const resizeElementHeight = () => {
     var loginWrap = document.getElementById('loginWrap');
     if (loginWrap) {
@@ -77,70 +112,6 @@ var checkPosition = function(e) {
         }
     }
 };
-
-function initSliders() {
-    // Slider
-    // sliderNumber = 0;
-    // $(".swiper").each(function () {
-    //     var $el = $(this);
-    //     const sliderClass = 'swiper-' + sliderNumber;
-    //     const slider = '.swiper-' + sliderNumber;
-
-    //     $el.addClass(sliderClass);
-    //     var itemsMobile = 2;
-    //     var itemsSmallTablet = 3;
-    //     var itemsTablet = 4;
-    //     var itemsDesktop = 6;
-
-    //     const swiper = new Swiper(slider, {
-    //         // Optional parameters
-    //         loop: false,
-    //         //effect: effect,
-    //         slidesPerView: itemsMobile,
-    //         slidesPerGroup: 1,
-    //         spaceBetween: 16,
-    //         allowTouchMove: true,
-    //         breakpoints: {
-    //             // when window width is >= 320px
-    //             720: {
-    //                 slidesPerView: itemsSmallTablet,
-    //             },
-    //             1080: {
-    //                 slidesPerView: itemsTablet,
-    //             },
-    //             1400: {
-    //                 slidesPerView: itemsDesktop,
-    //             }
-    //         },
-            
-    //         pagination: {
-    //             el: '.swiper-pagination',
-    //             dynamicBullets: true
-    //             // clickable: true
-    //         },
-
-    //         // Navigation arrows
-    //         navigation: {
-    //             nextEl: '.swiper-button-next',
-    //             prevEl: '.swiper-button-prev',
-    //         },
-    //     });
-
-    //     // swiper.on('resize', function() {
-    //     //     setTimeout(() => {
-    //     //         var self = this;
-    //     //         swiperLoopCheck(self);
-    //     //     }, 1000);
-    //     // });
-
-    //     $el.find('[data-fancybox="gallery"]').each(function() {
-    //         var $this = $(this);
-    //         $this.attr('data-fancybox', sliderClass);
-    //     })
-        
-    //     sliderNumber++;
-    // });
-}
 
 function initTabs() {
     // Tabs
@@ -401,41 +372,18 @@ function YTplayer() {
             }
         });
     }
+}
 
-    function observeDOMChanges(targetNode, callback) {
-        // Erstellen eines MutationObservers mit einer Callback-Funktion
-        const observer = new MutationObserver((mutationsList, observer) => {
-          // Durchlaufe jede Mutation in der Liste
-          for (const mutation of mutationsList) {
-            // Führe die Callback-Funktion aus, wenn sich die Struktur des Zielknotens ändert
-            if (mutation.type === 'childList') {
-              callback();
-              break; // Beende die Schleife, sobald eine Änderung festgestellt wurde
-            }
-          }
-        });
-      
-        // Konfigurationsoptionen für den Observer
-        const config = { childList: true, subtree: true };
-      
-        // Starte die Überwachung des Zielknotens mit den angegebenen Konfigurationsoptionen
-        observer.observe(targetNode, config);
-      
-        // Rückgabe des Observers für spätere Verwendung oder Anhalten der Überwachung
-        return observer;
-      }
-      
-      // Beispielaufruf der Funktion
-      const targetNode = document.getElementById('media-content'); // Zielknoten, dessen Struktur überwacht werden soll
-      const callback = () => {
+function ambientInit() {
+    console.log('test');
     var player = document.querySelector('.modal .player');
+    console.log(player);
     if (player) player.classList.remove('player');
     var ambientlight = document.querySelector('.modal .player-copy');
+    console.log(ambientlight);
     if (ambientlight) ambientlight.classList.remove('player-copy');
-    
-    
 
-    if (player) {
+    if (player && ambientlight) {
         var videoID = player.id;
         var ambientReady;
         ambientReady = false;
@@ -451,7 +399,7 @@ function YTplayer() {
             events: {
                 'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange,
-                // 'onPlaybackRateChange': onPlaybackRateChange
+                'onPlaybackRateChange': onPlaybackRateChange
             }
         });
 
@@ -496,14 +444,25 @@ function YTplayer() {
             break;
         }
     }
-      };
-      
-      observeDOMChanges(targetNode, callback);
+
+    function onPlaybackRateChange() {
+        if (!ambientlight) return;
+        ambientlight.setPlaybackRate(player.getPlaybackRate());
+    }
+
+    setInterval(function() {
+        if (!ambientlight) return;
+        var currentTime = player.getCurrentTime();
+        if (Math.abs(currentTime - ambientlight.getCurrentTime()) > 0.5) {
+            ambientlight.seekTo(currentTime, true);
+        }
+    }, 1000);
 }
 
 function initCustomJS() {
     document.body.classList.remove('loading');
 
+    domObserver();
     checkPosition();
     // initSliders();
     initTabs();

@@ -3,27 +3,26 @@
 
         <!-- content -->
         <div class="info-popup" :id="id">
-            <div class="col12">
-
-            </div>
-            <div class="col12 ambient-wrap pad-top-s pad-bottom-s">
-                <figure v-if="media.trailer" class="widescreen ambient">
-                    <div :id="`trailer-copy`" class="player-copy"></div>
-                </figure>
-                <div class="innerWrap">
-                    <div class="col12 pad-left-s pad-right-s">
-                        <figure v-if="media.trailer" class="widescreen">
-                            <div :id="`${media.trailer}`" class="player"></div>
-                        </figure>
+            <div class="col12 pad-top-base pad-bottom-base">
+                <div class="col12 ambient-wrap pad-top-base pad-bottom-base">
+                    <figure v-if="media.trailer" class="widescreen ambient">
+                        <div :id="`trailer-copy`" class="player-copy"></div>
+                    </figure>
+                    <div class="innerWrap">
+                        <div class="col12 pad-left-base pad-right-base">
+                            <figure v-if="media.trailer" class="widescreen">
+                                <div :id="`${media.trailer}`" class="player"></div>
+                            </figure>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="innerWrap">
-                <div class="col12 marg-top-s pad-left-base pad-right-base">
+                <div class="col12 pad-left-base pad-right-base">
                     <div class="col12">
                         <div class="col-9">
-                            <p class="h2">{{ media.title }}</p>
+                            <!-- <p class="h2">{{ media.title }}</p> -->
                         </div>
 
                         <div class="col-3">
@@ -142,105 +141,10 @@ export default {
     methods: {
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.$user.id, mediaID, buttonID);
-        },
-        // initYT() {
-        //     if (!window.YT) {
-        //         const tag = document.createElement('script');
-        //         tag.src = "https://www.youtube.com/iframe_api";
-        //         const firstScriptTag = document.getElementsByTagName('script')[0];
-        //         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        //         console.log(tag);
-        //         // Warten auf die Initialisierung der API
-        //         window.onYouTubeIframeAPIReady = this.initializePlayers;
-        //         // this.initPlayer();
-
-        //     } else {
-                
-        //     }
-        // },
-        // async initPlayer() {
-        //     this.videoID = this.media.trailer;
-        //     // var player;
-        //     // var ambientlight;
-        //     // var ambientReady = false;
-
-        //     const player = new window.YT.Player('trailer-'+this.videoID, {
-        //         height: '1920',
-        //         width: '1080',
-        //         videoId: this.videoID,
-        //         playerVars: {
-        //             'enablejsapi': 1,
-        //             'origin': 'http://localhost:8080/'
-        //         },
-        //         events: {
-        //             'onReady': onPlayerReady,
-        //             'onStateChange': onPlayerStateChange,
-        //             'onPlaybackRateChange': onPlaybackRateChange
-        //         }
-        //     });
-
-        //     const ambientlight = new window.YT.Player('trailer-copy', {
-        //         height: '1920',
-        //         width: '1080',
-        //         videoId: this.videoID,
-        //         playerVars: {
-        //             'enablejsapi': 1,
-        //             'mute': 1,
-        //             'origin': 'http://localhost:8080/'
-        //         },
-        //         events: {
-        //             'onReady': onCopyReady
-        //         }
-        //     });
-
-        //     function onPlayerReady() {
-        //         console.log('rdy');
-        //     }
-            
-        //     function onCopyReady() {
-        //         // Das kopierte Video ist bereit
-        //         // ambientReady = true;
-        //         ambientlight.mute();
-        //     }
-
-        //     function onPlayerStateChange(event) {
-        //         // if (!ambientReady) return;
-        //         console.log('Player state changed:', event.data);
-        //         // switch (event.data) {
-        //         //     case window.YTplayer.PlayerState.PLAYING:
-        //         //     ambientlight.playVideo();
-        //         //     break;
-        //         //     case window.YT.PlayerState.PAUSED:
-        //         //     ambientlight.pauseVideo();
-        //         //     break;
-        //         //     case window.YT.PlayerState.ENDED:
-        //         //     ambientlight.seekTo(0);
-        //         //     ambientlight.pauseVideo();
-        //         //     break;
-        //         // }
-
-        //         // if (event.data == YT.PlayerState.ENDED && !done && highlight) {
-        //         //     setTimeout(hideVideo, 1000);
-        //         //     done = true;
-        //         // }
-        //     }
-
-        //     // function onPlaybackRateChange() {
-        //     //     if (!ambientlight) return;
-        //     //     ambientlight.setPlaybackRate(player.getPlaybackRate());
-        //     // }
-
-        //     // setInterval(function() {
-        //     //     if (!ambientlight) return;
-        //     //     var currentTime = player.getCurrentTime();
-        //     //     if (Math.abs(currentTime - ambientlight.getCurrentTime()) > 0.5) {
-        //     //         ambientlight.seekTo(currentTime, true);
-        //     //     }
-        //     // }, 100);
-        // }        
+        },       
     },
-    mounted() {
-        window.YTplayer();
-    }
+    // mounted() {
+    //     window.domObserver();
+    // }
 }
 </script>
