@@ -4,6 +4,22 @@
 */
 
 //-- Contextual backgrounds --
+@mixin blur($strength){
+    -webkit-filter: blur($strength);
+    -moz-filter: blur($strength);
+    -o-filter: blur($strength);
+    -ms-filter: blur($strength);
+    filter: blur($strength);
+}
+  
+@mixin box-shadow($content) {
+    -webkit-box-shadow: $content;
+    -moz-box-shadow: $content;
+    box-shadow: $content;
+}
+
+
+
 @mixin bg-variant($parent, $color) {
   #{$parent} {
     background: {
@@ -26,15 +42,6 @@
 @mixin bg-rgba($color, $opacity: .3) {
   background: $color !important;
   background: rgba($color, $opacity) !important;
-}
-
-
-@mixin blur($strength){
-  -webkit-filter: blur($strength);
-  -moz-filter: blur($strength);
-  -o-filter: blur($strength);
-  -ms-filter: blur($strength);
-  filter: blur($strength);
 }
 
 @mixin bg-variant-font-color($color: var(--font-color)) {
