@@ -135,9 +135,6 @@ export default {
         async watchListAction(mediaID, buttonID) {
             this.watchListTrigger(this.$user.id, mediaID, buttonID);
         },       
-    },
-    // mounted() {
-    //     window.domObserver();
-    // }
+    }
 }
 </script>
