@@ -330,10 +330,10 @@ function YTplayer() {
         }
 
         function onPlayerReady(event) {
-            player.mute();
+            // player.mute();
             if (event.data == null) {
                 setTimeout(function() {
-                    startVideo();
+                    event.target.startVideo();
                 }, 1000);
             }
         }
@@ -375,13 +375,11 @@ function YTplayer() {
 }
 
 function ambientInit() {
-    console.log('test');
     var player = document.querySelector('.modal .player');
-    console.log(player);
     if (player) player.classList.remove('player');
     var ambientlight = document.querySelector('.modal .player-copy');
-    console.log(ambientlight);
     if (ambientlight) ambientlight.classList.remove('player-copy');
+    const origin = window.location.origin;
 
     if (player && ambientlight) {
         var videoID = player.id;
@@ -394,7 +392,7 @@ function ambientInit() {
             videoId: videoID,
             playerVars: {
                 'enablejsapi': 1,
-                'origin': 'http://localhost:8080/'
+                'origin': origin
             },
             events: {
                 'onReady': onPlayerReady,
@@ -410,7 +408,7 @@ function ambientInit() {
             playerVars: {
                 'enablejsapi': 1,
                 'mute': 1,
-                'origin': 'http://localhost:8080/'
+                'origin': origin
             },
             events: {
                 'onReady': onCopyReady
@@ -418,28 +416,33 @@ function ambientInit() {
         });
     }
 
-    
     function onPlayerReady(event) {
-        console.log('rdy');
+        if (!ambientlight) return;
     }
     
-    function onCopyReady() {
+    function onCopyReady(event) {
         ambientReady = true;
-        ambientlight.mute();
+        event.target.mute();
+        event.target.playVideo();
+        event.target.pauseVideo();
+        event.target.seekTo(0.0065, true);
     }
 
     function onPlayerStateChange(event) {
-        // if (!ambientReady) return;
-        console.log('Player state changed:', event.data);
+        if (!ambientReady) return;
+
         switch (event.data) {
             case YT.PlayerState.PLAYING:
             ambientlight.playVideo();
+            currentTime = player.getCurrentTime();
+            console.log(currentTime);
+            ambientlight.seekTo(currentTime+0.0065, true);           
             break;
             case YT.PlayerState.PAUSED:
             ambientlight.pauseVideo();
             break;
             case YT.PlayerState.ENDED:
-            ambientlight.seekTo(0);
+            ambientlight.seekTo(0, false);
             ambientlight.pauseVideo();
             break;
         }
@@ -449,14 +452,6 @@ function ambientInit() {
         if (!ambientlight) return;
         ambientlight.setPlaybackRate(player.getPlaybackRate());
     }
-
-    setInterval(function() {
-        if (!ambientlight) return;
-        var currentTime = player.getCurrentTime();
-        if (Math.abs(currentTime - ambientlight.getCurrentTime()) > 0.5) {
-            ambientlight.seekTo(currentTime, true);
-        }
-    }, 1000);
 }
 
 function initCustomJS() {

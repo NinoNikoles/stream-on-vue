@@ -1,25 +1,20 @@
-<template>
-    <template v-if="media">
+<template v-if="media">
 
         <!-- content -->
         <div class="info-popup" :id="id">
-            <div class="col12 pad-top-base pad-bottom-base">
-                <div class="col12 ambient-wrap pad-top-base pad-bottom-base">
+            <div class="col12 pad-top-base">
+                <div class="column ambient-wrap">
                     <figure v-if="media.trailer" class="widescreen ambient">
                         <div :id="`trailer-copy`" class="player-copy"></div>
                     </figure>
-                    <div class="innerWrap">
-                        <div class="col12 pad-left-base pad-right-base">
-                            <figure v-if="media.trailer" class="widescreen">
-                                <div :id="`${media.trailer}`" class="player"></div>
-                            </figure>
-                        </div>
-                    </div>
+                    <figure v-if="media.trailer" class="widescreen">
+                        <div :id="`${media.trailer}`" class="player"></div>
+                    </figure>
                 </div>
             </div>
 
             <div class="innerWrap">
-                <div class="col12 pad-left-base pad-right-base">
+                <div class="col12 marg-top-s">
                     <div class="col12">
                         <div class="col-9">
                             <!-- <p class="h2">{{ media.title }}</p> -->
@@ -117,10 +112,8 @@
                     </template>
                 </div>
             </div>
+
         </div>
-
-
-    </template>
 </template>
 
 <script>
