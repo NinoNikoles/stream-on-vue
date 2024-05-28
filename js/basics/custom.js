@@ -435,7 +435,6 @@ function ambientInit() {
             case YT.PlayerState.PLAYING:
             ambientlight.playVideo();
             currentTime = player.getCurrentTime();
-            console.log(currentTime);
             ambientlight.seekTo(currentTime+0.0065, true);           
             break;
             case YT.PlayerState.PAUSED:
