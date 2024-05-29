@@ -152,10 +152,16 @@ export default {
         },
         toggleMainMenu(event) {
             event.preventDefault();
-            var menuBtn = document.getElementById('menu-button');
+            const body = document.body;
             var scrollDiv = this.scrollDiv();
-            document.body.style.paddingRight = scrollDiv+'px';
-            document.body.classList.toggle('active-menu');
+            var menuBtn = document.getElementById('menu-button');
+
+            body.classList.toggle('active-menu');
+            if(body.classList.contains('active-menu')) {
+                body.style.paddingRight = scrollDiv+'px';
+            } else {
+                body.style.paddingRight = '';
+            }
             menuBtn.classList.toggle('active-button');
         },
         closeMainMenu() {
@@ -165,22 +171,29 @@ export default {
             menuBtn.classList.remove('active-button');
         },
         scrollDiv() {
-            return window.innerWidth - document.documentElement.clientWidth;
+            return window.innerWidth - document.body.clientWidth;
         },
         openPopUp(event, id) {
             event.preventDefault();
-            var modal = document.getElementById('media-content-modal');
-            var modalContent = document.getElementById('media-content');
-            var content = document.getElementById(id);
-
-            var clonedElement = content.cloneNode(true);
-            modalContent.appendChild(clonedElement);
+            const body = document.body;
+            const modal = document.getElementById('media-content-modal');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('media-content');
 
             var scrollDiv = this.scrollDiv();
-            document.body.style.paddingRight = scrollDiv+'px';          
+            var content = document.getElementById(id);
+            var clonedElement = content.cloneNode(true);
 
-            document.body.classList.add('active-modal');
+            // Copy content to modal
+            modalContent.appendChild(clonedElement);
+
+            // Add classes to show modal
+            body.classList.add('active-modal');
             modal.classList.add('active');
+
+            // Add scrollbar diff to body and modal
+            body.style.paddingRight = scrollDiv+'px';
+            modalOverlay.style.width = `calc(100% - ${scrollDiv}px)`;
         },
         async closePopUp(event, id) {
             event.preventDefault();
