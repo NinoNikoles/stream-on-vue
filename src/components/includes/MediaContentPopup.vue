@@ -2,13 +2,22 @@
 
         <!-- content -->
         <div class="info-popup" :id="id">
-            <div class="col12 pad-top-base">
-                <div class="column ambient-wrap">
-                    <figure v-if="media.trailer" class="widescreen ambient">
+            <div class="col12 column">
+                <div class="ambient-wrap" v-if="media.trailer">
+                    <figure class="widescreen ambient">
                         <div :id="`trailer-copy`" class="player-copy"></div>
                     </figure>
-                    <figure v-if="media.trailer" class="widescreen">
+                    <figure class="widescreen">
                         <div :id="`${media.trailer}`" class="player"></div>
+                    </figure>
+                </div>
+
+                <div class="ambient-wrap" v-else>
+                    <figure class="widescreen ambient">
+                        <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
+                    </figure>
+                    <figure class="widescreen">
+                        <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
                     </figure>
                 </div>
             </div>
@@ -17,7 +26,7 @@
                 <div class="col12 marg-top-s">
                     <div class="col12">
                         <div class="col-9">
-                            <!-- <p class="h2">{{ media.title }}</p> -->
+                            <p class="h2">{{ media.title }}</p>
                         </div>
 
                         <div class="col-3">
