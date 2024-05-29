@@ -9,11 +9,7 @@
     <div v-if="movie" class="pad-top-xl pad-bottom-l">
         <div class="innerWrap">
             <div class="col7">
-                <div v-if="isHighlight===null" class="col12">
-                    <div class="col9"><h1>{{ movie.title }}</h1></div>
-                    <div class="col3"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
-                </div>
-                <div v-else class="col12"><h1>{{ movie.title }}</h1></div>
+                <div class="col12"><h1>{{ movie.title }}</h1></div>
                 <div v-if="movie.tagline" class="col12">{{ movie.tagline }}</div>
                 <div class="col12"><p>{{ movie.overview }}</p></div>
                 <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
@@ -37,6 +33,7 @@
                 <div class="col12">
                     <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
                 </div>
+                <div v-if="isHighlight===null" class="col12"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add col12" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
 
                 <div class="row">
                     <div class="col6 column">
@@ -136,6 +133,34 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div :id="`edit-movie-infos`" style="display: none;">
+            <p v-html="langSnippet('edit')"></p>
+            <form onsubmit="return false;" class="innerWrap">
+                <div class="row">
+                    <!-- <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span> -->
+                    <div class="col12 column">
+                        <p>
+                            <span class="input-wrap">
+                                <label for="mTitle">{{ langSnippet('name') }}</label>
+                                <!-- <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required> -->
+                                <input type="text" id="mTitle" name="mTitle" required :value="movie.title">
+                            </span>
+                        </p>
+                        <p>
+                            <span class="input-wrap">
+                                <label for="mOverview">{{ langSnippet('overview') }}</label>
+                                <!-- <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required> -->
+                                <textarea type="text" id="mOverview" name="mOverview" required :value="movie.overview"></textarea>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <p class="text-right">
+                    <button @click="console.log('Kommt')" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
+                </p>
+            </form> 
         </div>
 
         <div id="media-browser" style="display: none;">
