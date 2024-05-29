@@ -175,7 +175,6 @@ export default {
             return scrollDiv;
         },
         scrollDiv(el) {
-            console.log(`${window.innerWidth} - ${el.clientWidth} = ${window.innerWidth - el.clientWidth}`);
             var scrollDiv = window.innerWidth - el.clientWidth;
             return scrollDiv;
         },
