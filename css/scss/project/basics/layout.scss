@@ -20,14 +20,6 @@ body.active-modal {
     overflow-y: hidden;
 }
 
-body {
-    &.active-modal {
-        @include MQ(xsmall) {
-            overflow-y: auto;
-        }
-    }
-}
-
 table,
 .table {
     table-layout: fixed;
