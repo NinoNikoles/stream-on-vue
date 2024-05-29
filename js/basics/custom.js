@@ -47,14 +47,18 @@ function domObserver() {
     // Zielknoten, dessen Struktur überwacht werden soll
     const ambientNode = document.getElementById('media-content');
 
+    const windowCallback = () => {
+        mobileBodyHeightFix();
+    }
     const ambientCallback = () => {
         ambientInit();
     }
     
-    observeDOMChanges(ambientNode, ambientCallback);  
+    observeDOMChanges(document.body, windowCallback);
+    observeDOMChanges(ambientNode, ambientCallback);
 }
 
-const resizeElementHeight = () => {
+function resizeElementHeight() {
     var loginWrap = document.getElementById('loginWrap');
     if (loginWrap) {
         const windowHeight = window.innerHeight;
@@ -74,29 +78,18 @@ const resizeElementHeight = () => {
     }
 };
 
-var mobileBodyHeightFix = function() {
+function mobileBodyHeightFix() {
     var body = document.body;
     var navMain = document.getElementById('navMain');
 
-    const observer = new MutationObserver((mutations) => {
-        // Überprüfen, ob sich die Klassen geändert haben
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
-                    const windowHeight = window.innerHeight;
-                    body.style.height = `${windowHeight}px`;
-                    if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
-                } else {
-                    body.style.height = '';
-                    if(navMain) navMain.style.height = '';
-                }
-            }
-        });
-    });
-    const config = { attributes: true };
-
-    // Observer starten und das Ziel-Element und die Konfiguration übergeben
-    observer.observe(body, config);
+    if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
+        const windowHeight = window.innerHeight;
+        body.style.height = `${windowHeight}px`;
+        if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
+    } else {
+        body.style.height = '';
+        if(navMain) navMain.style.height = '';
+    }
 }
 
 var checkPosition = function(e) {
