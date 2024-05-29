@@ -291,14 +291,16 @@ function formLabels() {
 function YTplayer() {
     var playerIframe = document.getElementById('player');
     var highlight = document.getElementById('highlight');
+    var playerRdy;
 
     if (playerIframe) {
         var videoID = playerIframe.getAttribute('data-trailer-id');
         const muteBtn = document.getElementById('player-btn');
+        playerRdy = false;
 
         const player = new YT.Player('player', {
-            height: '1920',
-            width: '1080',
+            height: '1080',
+            width: '1920',
             videoId: videoID,
             playerVars: {
                 'enablejsapi': 1,
@@ -318,21 +320,18 @@ function YTplayer() {
             }
         });
 
-        function startVideo() {
-            player.playVideo();
-        }
-
         function onPlayerReady(event) {
-            // player.mute();
-            if (event.data == null) {
-                setTimeout(function() {
-                    event.target.startVideo();
-                }, 1000);
-            }
+            playerRdy = true;
+            event.target.mute();
+            setTimeout(function() {
+                event.target.playVideo();
+            }, 1000);
         }
 
         var done = false;
         function onPlayerStateChange(event) {
+            if (!playerRdy) return;
+
             if (player.isMuted()) {
                 muteBtn.classList.remove('unmute');
                 muteBtn.classList.add('mute');
@@ -376,16 +375,19 @@ function ambientInit() {
 
     if (player && ambientlight) {
         var videoID = player.id;
-        var ambientReady;
-        ambientReady = false;
+        var ambientReady = false;
+        var playing = false;
 
         player = new YT.Player(player, {
-            height: '1920',
-            width: '1080',
+            height: '1080',
+            width: '1920',
             videoId: videoID,
             playerVars: {
                 'enablejsapi': 1,
-                'origin': origin
+                'origin': origin,
+                'modestbranding': 1,
+                'rel': 1,
+                'iv_load_policy': 3,
             },
             events: {
                 'onReady': onPlayerReady,
@@ -395,13 +397,16 @@ function ambientInit() {
         });
 
         ambientlight = new YT.Player(ambientlight, {
-            height: '1920',
-            width: '1080',
+            height: '360',
+            width: '640',
             videoId: videoID,
             playerVars: {
                 'enablejsapi': 1,
                 'mute': 1,
-                'origin': origin
+                'origin': origin,
+                'modestbranding': 0,
+                'rel': 1,
+                'iv_load_policy': 3,
             },
             events: {
                 'onReady': onCopyReady
@@ -421,21 +426,42 @@ function ambientInit() {
         event.target.seekTo(0.0065, true);
     }
 
+    function syncCopy() {
+        if (!ambientReady) return;
+        currentTime = player.getCurrentTime();
+        ambientlight.seekTo(currentTime+0.0065, true);
+    }
+
+    function playAmbient() {
+        if (!ambientReady) return;
+        if(playing) return;
+        ambientlight.playVideo();
+        playing = setInterval(function() {
+            currentTime = player.getCurrentTime();
+            ambientlight.seekTo(currentTime+0.0065, true);
+        }, 2000);
+    }
+
+
     function onPlayerStateChange(event) {
         if (!ambientReady) return;
 
         switch (event.data) {
             case YT.PlayerState.PLAYING:
-            ambientlight.playVideo();
-            currentTime = player.getCurrentTime();
-            ambientlight.seekTo(currentTime+0.0065, true);           
+                syncCopy();
+                playAmbient();
             break;
             case YT.PlayerState.PAUSED:
-            ambientlight.pauseVideo();
+                clearInterval(playing);
+                playing = false;
+                ambientlight.pauseVideo();
+                syncCopy();
             break;
             case YT.PlayerState.ENDED:
-            ambientlight.seekTo(0, false);
-            ambientlight.pauseVideo();
+                clearInterval(playing);
+                playing = false;
+                ambientlight.pauseVideo();
+                syncCopy();
             break;
         }
     }
