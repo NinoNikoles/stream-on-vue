@@ -153,14 +153,14 @@ export default {
         toggleMainMenu(event) {
             event.preventDefault();
             const body = document.body;
-            var scrollDiv = this.scrollDiv();
+            var bodyScrollWidth = this.bodyScrollDiv();
             var menuBtn = document.getElementById('menu-button');
-
             body.classList.toggle('active-menu');
-            if(body.classList.contains('active-menu')) {
-                body.style.paddingRight = scrollDiv+'px';
-            } else {
+
+            if(!body.classList.contains('active-menu')) {
                 body.style.paddingRight = '';
+            } else {
+                body.style.paddingRight = `${bodyScrollWidth}px`;
             }
             menuBtn.classList.toggle('active-button');
         },
@@ -170,17 +170,24 @@ export default {
             document.body.style.paddingRight = '';
             menuBtn.classList.remove('active-button');
         },
-        scrollDiv() {
-            return window.innerWidth - document.body.clientWidth;
+        bodyScrollDiv() {
+            var scrollDiv = window.innerWidth - document.documentElement.clientWidth;
+            return scrollDiv;
+        },
+        scrollDiv(el) {
+            console.log(`${window.innerWidth} - ${el.clientWidth} = ${window.innerWidth - el.clientWidth}`);
+            var scrollDiv = window.innerWidth - el.clientWidth;
+            return scrollDiv;
         },
         openPopUp(event, id) {
             event.preventDefault();
             const body = document.body;
             const modal = document.getElementById('media-content-modal');
+            const modalWrap = document.getElementById('modal-wrap');
             const modalOverlay = document.getElementById('modal-overlay');
             const modalContent = document.getElementById('media-content');
 
-            var scrollDiv = this.scrollDiv();
+            var bodyScrollWidth = this.bodyScrollDiv();
             var content = document.getElementById(id);
             var clonedElement = content.cloneNode(true);
 
@@ -191,8 +198,10 @@ export default {
             body.classList.add('active-modal');
             modal.classList.add('active');
 
+            var scrollDiv = this.scrollDiv(modalWrap);
+
             // Add scrollbar diff to body and modal
-            body.style.paddingRight = scrollDiv+'px';
+            body.style.paddingRight = `${bodyScrollWidth}px`;
             modalOverlay.style.width = `calc(100% - ${scrollDiv}px)`;
         },
         async closePopUp(event, id) {
