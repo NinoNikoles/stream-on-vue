@@ -101,6 +101,7 @@ nav.header-menu-main {
     margin-left: 0;
     padding-top: rem-calc(12/2);
     list-style-type: none;
+    overflow-y: auto;
     @include transitions(width $transition-default, min-width $transition-default);
 
     li {
