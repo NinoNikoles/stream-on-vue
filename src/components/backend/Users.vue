@@ -25,7 +25,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(user, index) in users" :key="index">
-                                <td class="desktop-only"><figure class="square rounded"><img src="" loading="lazy" alt=""></figure></td>
+                                <td class="desktop-only"><figure class="square rounded"><img :src="user.user_img" loading="lazy" alt=""></figure></td>
                                 <td>{{ user.username }}</td>
 
                                 <td class="desktop-only" v-if="user.role === 'superadmin'">Super Admin</td>
@@ -337,13 +337,9 @@ export default {
             }
         },
     },
-    mounted() {
-        this.fetchSessionStatus()
-        .then(() => {
-            this.getUsers().then(users => {
-                this.users = users;
-            });
-        });        
+    async mounted() {
+        await this.fetchSessionStatus();
+        this.users = await this.getUsers();    
     }
 };
 </script>
