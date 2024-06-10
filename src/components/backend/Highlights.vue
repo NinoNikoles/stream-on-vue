@@ -1,11 +1,15 @@
 <template>
-    <div class="innerWrap pad-top-xl pad-bottom-xl">
-        <div class="col12">
-            <div class="col12">
-                <h1>{{ langSnippet('highlights') }}</h1>
-            </div>
+    <div class="col12 display-flex backend-wrap">
 
-            <div class="col12">
+        <backend-menu></backend-menu>
+
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap">
+                <div class="col12">
+                    <h1>{{ langSnippet('highlights') }}</h1>
+                </div>
+            
+                <div class="col12">
 
                     <table class="table rounded marg-no" v-if="highlights">
                         <thead>
@@ -15,7 +19,6 @@
                             <th>{{ langSnippet('remove') }}</th>
                         </thead>
                         <tbody>
-                            
                             <tr v-for="(highlight, index) in highlights" :key="index">
                                 <td class="desktop-only"><figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy"></figure></td>
                                 <td><a :href="`/backend/movie/${highlight.highlight_id}`" :title="`${highlight.title}`" class="marg-no dark">{{ highlight.title }}</a></td>
@@ -34,7 +37,10 @@
                             </tr>
                         </tbody>
                     </table>
+
                     <p class="marg-no" v-else>{{ langSnippet('no_highlights_available')}}</p>
+
+                </div>
             </div>
         </div>
     </div>    
@@ -45,10 +51,14 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendGenre',
     mixins: [tmdbAPI, langSnippet, mainFunctions],
+    components: {
+        'backend-menu': BackendMenu,
+    },
     data() {
         return {
             highlights: null,

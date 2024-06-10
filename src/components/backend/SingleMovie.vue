@@ -6,167 +6,172 @@
         </div>
     </div>
 
-    <div v-if="movie" class="pad-top-xl pad-bottom-l">
-        <div class="innerWrap">
-            <div class="col7">
-                <div class="col12"><h1>{{ movie.title }}</h1></div>
-                <div v-if="movie.tagline" class="col12">{{ movie.tagline }}</div>
-                <div class="col12"><p>{{ movie.overview }}</p></div>
-                <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
-                <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ movie.release_date }}</p></div>
-                <div class="col4"><p><strong>{{ langSnippet('runtime') }}:</strong><br>{{ runtime(movie.runtime) }}</p></div>
+    <div class="col12 display-flex backend-wrap">
+
+        <backend-menu></backend-menu>
+
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap" v-if="movie">
+                <div class="col7">
+                    <div class="col12"><h1>{{ movie.title }}</h1></div>
+                    <div v-if="movie.tagline" class="col12">{{ movie.tagline }}</div>
+                    <div class="col12"><p>{{ movie.overview }}</p></div>
+                    <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
+                    <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ movie.release_date }}</p></div>
+                    <div class="col4"><p><strong>{{ langSnippet('runtime') }}:</strong><br>{{ runtime(movie.runtime) }}</p></div>
+                    <div class="col12">
+                        <p><strong>{{ langSnippet('genres') }}:</strong><br>
+                            <span v-for="(listGenre, index) in genre" :key="index" class="tag">
+                                {{ listGenre }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+ 
+                <div class="col3 marg-left-col1">
+                    <div class="col12" v-if="movie.file_path">
+                        <figure class="widescreen">
+                            <video :src="`${this.$mainURL}:8080/${this.movie.file_path.replace('/public/', '')}`" controls></video>
+                        </figure>
+                    </div>
+                    <div class="col12">
+                        <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
+                    </div>
+                    <div v-if="isHighlight===null" class="col12"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add col12" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
+
+                    <div class="row">
+                        <div class="col6 column">
+                            <a href="#movie-poster" data-fancybox data-src="#movie-poster">
+                                <figure class="poster">
+                                    <img :src="$loadImg(movie.poster)" loading="lazy" alt="" id="mainPoster">
+                                </figure>
+                            </a>
+                            <div id="movie-poster" style="display:none;">
+                                <p>{{ langSnippet('select_new_poster') }}:</p>
+                                <div v-if="allPosters" class="row">
+                                    <div v-for="(poster, index) in allPosters" :key="index" class="col-6 col-3-medium column marg-bottom-base">
+                                        <div class="poster-select">
+                                            <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster.file_path}`">
+                                            <figure class="poster">
+                                                <img :src="$loadImg(poster.file_path)" loading="lazy" alt="">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-right">
+                                    <button @click="savePoster()" class="btn btn-success" name="change-poster">{{ langSnippet('save') }}</button>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col6 column">
+                            <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
+                                <figure class="widescreen">
+                                    <img :src="$loadImg(movie.backdrop)" loading="lazy" alt="" id="mainBackdrop">
+                                </figure>
+                            </a>
+                            <div id="movie-backdrop" style="display:none;">
+                                <p>{{ langSnippet('select_new_backdrop') }}:</p>
+                                <div v-if="allBackdrops" class="row">
+                                    <div v-for="(backdrop, index) in allBackdrops" :key="index" class="col-6 col-3-medium column marg-bottom-base">
+                                        <div class="poster-select">
+                                            <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop.file_path}`">
+                                            <figure class="original">
+                                                <img :src="$loadImg(backdrop.file_path)" loading="lazy" alt="">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-right">
+                                    <button @click="saveBackdrop()" class="btn btn-success" name="change-backdrop">{{ langSnippet('save') }}</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="innerWrap marg-top-xl" v-if="collection.length > 0">
                 <div class="col12">
-                    <p><strong>{{ langSnippet('genres') }}:</strong><br>
-                        <span v-for="(listGenre, index) in genre" :key="index" class="tag">
-                            {{ listGenre }}
-                        </span>
+                    <h2>Kollektion</h2>
+
+                    <div class="grid-row">
+                        <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
+                            <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card-wrap">
+                                <figure class="media-card poster rounded">
+                                    <img :src="$loadImg(kMovie.poster_path)" loading="lazy" :alt="`${kMovie.title}`">
+                                </figure>
+                                <span class="title">{{ $truncate(kMovie.title, 15) }}</span>
+                            </a>
+
+                            <div :id="`add-movie-${kMovie.id}`" style="display:none;">
+                                <p v-html="langSnippet('add_movie_to_library', kMovie.title)"></p>
+                                <p class="text-right marg-no">
+                                    <button class="btn btn-success icon-left icon-add" :data-media="`${kMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(kMovie)">{{ langSnippet('add') }}</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="innerWrap marg-top-xl" v-if="similarMovies.length > 0">
+                <div class="col12">
+                    <h2>Ähnliche</h2>
+
+                    <div class="grid-row">
+                        <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
+                            <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card-wrap">
+                                <figure class="media-card poster rounded">
+                                    <img :src="$loadImg(sMovie.poster_path)" loading="lazy" :alt="`${sMovie.title}`">
+                                </figure>
+                                <span class="title">{{ $truncate(sMovie.title, 15) }}</span>
+                            </a>
+
+                            <div :id="`add-movie-${sMovie.id}`" style="display:none;">
+                                <p v-html="langSnippet('add_movie_to_library', sMovie.title)"></p>
+                                <p class="text-right marg-no">
+                                    <button class="btn btn-success icon-left icon-add" :data-media="`${sMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(sMovie)">{{ langSnippet('add') }}</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--  <div :id="`edit-movie-infos`" style="display: none;">
+                <p v-html="langSnippet('edit')"></p>
+                <form onsubmit="return false;" class="innerWrap">
+                    <div class="row">
+                        <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span>
+                        <div class="col12 column">
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="mTitle">{{ langSnippet('name') }}</label>
+                                    <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required>
+                                    <input type="text" id="mTitle" name="mTitle" required :value="movie.title">
+                                </span>
+                            </p>
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="mOverview">{{ langSnippet('overview') }}</label>
+                                    <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required>
+                                    <textarea type="text" id="mOverview" name="mOverview" required :value="movie.overview"></textarea>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-right">
+                        <button @click="console.log('Kommt')" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
                     </p>
-                </div>
-            </div>
-  
-            <div class="col3 marg-left-col1">
-                <div class="col12" v-if="movie.file_path">
-                    <figure class="widescreen">
-                        <video :src="`${this.$mainURL}:8080/${this.movie.file_path.replace('/public/', '')}`" controls></video>
-                    </figure>
-                </div>
-                <div class="col12">
-                    <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
-                </div>
-                <div v-if="isHighlight===null" class="col12"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add col12" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
+                </form> 
+            </div> -->
 
+            <div id="media-browser" style="display: none;" v-if="movie">
                 <div class="row">
-                    <div class="col6 column">
-                        <a href="#movie-poster" data-fancybox data-src="#movie-poster">
-                            <figure class="poster">
-                                <img :src="$loadImg(movie.poster)" loading="lazy" alt="" id="mainPoster">
-                            </figure>
-                        </a>
-                        <div id="movie-poster" style="display:none;">
-                            <p>{{ langSnippet('select_new_poster') }}:</p>
-                            <div v-if="allPosters" class="row">
-                                <div v-for="(poster, index) in allPosters" :key="index" class="col-6 col-3-medium column marg-bottom-base">
-                                    <div class="poster-select">
-                                        <input type="radio" :id="`poster-${index}`" name="poster" :value="`${poster.file_path}`">
-                                        <figure class="poster">
-                                            <img :src="$loadImg(poster.file_path)" loading="lazy" alt="">
-                                        </figure>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-right">
-                                <button @click="savePoster()" class="btn btn-success" name="change-poster">{{ langSnippet('save') }}</button>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col6 column">
-                        <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
-                            <figure class="widescreen">
-                                <img :src="$loadImg(movie.backdrop)" loading="lazy" alt="" id="mainBackdrop">
-                            </figure>
-                        </a>
-                        <div id="movie-backdrop" style="display:none;">
-                            <p>{{ langSnippet('select_new_backdrop') }}:</p>
-                            <div v-if="allBackdrops" class="row">
-                                <div v-for="(backdrop, index) in allBackdrops" :key="index" class="col-6 col-3-medium column marg-bottom-base">
-                                    <div class="poster-select">
-                                        <input type="radio" :id="`backdrop-${index}`" name="backdrop" :value="`${backdrop.file_path}`">
-                                        <figure class="original">
-                                            <img :src="$loadImg(backdrop.file_path)" loading="lazy" alt="">
-                                        </figure>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-right">
-                                <button @click="saveBackdrop()" class="btn btn-success" name="change-backdrop">{{ langSnippet('save') }}</button>
-                            </p>
-                        </div>
-                    </div>
+                    <div class="innerWrap"><div class="col12"><p class="h4">{{langSnippet('select_a_video_file')}}:</p></div></div>
+                    <media-browser-component :selectedMedia="movie.file_path"></media-browser-component>
                 </div>
-            </div>
-        </div>
-
-        <div class="innerWrap marg-top-xl" v-if="collection.length > 0">
-            <div class="col12">
-                <h2>Kollektion</h2>
-
-                <div class="grid-row">
-                    <div v-for="(kMovie, index) in collection" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
-                        <a :href="`#add-movie-${kMovie.id}`" :title="`${kMovie.title}`" data-fancybox class="media-card-wrap">
-                            <figure class="media-card poster rounded">
-                                <img :src="$loadImg(kMovie.poster_path)" loading="lazy" :alt="`${kMovie.title}`">
-                            </figure>
-                            <span class="title">{{ $truncate(kMovie.title, 15) }}</span>
-                        </a>
-
-                        <div :id="`add-movie-${kMovie.id}`" style="display:none;">
-                            <p v-html="langSnippet('add_movie_to_library', kMovie.title)"></p>
-                            <p class="text-right marg-no">
-                                <button class="btn btn-success icon-left icon-add" :data-media="`${kMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(kMovie)">{{ langSnippet('add') }}</button>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="innerWrap marg-top-xl" v-if="similarMovies.length > 0">
-            <div class="col12">
-                <h2>Ähnliche</h2>
-
-                <div class="grid-row">
-                    <div v-for="(sMovie, index) in similarMovies" :key="index" class="col-6 col-3-xsmall col-2-medium grid-padding">
-                        <a :href="`#add-movie-${sMovie.id}`" :title="`${sMovie.title}`" data-fancybox class="media-card-wrap">
-                            <figure class="media-card poster rounded">
-                                <img :src="$loadImg(sMovie.poster_path)" loading="lazy" :alt="`${sMovie.title}`">
-                            </figure>
-                            <span class="title">{{ $truncate(sMovie.title, 15) }}</span>
-                        </a>
-
-                        <div :id="`add-movie-${sMovie.id}`" style="display:none;">
-                            <p v-html="langSnippet('add_movie_to_library', sMovie.title)"></p>
-                            <p class="text-right marg-no">
-                                <button class="btn btn-success icon-left icon-add" :data-media="`${sMovie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(sMovie)">{{ langSnippet('add') }}</button>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div :id="`edit-movie-infos`" style="display: none;">
-            <p v-html="langSnippet('edit')"></p>
-            <form onsubmit="return false;" class="innerWrap">
-                <div class="row">
-                    <!-- <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span> -->
-                    <div class="col12 column">
-                        <p>
-                            <span class="input-wrap">
-                                <label for="mTitle">{{ langSnippet('name') }}</label>
-                                <!-- <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required> -->
-                                <input type="text" id="mTitle" name="mTitle" required :value="movie.title">
-                            </span>
-                        </p>
-                        <p>
-                            <span class="input-wrap">
-                                <label for="mOverview">{{ langSnippet('overview') }}</label>
-                                <!-- <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required> -->
-                                <textarea type="text" id="mOverview" name="mOverview" required :value="movie.overview"></textarea>
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <p class="text-right">
-                    <button @click="console.log('Kommt')" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
-                </p>
-            </form> 
-        </div>
-
-        <div id="media-browser" style="display: none;">
-            <div class="row">
-                <div class="innerWrap"><div class="col12"><p class="h4">{{langSnippet('select_a_video_file')}}:</p></div></div>
-                <media-browser-component :selectedMedia="movie.file_path"></media-browser-component>
             </div>
         </div>
     </div>    
@@ -174,16 +179,18 @@
 
 <script>
 import axios from 'axios';
-import tmdbAPI from '../mixins/tmdbAPI.vue';
-import langSnippet from '../mixins/language.vue';
-import functions from '../mixins/functions.vue';
-import Mediabrowser from '../Mediabrowser.vue';
+import tmdbAPI from './../mixins/tmdbAPI.vue';
+import langSnippet from './../mixins/language.vue';
+import functions from './../mixins/functions.vue';
+import Mediabrowser from './../MediaBrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendMovie',
     mixins: [tmdbAPI, langSnippet, functions],
     components: {
+        'backend-menu': BackendMenu,
         'media-browser-component': Mediabrowser,
     },
     data() {
@@ -347,65 +354,65 @@ export default {
                 console.log(err);
             }
         },
-        async saveData(data) {
-            document.getElementById('loader').classList.remove('hidden');
+        // async saveData(data) {
+        //     document.getElementById('loader').classList.remove('hidden');
             
-            const movie = await this.searchMovieByID(data.id);
-            const genres = movie.genres.map(genre => genre.id);
+        //     const movie = await this.searchMovieByID(data.id);
+        //     const genres = movie.genres.map(genre => genre.id);
 
-            let date = movie.release_date;
-            let parsedDate = '';
+        //     let date = movie.release_date;
+        //     let parsedDate = '';
 
-            if ( date != '' ) {
-                parsedDate = new Date(date);
+        //     if ( date != '' ) {
+        //         parsedDate = new Date(date);
  
                 
-            } else {
-                parsedDate = new Date();
-            }
+        //     } else {
+        //         parsedDate = new Date();
+        //     }
 
-            let day = parsedDate.getDate();
-            let month = parsedDate.getMonth() + 1;
-            let year = parsedDate.getFullYear();
-            let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
-            var collection = null;
-            var trailer = null;
+        //     let day = parsedDate.getDate();
+        //     let month = parsedDate.getMonth() + 1;
+        //     let year = parsedDate.getFullYear();
+        //     let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
+        //     var collection = null;
+        //     var trailer = null;
 
-            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
-                collection = movie.belongs_to_collection.id;
-            } else {
-                collection = null;
-            }
-            if ( movie.videos.results.length > 0 ) trailer = movie.videos.results[0].key;
+        //     if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
+        //         collection = movie.belongs_to_collection.id;
+        //     } else {
+        //         collection = null;
+        //     }
+        //     if ( movie.videos.results.length > 0 ) trailer = movie.videos.results[0].key;
 
-            var media = {
-                tmdbID: movie.id,
-                title: movie.title,
-                tagline: movie.tagline,
-                genres: JSON.stringify(genres),
-                overview: movie.overview,
-                poster: movie.poster_path,
-                backdrop: movie.backdrop_path,
-                collection: collection,
-                runtime: movie.runtime,
-                rating: movie.vote_average.toFixed(2),
-                release_date: formattedDate,
-                media_type: "movie",
-                trailer: trailer,
-                created: new Date()
-            }
+        //     var media = {
+        //         tmdbID: movie.id,
+        //         title: movie.title,
+        //         tagline: movie.tagline,
+        //         genres: JSON.stringify(genres),
+        //         overview: movie.overview,
+        //         poster: movie.poster_path,
+        //         backdrop: movie.backdrop_path,
+        //         collection: collection,
+        //         runtime: movie.runtime,
+        //         rating: movie.vote_average.toFixed(2),
+        //         release_date: formattedDate,
+        //         media_type: "movie",
+        //         trailer: trailer,
+        //         created: new Date()
+        //     }
 
-            try {
-                await this.sendMedia(media);
-            } catch (err) {
-                console.log(err);
-            }
+        //     try {
+        //         await this.sendMedia(media);
+        //     } catch (err) {
+        //         console.log(err);
+        //     }
             
-            this.returnCollectionMovies(this.movie.collection);
-            this.returnSimilarMovies(this.$route.params.id).then(() => {
-                document.getElementById('loader').classList.add('hidden');
-            });
-        },
+        //     this.returnCollectionMovies(this.movie.collection);
+        //     this.returnSimilarMovies(this.$route.params.id).then(() => {
+        //         document.getElementById('loader').classList.add('hidden');
+        //     });
+        // },
         async sendMedia(media) {
             axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
         },
@@ -426,9 +433,7 @@ export default {
             await this.getGenre(genres);
             await this.returnCollectionMovies(collection);
             await this.returnSimilarMovies(movieID);
-            await this.checkForHighlight().then(isTrue => {
-                this.isHighlight = isTrue;
-            });
+            this.isHighlight = await this.checkForHighlight();
         });
     }
         

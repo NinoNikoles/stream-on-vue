@@ -6,74 +6,79 @@
         </div>
     </div>
 
-    <div v-if="show" class="pad-top-xl pad-bottom-xl">
-        <div class="innerWrap">
-            <div class="col7">
-                <div class="col12"><h1>{{ show.title }}</h1></div>
-                <div class="col12"><p>{{ show.overview }}</p></div>
-                <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ show.rating }}</p></div>
-                <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ show.release_date }}</p></div>
-                <div class="col12">
-                    <p><strong>{{ langSnippet('genres') }}:</strong><br>
-                        <span v-for="(listGenre, index) in genre" :key="index" class="tag">
-                            {{ listGenre }}
-                        </span>
+    <div class="col12 display-flex backend-wrap">
+
+        <backend-menu></backend-menu>
+
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap" v-if="show">
+                <div class="col7">
+                    <div class="col12"><h1>{{ show.title }}</h1></div>
+                    <div class="col12"><p>{{ show.overview }}</p></div>
+                    <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ show.rating }}</p></div>
+                    <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ show.release_date }}</p></div>
+                    <div class="col12">
+                        <p><strong>{{ langSnippet('genres') }}:</strong><br>
+                            <span v-for="(listGenre, index) in genre" :key="index" class="tag">
+                                {{ listGenre }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col5">
+                    <p class="text-right">
+                        <button href="#deleteShow" data-fancybox class="btn btn-small btn-alert icon-left icon-trash" >{{ langSnippet('delete')  }}</button>
                     </p>
                 </div>
-            </div>
 
-            <div class="col5">
-                <p class="text-right">
-                    <button href="#deleteShow" data-fancybox class="btn btn-small btn-alert icon-left icon-trash" >{{ langSnippet('delete')  }}</button>
-                </p>
-            </div>
+                <div class="col12 marg-top-s" v-if="seasons">
+                    <ul class="tabs" data-tabs id="season-tabs">
+                        <li v-for="(season, index) in seasons" :key="index" class="tabs-title">
+                            <a :href="`#season-${season.season_number}`" :data-tab-id="`season-${season.season_number}`">{{season.title}}</a>
+                        </li>
+                    </ul>
+                    <div class="tabs-content" data-tabs-content="season-tabs">
+                        <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
+                            <div class="col12 text-right">
+                                <p>
+                                    <button :href="`#deleteSeason-${season.season_number}`" data-fancybox class="btn btn-small btn-alert icon-left icon-trash marg-bottom-no">{{ langSnippet('delete') }}</button>
+                                </p>
+                            </div>
+                            <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col-6-xxsmall col-4-medium">
+                                <figure class="widescreen disabled" v-if="episode.file_path === null">
+                                    <img :src="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
+                                </figure>
+                                <figure class="widescreen" v-else>
+                                    <img :src="$loadImg(media.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
+                                </figure>
+                                <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
+                                <button href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
+                            </div>
 
-            <div class="col12 marg-top-s" v-if="seasons">
-                <ul class="tabs" data-tabs id="season-tabs">
-                    <li v-for="(season, index) in seasons" :key="index" class="tabs-title">
-                        <a :href="`#season-${season.season_number}`" :data-tab-id="`season-${season.season_number}`">{{season.title}}</a>
-                    </li>
-                </ul>
-                <div class="tabs-content" data-tabs-content="season-tabs">
-                    <div v-for="(season, index) in seasons" :key="index" class="tabs-panel" :id="`season-${season.season_number}`">
-                        <div class="col12 text-right">
-                            <p>
-                                <button :href="`#deleteSeason-${season.season_number}`" data-fancybox class="btn btn-small btn-alert icon-left icon-trash marg-bottom-no">{{ langSnippet('delete') }}</button>
-                            </p>
-                        </div>
-                        <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col-6-xxsmall col-4-medium">
-                            <figure class="widescreen disabled" v-if="episode.file_path === null">
-                                <img :src="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
-                            </figure>
-                            <figure class="widescreen" v-else>
-                                <img :src="$loadImg(media.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
-                            </figure>
-                            <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
-                            <button href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
-                        </div>
-
-                        <div :id="`deleteSeason-${season.season_number}`" style="display: none;">
-                            <p>Delete Season?</p>
-                            <p class="text-right marg-no">
-                                <button @click="deleteSeason(season.season_number)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
-                            </p>
+                            <div :id="`deleteSeason-${season.season_number}`" style="display: none;">
+                                <p>Delete Season?</p>
+                                <p class="text-right marg-no">
+                                    <button @click="deleteSeason(season.season_number)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="media-browser" style="display: none;">
-            <div class="row">
-                <media-browser-component></media-browser-component>
+            <div id="media-browser" style="display: none;">
+                <div class="row">
+                    <media-browser-component></media-browser-component>
+                </div>
             </div>
-        </div>
 
-        <div id="deleteShow" style="display: none;">
-            <p>Delete Show?</p>
-            <p class="text-right marg-no">
-                <button @click="deleteShow()" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
-            </p>
+            <div id="deleteShow" style="display: none;">
+                <p>Delete Show?</p>
+                <p class="text-right marg-no">
+                    <button @click="deleteShow()" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+                </p>
+            </div>
         </div>
     </div>   
 </template>
@@ -83,13 +88,15 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
-import Mediabrowser from '../Mediabrowser.vue';
+import Mediabrowser from '../MediaBrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendShow',
     mixins: [functions, tmdbAPI, language],
     components: {
+        'backend-menu': BackendMenu,
         'media-browser-component': Mediabrowser,
     },
     data() {

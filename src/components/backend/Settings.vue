@@ -1,93 +1,103 @@
 <template>
-    <div class="innerWrap pad-top-xl pad-bottom-l">
-        <div class="col12">
-            <div class="col12 marg-bottom-xs">
-                <h1>{{ langSnippet('settings') }}</h1>
-            </div>
+    <div class="col12 display-flex backend-wrap">
 
-            <div class="col12">
-                <form class="row" onsubmit="return false;">
+        <backend-menu></backend-menu>
+        
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap">
+                <div class="col12 marg-bottom-xs">
+                    <h1>{{ langSnippet('settings') }}</h1>
+                </div>
 
-                    <div class="col6 column">
-                        <div class="col12 field-wrap">
-                            <p>
-                                <span class="input-wrap input-select">
-                                    <label for="language" data-form="select">{{ langSnippet('language') }} (API)</label>
-                                    <select v-model="language" id="language">
-                                        <option value="de-DE">Deutsch</option>
-                                        <option value="en-US">English</option>
-                                    </select>
-                                </span>
-                            </p>
-                            <hr>
+                <div class="col12">
+                    <form class="row" onsubmit="return false;">
+
+                        <div class="col6 column">
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap input-select">
+                                        <label for="language" data-form="select">{{ langSnippet('language') }} (API)</label>
+                                        <select v-model="language" id="language">
+                                            <option value="de-DE">Deutsch</option>
+                                            <option value="en-US">English</option>
+                                        </select>
+                                    </span>
+                                </p>
+                                <hr>
+                            </div>
+
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap">
+                                        <label for="site_title">{{ langSnippet('page_title') }}</label>
+                                        <input type="text" v-model="title" id="site_title" required>
+                                    </span>
+                                    <span v-if="titleError" class="text-alert italic column marg-top-xxs">{{ titleError }}</span>
+                                </p>
+                                <hr>
+                            </div>
+
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap">
+                                        <label for="apikey">{{ langSnippet('api_key') }}</label>
+                                        <input type="text" v-model="apikey" id="apikey" required>
+                                    </span>
+                                    <span v-if="keyError" class="text-alert italic column marg-top-xxs">{{ keyError }}</span>
+                                </p>
+                            </div>
+
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="column smaller" v-html="langSnippet('apikey_info')"></span>
+                                </p>
+                                <hr class="mobile-only">
+                            </div>
                         </div>
 
-                        <div class="col12 field-wrap">
-                            <p>
-                                <span class="input-wrap">
-                                    <label for="site_title">{{ langSnippet('page_title') }}</label>
-                                    <input type="text" v-model="title" id="site_title" required>
-                                </span>
-                                <span v-if="titleError" class="text-alert italic column marg-top-xxs">{{ titleError }}</span>
-                            </p>
-                            <hr>
-                        </div>
+                        <div class="col5 column marg-left-col1">
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <label for="enable-edit">{{ langSnippet('enable_edit_btn') }}
+                                        <input type="checkbox" id="enable-edit" v-model="edit">
+                                    </label>
+                                </p>
+                                <hr>
+                            </div>
 
-                        <div class="col12 field-wrap">
-                            <p>
-                                <span class="input-wrap">
-                                    <label for="apikey">{{ langSnippet('api_key') }}</label>
-                                    <input type="text" v-model="apikey" id="apikey" required>
-                                </span>
-                                <span v-if="keyError" class="text-alert italic column marg-top-xxs">{{ keyError }}</span>
-                            </p>
-                        </div>
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <label for="design">{{ langSnippet('round_design') }}
+                                        <input type="checkbox" id="design" v-model="design">
+                                    </label>
+                                </p>
+                            </div>
 
-                        <div class="col12 field-wrap">
-                            <p>
-                                <span class="column smaller" v-html="langSnippet('apikey_info')"></span>
-                            </p>
-                            <hr class="mobile-only">
+                            <div class="col12 text-right marg-top-base field-wrap">
+                                <button type="submit" @click="saveData($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">{{ langSnippet('save') }}</button>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="col5 column marg-left-col1">
-                        <div class="col12 field-wrap">
-                            <p>
-                                <label for="enable-edit">{{ langSnippet('enable_edit_btn') }}
-                                    <input type="checkbox" id="enable-edit" v-model="edit">
-                                </label>
-                            </p>
-                            <hr>
-                        </div>
-
-                        <div class="col12 field-wrap">
-                            <p>
-                                <label for="design">{{ langSnippet('round_design') }}
-                                    <input type="checkbox" id="design" v-model="design">
-                                </label>
-                            </p>
-                        </div>
-
-                        <div class="col12 text-right marg-top-base field-wrap">
-                            <button type="submit" @click="saveData($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">{{ langSnippet('save') }}</button>
-                        </div>
-                    </div>
-                    
-                </form>
+                        
+                    </form>
+                </div>
             </div>
         </div>
-    </div>    
+
+    </div>
 </template>
 
 <script>
 import tmdbAPI from './../mixins/tmdbAPI.vue';
 import langSnippet from './../mixins/language.vue';
 import functions from './../mixins/functions.vue';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendMovie',
     mixins: [tmdbAPI,langSnippet, functions],
+    components: {
+        'backend-menu': BackendMenu,
+    },
     data() {
         return {
             settings: null,

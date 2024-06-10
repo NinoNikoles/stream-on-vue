@@ -6,51 +6,56 @@
         </div>
     </div>
 
-    <div class="innerWrap pad-top-xl pad-bottom-l">
-        <div class="col12">
-            <div class="col12">
-                <h1>{{ langSnippet('shows') }}</h1>
-            </div>
+    <div class="col12 display-flex backend-wrap">
 
-            <div v-if="genreAvailable" class="col12">
-                <div id="searchbar">
-                    <label for="show-api-search">
-                        <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" :placeholder="langSnippet('search')+` ...`" required>
-                    </label>
+        <backend-menu></backend-menu>
 
-                    <div v-if="shows" id="showsearchResults">
-                        <a v-for="(show, index) in shows" :key="index" :href="`#add-show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox>
-                            <figure class="poster" style="width:20%;max-width:100px;">
-                                <img :src="$loadImg(show.poster_path)" loading="lazy" :alt="`${show.name}`">
-                            </figure>
-                            <span class="pad-xs" style="width:80%;">{{ show.name }}</span>
-
-                            <div :id="`add-show-${show.id}`" style="display:none;">
-                                <p>Möchtest du {{ show.title}} hinzufügen?</p>
-                                <p class="text-right">
-                                    <button class="btn btn-success icon-left icon-add" :data-media="`${show.id}`" data-fancybox-close type="submit" name="add-show" @click="saveData(show)">{{ langSnippet('add') }}</button>
-                                </p>
-                            </div>
-                        </a>                        
-                    </div>
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap">
+                <div class="col12">
+                    <h1>{{ langSnippet('shows') }}</h1>
                 </div>
 
-                <div v-if="outputShows" class="col12 marg-top-m">
-                    <div class="grid-row">
-                        <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
-                            <router-link :to="`/backend/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card-wrap">
-                                <figure class="media-card poster rounded">
-                                    <img :src="$loadImg(show.poster)" loading="lazy" :alt="`${show.title}`">
+                <div v-if="genreAvailable" class="col12">
+                    <div id="searchbar">
+                        <label for="show-api-search">
+                            <input v-model="inputText" @input="handleInputChange" type="text" id="show-api-search" name="show-name" :placeholder="langSnippet('search')+` ...`" required>
+                        </label>
+
+                        <div v-if="shows" id="showsearchResults">
+                            <a v-for="(show, index) in shows" :key="index" :href="`#add-show-${show.id}`" class="display-flex flex-row marg-no" data-fancybox>
+                                <figure class="poster" style="width:20%;max-width:100px;">
+                                    <img :src="$loadImg(show.poster_path)" loading="lazy" :alt="`${show.name}`">
                                 </figure>
-                                <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
-                            </router-link>
+                                <span class="pad-xs" style="width:80%;">{{ show.name }}</span>
+
+                                <div :id="`add-show-${show.id}`" style="display:none;">
+                                    <p>Möchtest du {{ show.title}} hinzufügen?</p>
+                                    <p class="text-right">
+                                        <button class="btn btn-success icon-left icon-add" :data-media="`${show.id}`" data-fancybox-close type="submit" name="add-show" @click="saveData(show)">{{ langSnippet('add') }}</button>
+                                    </p>
+                                </div>
+                            </a>                        
+                        </div>
+                    </div>
+
+                    <div v-if="outputShows" class="col12 marg-top-m">
+                        <div class="grid-row">
+                            <div v-for="(show, index) in outputShows" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
+                                <router-link :to="`/b/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card-wrap">
+                                    <figure class="media-card poster rounded">
+                                        <img :src="$loadImg(show.poster)" loading="lazy" :alt="`${show.title}`">
+                                    </figure>
+                                    <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
+                                </router-link>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div v-else class="col12 marg-bottom-m">
-                <p>Please setup Genre</p>
+                <div v-else class="col12 marg-bottom-m">
+                    <p>Please setup Genre</p>
+                </div>
             </div>
         </div>
     </div>    
@@ -61,10 +66,14 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendShows',
     mixins: [functions, tmdbAPI, language],
+    components: {
+        'backend-menu': BackendMenu,
+    },
     data() {
         return {
             inputText: '',

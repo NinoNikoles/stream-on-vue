@@ -1,39 +1,48 @@
 <template>
-    <div class="innerWrap pad-top-xl pad-bottom-xl">
-        <div class="col12">
-            <div class="col12">
-                <h1>Genre</h1>
-            </div>
+    <div class="col12 display-flex backend-wrap" style="flex-direction: row; flex-wrap: nowrap;">
 
-            <div class="col12">
-                <table class="rounded marg-no" v-if="genre">
-                    <thead>
-                        <th class="desktop-only">ID</th>
-                        <th>TMDB ID</th>
-                        <th>Name</th>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(listGenre, index) in genre" :key="index">
-                            <td class="desktop-only">{{ listGenre.id }}</td>
-                            <td>{{ listGenre.genre_id}}</td>
-                            <td>{{ listGenre.genre_name }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre" v-else>Add</button>
+        <backend-menu></backend-menu>
+
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap">
+                <div class="col12">
+                    <h1>Genre</h1>
+                </div>
+
+                <div class="col12">
+                    <table class="rounded marg-no" v-if="genre">
+                        <thead>
+                            <th class="desktop-only">ID</th>
+                            <th>TMDB ID</th>
+                            <th>Name</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(listGenre, index) in genre" :key="index">
+                                <td class="desktop-only">{{ listGenre.id }}</td>
+                                <td>{{ listGenre.genre_id}}</td>
+                                <td>{{ listGenre.genre_name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre" v-else>Add</button>
+                </div>
             </div>
         </div>
-    </div>    
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import mainFunctions from '../mixins/functions.vue';
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendGenre',
     mixins: [tmdbAPI, mainFunctions],
+    components: {
+        'backend-menu': BackendMenu,
+    },
     data() {
         return {
             genre: null,

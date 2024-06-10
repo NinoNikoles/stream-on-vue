@@ -1,135 +1,142 @@
 <template>
-    <div class="innerWrap pad-top-xl pad-bottom-xl">
-        <div class="col12">
-            <div class="col6">
-                <h1>{{ langSnippet('users') }}</h1>
-            </div>
+    <div class="col12 display-flex backend-wrap">
 
-            <div class="col6 text-right">
-                <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
-            </div>
+        <backend-menu></backend-menu>
 
-            <table v-if="users" class="rounded marg-no">
-                <thead>
-                    <th class="desktop-only">{{ langSnippet('user_img') }}</th>
-                    <th>{{ langSnippet('username') }}</th>
-                    <th class="desktop-only">{{ langSnippet('role') }}</th>
-                    <th>{{ langSnippet('edit') }}</th>
-                    <th>{{ langSnippet('password') }}</th>
-                    <th>{{ langSnippet('delete') }}</th>
-                </thead>
-                <tbody>
-                    <tr v-for="(user, index) in users" :key="index">
-                        <td class="desktop-only"><figure class="square rounded"><img src="" loading="lazy" alt=""></figure></td>
-                        <td>{{ user.username }}</td>
+        <div class="col12 backend-content pad-top-xl pad-bottom-l">
+            <div class="innerWrap">
+                <div class="col12">
+                    <div class="col6">
+                        <h1>{{ langSnippet('users') }}</h1>
+                    </div>
 
-                        <td class="desktop-only" v-if="user.role === 'superadmin'">Super Admin</td>
-                        <td class="desktop-only" v-else-if="user.role === 'admin'">Admin</td>
-                        <td class="desktop-only" v-else>User</td>
+                    <div class="col6 text-right">
+                        <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
+                    </div>
 
-                        <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                            <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
-                        </td>
-                        <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                            <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
-                        </td>
-                        <td v-else></td>
+                    <table v-if="users" class="rounded marg-no">
+                        <thead>
+                            <th class="desktop-only">{{ langSnippet('user_img') }}</th>
+                            <th>{{ langSnippet('username') }}</th>
+                            <th class="desktop-only">{{ langSnippet('role') }}</th>
+                            <th>{{ langSnippet('edit') }}</th>
+                            <th>{{ langSnippet('password') }}</th>
+                            <th>{{ langSnippet('delete') }}</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(user, index) in users" :key="index">
+                                <td class="desktop-only"><figure class="square rounded"><img src="" loading="lazy" alt=""></figure></td>
+                                <td>{{ user.username }}</td>
 
-                        <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                            <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
-                        </td>
-                        <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                            <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
-                        </td>
-                        <td v-else></td>
+                                <td class="desktop-only" v-if="user.role === 'superadmin'">Super Admin</td>
+                                <td class="desktop-only" v-else-if="user.role === 'admin'">Admin</td>
+                                <td class="desktop-only" v-else>User</td>
 
-                        <td v-if="user.role !== 'superadmin' && user.username !== this.$user.username">
-                            <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
-                        </td>
-                        <td v-else></td>
-                    </tr>
-                </tbody>
-            </table>
+                                <td v-if="user.role === 'superadmin' && role === 'superadmin'">
+                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                                </td>
+                                <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
+                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                                </td>
+                                <td v-else></td>
 
-            <!-- Add user -->
-            <div id="add-user" style="display:none;">
-                <p>{{ langSnippet('add_user') }}</p>
-                <form onsubmit="return false;" >
-                    <span v-if="newUserError" :class="`box-callout ${newUserError[1]}`">{{ newUserError[0] }}</span>
-                    <p>
-                        <span class="input-wrap">
-                            <label for="newUsername">{{ langSnippet('username') }}</label>
-                            <input v-model="newUser.name" type="text" id="newUsername" autocomplete="username" name="newUsername" required>
-                        </span>
-                    </p>
-                    <p>
-                        <span class="input-wrap">
-                            <label for="newUserpassword">{{ langSnippet('password') }}</label>
-                            <input v-model="newUser.password" type="password" id="newUserpassword" autocomplete="new-password" name="newUserpassword" required>
-                        </span>                        
-                    </p>
-                    <p>
-                        <label for="newUserrole" class="checkbox-label">{{ langSnippet('admin') }}
-                        <input v-model="newUser.role" type="checkbox" id="newUserrole" name="newUserrole"></label>
-                    </p>
-                    <p class="text-right">
-                        <button @click="addUser($event)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
-                    </p>
-                </form>
-            </div>
+                                <td v-if="user.role === 'superadmin' && role === 'superadmin'">
+                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                                </td>
+                                <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
+                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                                </td>
+                                <td v-else></td>
 
-            <!-- Edit user -->
-            <div id="edit-user" style="display:none;">
-                <p v-html="langSnippet('edit_user', selectedUser.name)"></p>
-                <form onsubmit="return false;">
-                    <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span>
-                    <p>
-                        <span class="input-wrap">
-                            <label for="username">{{ langSnippet('username') }}</label>
-                            <input v-model="selectedUser.name" type="text" id="username" autocomplete="username" name="username" required>
-                        </span>
-                    </p>
-                    <p>
-                        <label for="role" class="checkbox-label">{{ langSnippet('admin') }}
-                        <input v-model="selectedUser.role" type="checkbox" id="role" name="role" ></label>
-                    </p>
-                    <p class="text-right">
-                        <button @click="editUser(selectedUser)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
-                    </p>
-                </form>
-            </div>
-            <!-- Change password of user -->
-            <div id="change-password" style="display:none;">
-                <p v-html="langSnippet('new_password')"></p>
-                <form onsubmit="return false;">
-                    <span v-if="newPasswordError" :class="`box-callout ${newPasswordError[1]}`">{{ newPasswordError[0] }}</span>
-                    <input v-model="selectedUser.name" type="text" name="username" autocomplete="username" :placeholder="langSnippet('username')" style="display:none; visibility: hidden;" disabled>
-                    <p> 
-                        <span class="input-wrap">
-                            <label for="new-password">{{ langSnippet('password') }}</label>
-                            <input v-model="newPassword" type="password" id="new-password" autocomplete="new-password" name="new-password" required>
-                        </span>
-                    </p>
-                    <p>
-                        <span class="input-wrap">
-                            <label for="new-password-check">{{ langSnippet('password_repeate') }}</label>
-                            <input v-model="newPasswordCheck" type="password" id="new-password-check" autocomplete="new-password" name="new-password-check" required>
-                        </span>
-                    </p>
-                    <p class="text-right marg-no">
-                        <button @click="changeUserPassword(selectedUser.id)" type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
-                    </p>
-                </form>
-            </div>
-            <!-- Delete user -->
-            <div id="delete-user" style="display:none;">
-                <p v-html="langSnippet('delete_user', selectedUser.name)"></p>
-                <p class="text-right marg-no">
-                    <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
-                </p>
+                                <td v-if="user.role !== 'superadmin' && user.username !== this.$user.username">
+                                    <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
+                                </td>
+                                <td v-else></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Add user -->
+                    <div id="add-user" style="display:none;">
+                        <p>{{ langSnippet('add_user') }}</p>
+                        <form onsubmit="return false;" >
+                            <span v-if="newUserError" :class="`box-callout ${newUserError[1]}`">{{ newUserError[0] }}</span>
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="newUsername">{{ langSnippet('username') }}</label>
+                                    <input v-model="newUser.name" type="text" id="newUsername" autocomplete="username" name="newUsername" required>
+                                </span>
+                            </p>
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="newUserpassword">{{ langSnippet('password') }}</label>
+                                    <input v-model="newUser.password" type="password" id="newUserpassword" autocomplete="new-password" name="newUserpassword" required>
+                                </span>                        
+                            </p>
+                            <p>
+                                <label for="newUserrole" class="checkbox-label">{{ langSnippet('admin') }}
+                                <input v-model="newUser.role" type="checkbox" id="newUserrole" name="newUserrole"></label>
+                            </p>
+                            <p class="text-right">
+                                <button @click="addUser($event)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
+                            </p>
+                        </form>
+                    </div>
+
+                    <!-- Edit user -->
+                    <div id="edit-user" style="display:none;">
+                        <p v-html="langSnippet('edit_user', selectedUser.name)"></p>
+                        <form onsubmit="return false;">
+                            <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span>
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="username">{{ langSnippet('username') }}</label>
+                                    <input v-model="selectedUser.name" type="text" id="username" autocomplete="username" name="username" required>
+                                </span>
+                            </p>
+                            <p>
+                                <label for="role" class="checkbox-label">{{ langSnippet('admin') }}
+                                <input v-model="selectedUser.role" type="checkbox" id="role" name="role" ></label>
+                            </p>
+                            <p class="text-right">
+                                <button @click="editUser(selectedUser)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
+                            </p>
+                        </form>
+                    </div>
+                    <!-- Change password of user -->
+                    <div id="change-password" style="display:none;">
+                        <p v-html="langSnippet('new_password')"></p>
+                        <form onsubmit="return false;">
+                            <span v-if="newPasswordError" :class="`box-callout ${newPasswordError[1]}`">{{ newPasswordError[0] }}</span>
+                            <input v-model="selectedUser.name" type="text" name="username" autocomplete="username" :placeholder="langSnippet('username')" style="display:none; visibility: hidden;" disabled>
+                            <p> 
+                                <span class="input-wrap">
+                                    <label for="new-password">{{ langSnippet('password') }}</label>
+                                    <input v-model="newPassword" type="password" id="new-password" autocomplete="new-password" name="new-password" required>
+                                </span>
+                            </p>
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="new-password-check">{{ langSnippet('password_repeate') }}</label>
+                                    <input v-model="newPasswordCheck" type="password" id="new-password-check" autocomplete="new-password" name="new-password-check" required>
+                                </span>
+                            </p>
+                            <p class="text-right marg-no">
+                                <button @click="changeUserPassword(selectedUser.id)" type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
+                            </p>
+                        </form>
+                    </div>
+                    <!-- Delete user -->
+                    <div id="delete-user" style="display:none;">
+                        <p v-html="langSnippet('delete_user', selectedUser.name)"></p>
+                        <p class="text-right marg-no">
+                            <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>    
+    </div>
 </template>
 
 <script>
@@ -138,10 +145,14 @@ import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
 import { Fancybox } from "@fancyapps/ui";
+import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
     name: 'BackendUsers',
     mixins: [tmdbAPI,langSnippet, mainFunctions],
+    components: {
+        'backend-menu': BackendMenu,
+    },
     data() {
         return {
             users: null,
