@@ -104,3 +104,7 @@ label {
         top: rem-calc(-25);
     }
 }
+
+.fancybox__container {
+    --fancybox-bg: rgb(24,24,27, 75%) !important;
+}
