@@ -42,3 +42,115 @@ nav.header-menu-main {
         }
     }
 }
+
+.backend-wrap {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.backend-nav {
+    width: auto;
+    padding: {
+        left: 0;
+    }
+    @include transitions(width $transition-default, min-width $transition-default);
+
+    
+
+    &-wrap {
+
+    }
+}
+
+.backend-content {
+    @include MQ(medium) {
+        min-width: unset !important;
+    }
+}
+
+#backend-menu {
+    width: auto;
+    height: 100vh;
+    margin-top: rem-calc(-50);
+    padding-top: rem-calc(50);
+    padding-left: 0;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    @include transitions(width $transition-default);
+
+    &.closed {
+        a {
+            color: transparent;
+            width: rem-calc(50);
+    
+            &::before {
+                color: var(--font-color);
+            }
+        }
+    }
+}
+
+.backend-menu-list {
+    background: {
+        color: var(--white-25);
+    }
+    height: 100%;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: rem-calc(12/2);
+    list-style-type: none;
+    @include transitions(width $transition-default, min-width $transition-default);
+
+    li {
+        padding: rem-calc(12/2) rem-calc($space-base/2);
+        @include transitions(width $transition-default, min-width $transition-default);
+    }
+
+    a {
+        display: flex;
+        align-items: center;
+        background-color: var(--black-50);
+        color: var(--font-color);
+        font-size: rem-calc($font-size-large);
+        margin: 0;
+        padding: rem-calc(12) rem-calc($space-base);
+        width: rem-calc(300);
+        overflow: hidden;
+        white-space: nowrap;
+        @include transitions(width $transition-default, color $transition-default, background-color $transition-default, box-shadow $transition-default);
+
+        &:hover {
+            background-color: var(--black-75);
+        }
+
+        &.router-link-active {
+            background-color: var(--primary);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .is-rounded & {
+            border-radius: rem-calc($border-radius);
+        }
+
+        &::before {
+            color: var(--font-color);
+            line-height: 1;
+            @include transition(color 0s ease);
+        }
+    }
+}
+
+#be-button {
+    background-color: var(--black-100);
+    @extend .icon-arrow-left;
+
+    &::before {
+        color: var(--white);
+    }
+
+    &.closed {
+        @extend .icon-arrow-right;
+    }
+}
