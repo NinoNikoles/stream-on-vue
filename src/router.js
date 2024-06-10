@@ -8,7 +8,8 @@ import FrontendShows from './components/frontend/Shows.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import Test from './components/Test.vue';
-import MediaBrowser from './components/Mediabrowser.vue';
+import ContentManager from './components/backend/ContentManager.vue';
+// import MediaBrowser from './components/MediaBrowser.vue';
 import MediaPlayer from './components/player/Player.vue';
 import MediaPlayerSession from './components/player/PlayerMulti.vue';
 import BackendSettings from './components/backend/Settings.vue';
@@ -66,52 +67,52 @@ const router = createRouter({
             meta: { requiresAuth: true, main: true, noHeader: false } // Diese Route erfordert eine Anmeldung
         },
         {
-            path: '/backend/settings',
+            path: '/b/settings',
             name: name('settings'),
             component: BackendSettings,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'setting' }
         },
         {
-            path: '/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            path: '/b/users', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('users'),
             component: Users,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false  }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'users'  }
         },
         {
-            path: '/backend/genre',
+            path: '/b/genre',
             name: name('genres'),
             component: BackendGenre,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'list' }
         },
         {
-            path: '/backend/movies',
+            path: '/b/movies',
             name: name('backend_movies'),
             component: BackendMovies,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'movie' }
         },
         {
-            path: '/backend/shows',
+            path: '/b/shows',
             name: name('backend_shows'),
             component: BackendShows,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'media' }
         },
         {
-            path: '/backend/movie/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            path: '/b/movie/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('movie'),
             component: BackendMovie,
             meta: { requiresAuth: true, backend: false, roles: ['superadmin', 'admin'], noHeader: false }
         },
         {
-            path: '/backend/show/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            path: '/b/show/:id', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('show'),
             component: BackendShow,
             meta: { requiresAuth: true, backend: false, roles: ['superadmin', 'admin'], noHeader: false }
         },
         {
-            path: '/backend/highlights', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            path: '/b/highlights', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
             name: name('highlights'),
             component: BackendHighlights,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'star' }
         },
         {
             path: '/my-list',
@@ -126,19 +127,19 @@ const router = createRouter({
             meta: { requiresAuth: true, backend: false, noHeader: false  }
         },
         {
-            path: '/media-browser', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
-            name: 'Media Browser',
-            component: MediaBrowser,
-            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false }
+            path: '/b/content-manager', // Doppelpunkt vor "id" gibt an, dass es sich um eine dynamische Route handelt
+            name: 'Content Manager',
+            component: ContentManager,
+            meta: { requiresAuth: true, backend: true, roles: ['superadmin', 'admin'], noHeader: false, icon: 'folder' }
         },
         {
-            path: '/watch',
+            path: '/w',
             name: 'Player',
             component: MediaPlayer,
             meta: { requiresAuth: true, backend: false, noHeader: true }
         },
         {
-            path: '/watchTogether',
+            path: '/w',
             name: 'PlayerMulti',
             component: MediaPlayerSession,
             meta: { requiresAuth: true, backend: false }
