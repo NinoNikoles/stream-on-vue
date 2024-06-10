@@ -1,5 +1,5 @@
 <template>
-    <div class="innerWrap mediabrowser-wrap pad-top-xl pad-bottom-xl">
+    <div class="mediabrowser-wrap">
         <div class="col12">
 
             <div class="table rounded">
@@ -37,7 +37,7 @@
                                 </td>
 
                                 <!--- Rename folder button --->
-                                <td class="text-right" v-if="$route.path === '/media-browser'">
+                                <td class="text-right" v-if="$route.path === '/b/content-manager'">
                                     <button
                                     href="#renameFolder"
                                     data-fancybox @click="setOldFolder(media.name)"
@@ -46,7 +46,7 @@
                                 </td>
 
                                 <!--- Delete folder button --->
-                                <td class="text-right" v-if="$route.path === '/media-browser'">
+                                <td class="text-right" v-if="$route.path === '/b/content-manager'">
                                     <button
                                     href="#deleteFolder"
                                     data-fancybox
@@ -57,7 +57,7 @@
                             </tr>
 
                             <!--- If page is NOT media-browser and file is MP4 --->
-                            <tr v-else-if="$route.path !== '/media-browser' && media.name.endsWith('.mp4')">
+                            <tr v-else-if="$route.path !== '/b/content-manager' && media.name.endsWith('.mp4')">
                                 <td>
                                     <span class="marg-no icon-left icon-movie">{{ media.name }}</span>
                                 </td>
@@ -72,7 +72,7 @@
                                 </td>
 
                                 <!--- Select file button --->
-                                <td v-if="$route.path !== '/media-browser' && '/'+media.path !== mediaPath" class="text-right">
+                                <td v-if="$route.path !== '/b/content-manager' && '/'+media.path !== mediaPath" class="text-right">
                                     <button
                                     href="#"
                                     :title="langSnippet('select')"
@@ -82,7 +82,7 @@
                             </tr>
 
                             <!--- If page is media-browser --->
-                            <tr v-else-if="$route.path === '/media-browser'">
+                            <tr v-else-if="$route.path === '/b/content-manager'">
                                 <td>
                                     <span v-if="media.name.endsWith('.mp4')" class="marg-no icon-left icon-movie">{{ media.name }}</span>
                                     <span v-else-if="media.name.endsWith('.jpg') || media.name.endsWith('.jpeg') || media.name.endsWith('.png') || media.name.endsWith('.gif')" class="marg-no icon-left icon-image">{{ media.name }}</span>
@@ -122,7 +122,7 @@
             </table>
         </div>
 
-        <div class="marg-top-xs" v-if="$route.path === '/media-browser'">
+        <div class="marg-top-xs" v-if="$route.path === '/b/content-manager'">
             <div class="row">
                 <span class="column">
                     <span class="input-file-wrap">
@@ -138,7 +138,7 @@
     </div>
 
     <!-- Fancyboxes -->
-    <div style="display: none" v-if="$route.path === '/media-browser'">
+    <div style="display: none" v-if="$route.path === '/b/content-manager'">
 
         <div id="createFolder">
             <form @submit.prevent="createNewFolder(newFolderName)">
