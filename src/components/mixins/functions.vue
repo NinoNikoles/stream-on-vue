@@ -171,11 +171,23 @@ export default {
             menuBtn.classList.remove('active-button');
         },
         bodyScrollDiv() {
-            var scrollDiv = window.innerWidth - document.documentElement.clientWidth;
+            var scrollDiv = 0;
+            var bodyPadding = document.body.style.paddingRight;
+            if (bodyPadding != '') {
+                scrollDiv = parseFloat(bodyPadding);
+            } else {
+                scrollDiv = window.innerWidth - document.documentElement.clientWidth;
+            }
             return scrollDiv;
         },
         scrollDiv(el) {
-            var scrollDiv = window.innerWidth - el.clientWidth;
+            var scrollDiv = 0;
+            var bodyPadding = document.body.style.paddingRight;
+            if (bodyPadding != '') {
+                scrollDiv = parseFloat(bodyPadding);
+            } else {
+                scrollDiv = window.innerWidth - el.clientWidth;
+            }
             return scrollDiv;
         },
         openPopUp(event, id) {
