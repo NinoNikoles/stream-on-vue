@@ -170,7 +170,7 @@
             <div id="media-browser" style="display: none;" v-if="movie">
                 <div class="row">
                     <div class="innerWrap"><div class="col12"><p class="h4">{{langSnippet('select_a_video_file')}}:</p></div></div>
-                    <media-browser-component :selectedMedia="movie.file_path"></media-browser-component>
+                    <media-browser :selectedMedia="movie.file_path"></media-browser>
                 </div>
             </div>
         </div>
@@ -182,7 +182,7 @@ import axios from 'axios';
 import tmdbAPI from './../mixins/tmdbAPI.vue';
 import langSnippet from './../mixins/language.vue';
 import functions from './../mixins/functions.vue';
-import Mediabrowser from './../MediaBrowser.vue';
+import ContentManager from './../MediaBrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
 import BackendMenu from './../includes/BackendMenu.vue';
 
@@ -191,7 +191,7 @@ export default {
     mixins: [tmdbAPI, langSnippet, functions],
     components: {
         'backend-menu': BackendMenu,
-        'media-browser-component': Mediabrowser,
+        'media-browser': ContentManager,
     },
     data() {
         return {
