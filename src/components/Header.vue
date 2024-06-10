@@ -41,11 +41,6 @@
                             <li v-for="route in backendRoutes" :key="route.name" class="menu-item mobile-only">
                                 <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                             </li>
-                            <!-- <div class="col12 mobile-only marg-top-m">
-                                <li class="menu-item spacer"><span><?php echo lang_snippet('admin').' '.lang_snippet('menu');?></span></li>
-
-                                <?php echo adminMenu('main-menu');?>
-                            </div> -->
                         </ul>
                     </nav>
 
@@ -57,9 +52,7 @@
 
                         <menu class="user-menu">
                             <ul>
-                                <li v-for="route in backendRoutes" :key="route.name" class="desktop-only">
-                                    <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
-                                </li>
+                                <li><router-link :to="`/b/settings`" :title="langSnippet('settings')" @click="closeMainMenu()">{{ langSnippet('settings') }}</router-link></li>
                                 
                                 <li class="menu-item"><router-link :to="`/u/${this.$user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
@@ -167,7 +160,7 @@ export default {
                     const input = searchInputField.value;
 
                     if (input !== '') {
-                        var scrollDiv = this.scrollDiv();
+                        var scrollDiv = this.bodyScrollDiv();
                         document.body.style.paddingRight = scrollDiv+'px';
                         document.body.classList.add('active-search');
 
@@ -229,26 +222,23 @@ export default {
             }
         }
     },
-    watch: {
-        searchResults: {
-            handler(newValue) {
-                if ( newValue !== null ) {
-                    this.space = `calc(100% + ${document.body.style.paddingRight})`;
-                }
-            },
-            immediate: false // Falls du möchtest, dass die Methode auch bei der Komponenteninitialisierung aufgerufen wird
-        }
-    },
+    // watch: {
+    //     searchResults: {
+    //         handler(newValue) {
+    //             if ( newValue !== null ) {
+    //                 this.space = `calc(100% + ${document.body.style.paddingRight})`;
+    //             }
+    //         },
+    //         immediate: false // Falls du möchtest, dass die Methode auch bei der Komponenteninitialisierung aufgerufen wird
+    //     }
+    // },
     async mounted() {
         if ( this.$user && this.$user.isLoggedIn === true ) {
             await this.mainRouter().then(routes => {
                 // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                 this.mainRoutes = routes;
             });
-            await this.backendRouter().then(routes => {
-                // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
-                this.backendRoutes = routes;
-            });
+            this.backendRoutes = await this.backendRouter();
             await this.getCurrentUserInfos();
             await this.handleSearchInput();
         }
