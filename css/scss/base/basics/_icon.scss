@@ -116,6 +116,7 @@ a.icon-right:hover {
     &-image { &::before { content: $icon-image; } }
     &-info { &::before { content: $icon-info; } }
     &-key { &::before { content: $icon-key; } }
+    &-list { &::before { content: $icon-list; } }
     &-location { &::before { content: $icon-location; } }
     &-mail { &::before { content: $icon-mail; } }
     &-media { &::before { content: $icon-media; } }
@@ -134,16 +135,19 @@ a.icon-right:hover {
     &-save { &::before { content: $icon-save; } }
     &-send { &::before { content: $icon-send; } }
     &-search { &::before { content: $icon-search; } }
+    &-setting { &::before { content: $icon-setting; } }
     &-skip-next { &::before { content: $icon-skip-next; } }
     &-skip-previous { &::before { content: $icon-skip-previous; } }
     &-skip-time { &::before { content: $icon-skip-time; } }
     &-time-back { &::before { content: $icon-time-back; } }
     &-spotify { &::before { content: $icon-spotify; } }
+    &-star { &::before { content: $icon-star; } }
     &-stop { &::before { content: $icon-stop; } }
     &-sun { &::before { content: $icon-sun; } }
     &-trash { &::before { content: $icon-trash; } }
     &-update { &::before { content: $icon-update; } }
     &-upload { &::before { content: $icon-upload; } }
+    &-users { &::before { content: $icon-users; } }
     &-volume-down { &::before { content: $icon-volume-down; } }
     &-volume-mute { &::before { content: $icon-volume-mute; } }
     &-volume-off { &::before { content: $icon-volume-off; } }
