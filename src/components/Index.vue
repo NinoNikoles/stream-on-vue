@@ -89,11 +89,11 @@
                             <div :class="`swiper-button-next`"></div>
                         </div>
 
-                        <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
+                        <template v-for="(id, index) in slider.mediaIDs" :key="index">
                             <template v-for="(media, index) in allMedia" :key="index">
                                 <media-content :media="media" :id="media.tmdbID+'-'+index+'-'+slider.genre.genre_name"  v-if="media.tmdbID === id"></media-content>
                             </template>
-                        </div>                        
+                        </template>                        
 
                     </div>
                 </div>
