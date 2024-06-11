@@ -93,6 +93,20 @@
                 left: 20%;
             }
         }
+
+        @include MQ(xlarge) {
+            padding: {
+                right: 25%;
+                left: 25%;
+            }
+        }
+
+        @include MQ(xlarge) {
+            padding: {
+                right: 30%;
+                left: 30%;
+            }
+        }
     }
 
     &-inner {
