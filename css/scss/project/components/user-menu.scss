@@ -1,20 +1,17 @@
 #user-menu-btn {
+    aspect-ratio: 1;
     background: {
         color: transparent;
     }
     border: none;
+    border-radius: 0;
+    width: rem-calc(50);
     max-width: rem-calc(50);
     margin: 0;
     padding: rem-calc(5);
     position: relative;
     outline: none;
     @include transitions(background-color $transition-default, padding $transition-default);
-
-    @include MQ(medium) {
-        margin: {
-            left: rem-calc($grid-padding/2);
-        }
-    }
 
     &:hover,
     &:focus,
