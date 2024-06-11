@@ -29,15 +29,25 @@
                 </div>
  
                 <div class="col3 marg-left-col1">
+                    <div class="col12">
+                        <p class="text-right">
+                            <a href="#edit-movie" data-fancybox class="btn btn-primary btn-small icon-left icon-pen">Infos bearbeiten</a>
+                        </p>
+                        <p class="text-right" v-if="isHighlight===null">
+                            <button @click="addHighlight(movie.tmdbID)" class="btn btn-warning hollow btn-small icon-left icon-star" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
+                        </p>
+                    </div>
+
                     <div class="col12" v-if="movie.file_path">
                         <figure class="widescreen">
                             <video :src="`${this.$mainURL}:8080/${this.movie.file_path.replace('/public/', '')}`" controls></video>
                         </figure>
                     </div>
                     <div class="col12">
-                        <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
+                        <p>
+                            <button href="#media-browser" data-fancybox @click="selectMedia(movie)" class="btn btn-success btn-small icon-left icon-media col12" name="addHighlight">{{ langSnippet('select_file') }}</button>
+                        </p>
                     </div>
-                    <div v-if="isHighlight===null" class="col12"><button @click="addHighlight(movie.tmdbID)" class="btn btn-white btn-small icon-left icon-add col12" name="addHighlight">{{ langSnippet('add_highlight') }}</button></div>
 
                     <div class="row">
                         <div class="col6 column">
@@ -139,38 +149,58 @@
                 </div>
             </div>
 
-            <!--  <div :id="`edit-movie-infos`" style="display: none;">
+            <div id="edit-movie" style="display: none;" v-if="movie">
                 <p v-html="langSnippet('edit')"></p>
-                <form onsubmit="return false;" class="innerWrap">
+                <form onsubmit="return false;">
                     <div class="row">
-                        <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span>
-                        <div class="col12 column">
+                        <!-- <span v-if="editUserError" :class="`box-callout ${editUserError[1]}`">{{ editUserError[0] }}</span> -->
+                        <div class="col6 column">
                             <p>
                                 <span class="input-wrap">
                                     <label for="mTitle">{{ langSnippet('name') }}</label>
-                                    <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required>
-                                    <input type="text" id="mTitle" name="mTitle" required :value="movie.title">
+                                    <input type="text" id="mTitle" name="mTitle" required v-model="movie.title">
                                 </span>
                             </p>
+                        </div>
+                        <div class="col6 column">
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="mTagline">{{ langSnippet('tagline') }}</label>
+                                    <input type="text" id="mTagline" name="mTagline" v-model="movie.tagline">
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col12 column">
                             <p>
                                 <span class="input-wrap">
                                     <label for="mOverview">{{ langSnippet('overview') }}</label>
-                                    <input v-model="mTitle" type="text" id="mTitle" name="mTitle" required>
-                                    <textarea type="text" id="mOverview" name="mOverview" required :value="movie.overview"></textarea>
+                                    <textarea type="text" id="mOverview" name="mOverview" required v-model="movie.overview"></textarea>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col12 column">
+                            <p>
+                                <span class="input-wrap">
+                                    <label for="mTrailerID">{{ langSnippet('trailer') }} ID</label>
+                                    <input type="text" id="mTrailerID" name="mTrailerID" required v-model="movie.trailer">
                                 </span>
                             </p>
                         </div>
                     </div>
-                    <p class="text-right">
-                        <button @click="console.log('Kommt')" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
+                    <p class="text-right marg-no">
+                        <button @click="editMovie(movie)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
                     </p>
-                </form> 
-            </div> -->
+                </form>
+            </div>
 
             <div id="media-browser" style="display: none;" v-if="movie">
                 <div class="row">
-                    <div class="innerWrap"><div class="col12"><p class="h4">{{langSnippet('select_a_video_file')}}:</p></div></div>
-                    <media-browser :selectedMedia="movie.file_path"></media-browser>
+                    <div class="innerWrap">
+                        <div class="col12">
+                            <p class="h4">{{langSnippet('select_a_video_file')}}:</p>
+                            <media-browser :selectedMedia="movie.file_path"></media-browser>
+                        </div>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -354,65 +384,96 @@ export default {
                 console.log(err);
             }
         },
-        // async saveData(data) {
-        //     document.getElementById('loader').classList.remove('hidden');
+        async editMovie() {
+            var query = '';
+            var data = [];
+
+            if (this.movie.tagline !== '') {
+                query = `UPDATE media SET title = ?, tagline = ?, overview = ?, trailer = ? WHERE tmdbID = ?`;
+                data = [
+                    this.movie.title,
+                    this.movie.tagline,
+                    this.movie.overview,
+                    this.movie.trailer,
+                    this.movie.tmdbID  // tmdbID hinzufügen, um das WHERE-Kriterium zu erfüllen
+                ];
+            } else {
+                query = `UPDATE media SET title = ?, overview = ?, trailer = ? WHERE tmdbID = ?`;
+                data = [
+                    this.movie.title,
+                    this.movie.overview,
+                    this.movie.trailer,
+                    this.movie.tmdbID  // tmdbID hinzufügen, um das WHERE-Kriterium zu erfüllen
+                ];
+            }
+
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/postQuery`, { query, data });
+            } catch(err) {
+                console.log(err);
+            }
+
+            Fancybox.close();
+        },
+        async saveData(data) {
+            document.getElementById('loader').classList.remove('hidden');
             
-        //     const movie = await this.searchMovieByID(data.id);
-        //     const genres = movie.genres.map(genre => genre.id);
+            const movie = await this.searchMovieByID(data.id);
+            const genres = movie.genres.map(genre => genre.id);
 
-        //     let date = movie.release_date;
-        //     let parsedDate = '';
+            let date = movie.release_date;
+            let parsedDate = '';
 
-        //     if ( date != '' ) {
-        //         parsedDate = new Date(date);
+            if ( date != '' ) {
+                parsedDate = new Date(date);
  
                 
-        //     } else {
-        //         parsedDate = new Date();
-        //     }
+            } else {
+                parsedDate = new Date();
+            }
 
-        //     let day = parsedDate.getDate();
-        //     let month = parsedDate.getMonth() + 1;
-        //     let year = parsedDate.getFullYear();
-        //     let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
-        //     var collection = null;
-        //     var trailer = null;
+            let day = parsedDate.getDate();
+            let month = parsedDate.getMonth() + 1;
+            let year = parsedDate.getFullYear();
+            let formattedDate = `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
+            var collection = null;
+            var trailer = null;
 
-        //     if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
-        //         collection = movie.belongs_to_collection.id;
-        //     } else {
-        //         collection = null;
-        //     }
-        //     if ( movie.videos.results.length > 0 ) trailer = movie.videos.results[0].key;
+            if ( movie.belongs_to_collection != null & movie.belongs_to_collection != 'null' & movie.belongs_to_collection != false ) {
+                collection = movie.belongs_to_collection.id;
+            } else {
+                collection = null;
+            }
+            if ( movie.videos.results.length > 0 ) trailer = movie.videos.results[0].key;
 
-        //     var media = {
-        //         tmdbID: movie.id,
-        //         title: movie.title,
-        //         tagline: movie.tagline,
-        //         genres: JSON.stringify(genres),
-        //         overview: movie.overview,
-        //         poster: movie.poster_path,
-        //         backdrop: movie.backdrop_path,
-        //         collection: collection,
-        //         runtime: movie.runtime,
-        //         rating: movie.vote_average.toFixed(2),
-        //         release_date: formattedDate,
-        //         media_type: "movie",
-        //         trailer: trailer,
-        //         created: new Date()
-        //     }
+            var media = {
+                tmdbID: movie.id,
+                title: movie.title,
+                tagline: movie.tagline,
+                genres: JSON.stringify(genres),
+                overview: movie.overview,
+                poster: movie.poster_path,
+                backdrop: movie.backdrop_path,
+                collection: collection,
+                runtime: movie.runtime,
+                rating: movie.vote_average.toFixed(2),
+                release_date: formattedDate,
+                media_type: "movie",
+                trailer: trailer,
+                created: new Date()
+            }
 
-        //     try {
-        //         await this.sendMedia(media);
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
+            try {
+                await this.sendMedia(media);
+            } catch (err) {
+                console.log(err);
+            }
             
-        //     this.returnCollectionMovies(this.movie.collection);
-        //     this.returnSimilarMovies(this.$route.params.id).then(() => {
-        //         document.getElementById('loader').classList.add('hidden');
-        //     });
-        // },
+            this.returnCollectionMovies(this.movie.collection);
+            this.returnSimilarMovies(this.$route.params.id).then(() => {
+                document.getElementById('loader').classList.add('hidden');
+            });
+        },
         async sendMedia(media) {
             axios.post(`${this.$mainURL}:3000/api/db/movie?mediaID=${media.tmdbID}&dataGenres=${media.genres}`, { media: media });
         },
