@@ -9,7 +9,6 @@ import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import Test from './components/Test.vue';
 import ContentManager from './components/backend/ContentManager.vue';
-// import MediaBrowser from './components/MediaBrowser.vue';
 import MediaPlayer from './components/player/Player.vue';
 import MediaPlayerSession from './components/player/PlayerMulti.vue';
 import BackendSettings from './components/backend/Settings.vue';
