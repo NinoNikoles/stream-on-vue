@@ -23,7 +23,7 @@
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import mainFunctions from '../mixins/functions.vue';
 import BackendMenu from '../includes/BackendMenu.vue';
-import ContentManager from './../MediaBrowser.vue';
+import ContentManager from '../includes/MediaBrowser.vue';
 
 export default {
     name: 'ContentManager',
