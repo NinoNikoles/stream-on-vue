@@ -291,9 +291,13 @@ function formLabels() {
 function YTplayer() {
     var playerIframe = document.getElementById('player');
     var highlight = document.getElementById('highlight');
+    var highlightTexts = document.querySelectorAll('#highlight-content h1, #highlight-content p');
     var playerRdy;
 
     if (playerIframe) {
+        highlightTexts.forEach(text => {
+            text.style.opacity = 0;
+        });
         var videoID = playerIframe.getAttribute('data-trailer-id');
         const muteBtn = document.getElementById('player-btn');
         playerRdy = false;
@@ -341,6 +345,9 @@ function YTplayer() {
             }
 
             if (event.data == YT.PlayerState.ENDED && !done && highlight) {
+                highlightTexts.forEach(text => {
+                    text.style.opacity = 1;
+                });
                 setTimeout(hideVideo, 1000);
                 done = true;
             }
