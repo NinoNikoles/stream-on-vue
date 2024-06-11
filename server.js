@@ -37,6 +37,7 @@ const mediabrowserAPI = require('./backend/mediabrowserAPI');
 dbSetup();
 
 app.get('/api/db/getQuery', serverAPI.getQuery);
+app.post('/api/db/postQuery', serverAPI.postQuery);
 
 //-- Settings
 app.post('/api/db/saveSettings', serverAPI.updateSettings);
