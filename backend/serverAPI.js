@@ -75,6 +75,30 @@ const getQuery = async(req, res) => {
     }
 }
 
+function postQueryFunction(query, data) {
+    return new Promise((resolve, reject) => {
+        // Finde den Benutzer in der Datenbank
+        db.run(query, data, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ changes: this.changes });
+            }
+        });
+    });
+}
+
+const postQuery = async (req, res) => {
+    const { query, data } = req.body;
+
+    try {
+        await postQueryFunction(query, data);
+        res.json('success');
+    } catch(err) {
+        res.status(500).send({message: err});
+    }
+}
+
 //-- Login --
 const login = async(req, res) => {
     const { username, password } = req.body;
@@ -1126,6 +1150,7 @@ const updateWatchlist = async(req, res) => {
 
 module.exports = {
     getQuery,
+    postQuery,
     getSession,
     login,
     logout,
