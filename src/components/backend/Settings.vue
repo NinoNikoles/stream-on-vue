@@ -89,7 +89,7 @@
 <script>
 import tmdbAPI from './../mixins/tmdbAPI.vue';
 import langSnippet from './../mixins/language.vue';
-import functions from './../mixins/functions.vue';
+import functions from '../mixins/functions.vue';
 import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
