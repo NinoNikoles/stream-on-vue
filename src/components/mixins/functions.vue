@@ -466,44 +466,34 @@ export default {
                 const slider = '.' + sliderClass;
 
                 swiperElement.classList.add(sliderClass);
-                const itemsMobile = 2;
-                const itemsSmallTablet = 3;
-                const itemsTablet = 4;
-                const itemsDesktop = 6;
 
                 const swiper = new Swiper(slider, {
                     loop: true,
-                    slidesPerView: itemsMobile,
-                    slidesPerGroup: 1,
+                    slidesPerView: 2,
                     spaceBetween: 16,
                     allowTouchMove: true,
+                    breakpoints: {
+                        720: {
+                            slidesPerView: 3,
+                        },
+                        1080: {
+                            slidesPerView: 4,
+                        },
+                        1400: {
+                            slidesPerView: 6,
+                        }
+                    },
                     pagination: {
                         el: '.swiper-pagination',
-                        dynamicBullets: true
+                        // dynamicBullets: true
                     },
                     navigation: {
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
                     },
-                    breakpoints: {
-                        720: {
-                            slidesPerView: itemsSmallTablet,
-                        },
-                        1080: {
-                            slidesPerView: itemsTablet,
-                        },
-                        1400: {
-                            slidesPerView: itemsDesktop,
-                        }
-                    },
                 });
 
                 swiper;
-
-                const fancyboxItems = swiperElement.querySelectorAll('[data-fancybox="gallery"]');
-                fancyboxItems.forEach(function (item) {
-                    item.setAttribute('data-fancybox', sliderClass);
-                });
 
                 sliderNumber++;
             });
