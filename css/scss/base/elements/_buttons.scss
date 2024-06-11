@@ -1,81 +1,60 @@
 /* BUTTONS */
-a.btn, .btn, button.btn:not(.acf-button):not(.add_media), .button:not(.acf-button):not(.add_media), [type="submit"] {
+button, [type="submit"], .btn, .button {
     // For color-order look at buttons mixin
     @include button();
-    @include button-colors(var(--white), var(--white), var(--black), var(--dark-light));
-    &.hollow { @include button-hollow(); }
-
-    &.btn-primary { @include button-colors(var(--white), var(--white), var(--primary), var(--primary-dark));
-        &.hollow { @include button-hollow(var(--primary), var(--white), var(--primary), var(--primary)); }
-    }
-
-    &.btn-secondary{ @include button-colors(var(--white), var(--white), var(--secondary), var(--secondary-dark));
-        &.hollow { @include button-hollow(var(--secondary), var(--white), var(--secondary) , var(--secondary)); }
-    }
-
-    &.btn-tertiary{ @include button-colors(var(--white), var(--white), var(--tertiary), var(--tertiary-dark));
-        &.hollow { @include button-hollow(var(--tertiary), var(--white), var(--tertiary), var(--tertiary)); }
-    }
-
-    &.btn-quaternary{ @include button-colors(var(--white), var(--white), var(--quaternary), var(--quaternary-dark));
-        &.hollow { @include button-hollow(var(--quaternary), var(--white), var(--quaternary), var(--quaternary)); }
-    }
-
-    &.btn-quinary{ @include button-colors(var(--white), var(--white), var(--quinary), var(--quinary-dark));
-        &.hollow { @include button-hollow(var(--quinary), var(--white), var(--quinary), var(--quinary)); }
-    }
-
-    &.btn-grey { @include button-colors(var(--black), var(--white), var(--white), var(--grey));
-        &.hollow { @include button-hollow(var(--white), var(--white), var(--grey), var(--white)); }
-    }
-
-    &.btn-white { @include button-colors(var(--font-color), var(--white), var(--white), var(--primary));
-        &.hollow { @include button-hollow(var(--black), var(--white), var(--black), var(--black), var(--black)); }
-    }
-
-    &.btn-black { @include button-colors(var(--white), var(--white), var(--black), var(--dark-light));
-        &.hollow { @include button-hollow(var(--white), var(--white), var(--black), var(--black)); }
-    }
-
-    &.btn-success { @include button-colors(var(--white), var(--white), var(--success), var(--success-dark));
-        &.hollow { @include button-hollow(var(--white), var(--white), var(--success), var(--success-dark)); }
-    }
-
-    &.btn-warning { @include button-colors(var(--white), var(--white), var(--warning), var(--warning-dark));
-        &.hollow { @include button-hollow(var(--white), var(--white), var(--warning), var(--warning-dark)); }
-    }
-
-    &.btn-alert { @include button-colors(var(--white), var(--white), var(--alert), var(--alert-dark));
-        &.hollow { @include button-hollow(var(--white), var(--white), var(--alert), var(--alert-dark)); }
-    }
-
-    &.btn-transparent { @include button-colors(var(--black), var(--black-50), transparent, transparent);
-        &.hollow { @include button-hollow(var(--black), var(--black-50), transparent, transparent); }
-    }
 
     &.btn-round {
-        border-radius: 100px !important;
+        border-radius: rem-calc(100);
     }
 
     &.disabled {
         opacity: 0.5 !important;
         cursor: not-allowed !important;
     }
-
-    &.btn--special {
-        text-align: left !important;
-    }
-
-    &.icon-only {
-        min-width: unset !important;
-    }
-
-    p & {
-        margin: {
-            bottom: 0;
-        }
-    }
 }
+
+.btn-primary { @include button-colors(var(--white), var(--white), var(--primary), var(--primary-dark)); }
+.btn-primary-dark { @include button-colors(var(--white), var(--white), var(--primary-dark), var(--primary)); }
+.btn-primary-light { @include button-colors(var(--white), var(--white), var(--primary-light), var(--primary)); }
+
+.btn-secondary { @include button-colors(var(--white), var(--white), var(--secondary), var(--secondary-dark)); }
+.btn-secondary-dark { @include button-colors(var(--white), var(--white), var(--secondary-dark), var(--secondary)); }
+.btn-secondary-light { @include button-colors(var(--white), var(--white), var(--secondary-light), var(--secondary)); }
+
+.btn-tertiary { @include button-colors(var(--white), var(--white), var(--tertiary), var(--tertiary-dark)); }
+.btn-tertiary-dark { @include button-colors(var(--white), var(--white), var(--tertiary-dark), var(--tertiary)); }
+.btn-tertiary-light { @include button-colors(var(--white), var(--white), var(--tertiary-light), var(--tertiary)); }
+
+.btn-quaternary { @include button-colors(var(--white), var(--white), var(--quaternary), var(--quaternary-dark)); }
+.btn-quaternary-dark { @include button-colors(var(--white), var(--white), var(--quaternary-dark), var(--quaternary)); }
+.btn-quaternary-light { @include button-colors(var(--white), var(--white), var(--quaternary-light), var(--quaternary)); }
+
+.btn-quinary { @include button-colors(var(--white), var(--white), var(--quinary), var(--quinary-dark)); }
+.btn-quinary-dark { @include button-colors(var(--white), var(--white), var(--quinary-dark), var(--quinary)); }
+.btn-quinary-light { @include button-colors(var(--white), var(--white), var(--quinary-light), var(--quinary)); }
+
+.btn-white { @include button-colors(var(--font-color), var(--white), var(--white), var(--primary)); }
+.btn-black { @include button-colors(var(--white), var(--white), var(--black), var(--dark-light)); }
+
+.btn-grey { @include button-colors(var(--white), var(--white), var(--grey), var(--grey-dark)); }
+.btn-grey-dark { @include button-colors(var(--white), var(--white), var(--grey-dark), var(--grey)); }
+.btn-grey-light { @include button-colors(var(--white), var(--white), var(--grey-light), var(--grey)); }
+
+.btn-success { @include button-colors(var(--white), var(--white), var(--success), var(--success-dark)); }
+.btn-success-dark { @include button-colors(var(--white), var(--white), var(--success-dark), var(--success)); }
+.btn-success-light { @include button-colors(var(--white), var(--white), var(--success-light), var(--success)); }
+
+.btn-warning { @include button-colors(var(--white), var(--white), var(--warning), var(--warning-dark)); }
+.btn-warning-dark { @include button-colors(var(--white), var(--white), var(--warning-dark), var(--warning)); }
+.btn-warning-light { @include button-colors(var(--white), var(--white), var(--warning-light), var(--warning)); }
+
+.btn-alert { @include button-colors(var(--white), var(--white), var(--alert), var(--alert-dark)); }
+.btn-alert-dark { @include button-colors(var(--white), var(--white), var(--alert-dark), var(--alert)); }
+.btn-alert-light { @include button-colors(var(--white), var(--white), var(--alert-light), var(--alert)); }
+
+.btn-transparent { @include button-colors(var(--black), var(--black-50), transparent, transparent); }
+
+
 
 // Pre Setting Buttons
 .btn {

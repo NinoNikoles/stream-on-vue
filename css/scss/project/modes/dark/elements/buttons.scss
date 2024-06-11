@@ -1,5 +1,3 @@
-a.btn, .btn, .button:not(.acf-button):not(.add_media), [type="submit"] {
-    &.btn-white { @include button-colors(var(--font-color-invert), var(--white) !important, var(--white), var(--white));
-        &.hollow { @include button-hollow(var(--white) !important, var(--font-color), var(--white), var(--white), var(--white)); }
-    }
-}
+.btn-primary { @include button-colors(var(--font-color), var(--font-color), var(--primary), var(--primary-light)); }
+
+.btn-white { @include button-colors(var(--font-color-invert), var(--black), var(--white), var(--grey)); }
