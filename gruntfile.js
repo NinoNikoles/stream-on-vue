@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             root: ''
         },
         jsResources: [
-            '<%= config.root %>js/plugins/scrolltrigger.js',
+            '<%= config.root %>js/basics/scrolltrigger.js',
             '<%= config.root %>js/basics/custom.js',
         ],
         cssResources: [],
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
                 tasks: ['sass:dist'],
             },
             js: {
-                files: ['<%= config.root %>js/basics/*.js','<%= config.root %>js/plugins/*.js'],
+                files: ['<%= config.root %>js/basics/*.js'],
                 tasks: ['concat', 'uglify'] // , 'uglify' // wieder rein wenns in die heiße phase geht, ne
             }
         },
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         uglify: {
             js: {
                 files: {
-                    '<%= config.root %>public/build/combined.min.js': [ '<%= config.root %>public/build/combined.min.js' ]
+                    '<%= config.root %>public/build/combined.min.js': [ '<%= config.root %>public/build/combined.min.js' ],
                 }
             }
         },
@@ -67,7 +67,19 @@ module.exports = function(grunt) {
                         cwd: '<%= config.root %>',
                         src: ['css/fonts/**'],
                         dest: '<%= config.root %>public/build/'
-                    }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= config.root %>',
+                        src: ['css/scss/plugins/**'],
+                        dest: '<%= config.root %>public/build/'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= config.root %>',
+                        src: ['js/plugins/**'],
+                        dest: '<%= config.root %>public/build/'
+                    },
                 ]
             }
         }
