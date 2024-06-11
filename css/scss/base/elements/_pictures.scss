@@ -70,13 +70,11 @@ figure,
     }
 }
 
-a {
-    &[data-fancybox] {
-        display: block;
+[data-fancybox] {
+    display: block;
 
-        &.display-flex {
-            display: flex;
-        }
+    &.display-flex {
+        display: flex;
     }
 }
 
