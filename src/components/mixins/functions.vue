@@ -9,15 +9,13 @@ export default {
     emits: ['data-fetched'],
     methods: {
         async get(query, like = null) {
-            try {
-                var request = `${this.$mainURL}:3000/api/db/getQuery?query=${query}`;
-                if (like) request += `&like=${like}`;
+            var request = `${this.$mainURL}:3000/api/db/getQuery?query=${query}`;
+            if (like) request += `&like=${like}`;
 
-                var response = await axios.get(request);
-                return response.data;
-            } catch (err) {
-                return err;
-            }            
+            var response = await axios.get(request);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });         
         },
         async fetchDB(request, values = {}, credentials = {}) {
             var response = await axios.get(`${this.$mainURL}:3000/api/db/${request}`, values, credentials);
@@ -48,22 +46,16 @@ export default {
             return false;
         },
         async getSeasons(showID) {
-            try {
-                const response = await this.fetchDB(`getSeasons?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
+            const response = await this.fetchDB(`getSeasons?showID=${showID}`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         async getEpisodes(showID) {
-            try {
-                const response = await this.fetchDB(`getEpisodes?showID=${showID}`);
-                return response.data;                
-            } catch (error) {
-                // Benutzer ist nicht angemeldet, leiten Sie ihn zur Login-Seite weiter
-                console.log(error);
-            }
+            const response = await this.fetchDB(`getEpisodes?showID=${showID}`);
+            return new Promise((resolve) => {
+                resolve(response.data);
+            });
         },
         async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, watchlist = null, mediaWatched = null) {
             var mediaInfos = [];
@@ -138,7 +130,9 @@ export default {
                     }
                 }
             }
-            return mediaInfos;
+            return new Promise((resolve) => {
+                resolve(mediaInfos);
+            });
         },
         async getGenre() {
             const response = await this.fetchDB(`allGenre`);
@@ -148,8 +142,11 @@ export default {
         },
         async getGenreName(genreID) {
             const response = await this.fetchDB(`genreNameByID?id=${genreID}`);
-            return response.data[0].genre_name;
+            return new Promise((resolve) => {
+                resolve(response.data[0].genre_name);
+            });
         },
+
         toggleMainMenu(event) {
             event.preventDefault();
             const body = document.body;
@@ -339,7 +336,9 @@ export default {
                 const userID = response.data.user.id;
                 const newResponse = await this.fetchDB(`getFromWatchlist?userID=${userID}&mediaID=${mediaID}`);
                 var status = newResponse.data;
-                return status;
+                return new Promise((resolve) => {
+                    resolve(status);
+                });
             } catch(err) {
                 console.log(err);
                 return 0;
