@@ -26,7 +26,7 @@
                                     <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-if="highlight.highlight_status === 1" v-bind:checked="true">
                                     <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-else>
                                 </td>
-                                <td><button :data-src="`#delete-highlight-${highlight.highlight_id}`" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button></td>
+                                <td><button :data-src="`#delete-highlight-${highlight.highlight_id}`" class="btn btn-alert icon-only icon-trash marg-no" data-fancybox></button></td>
                             
                                 <div :id="`delete-highlight-${highlight.highlight_id}`" style="display:none;">
                                     <p v-html="langSnippet('delete_highlight', highlight.title)"></p>

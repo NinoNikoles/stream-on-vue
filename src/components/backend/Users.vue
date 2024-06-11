@@ -11,7 +11,9 @@
                     </div>
 
                     <div class="col6 text-right">
-                        <button data-src="#add-user" class="btn btn-small btn-success icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
+                        <p>
+                            <button data-src="#add-user" class="btn btn-success btn-small icon-left icon-add-user" data-fancybox>{{ langSnippet('add_user') }}</button>
+                        </p>
                     </div>
 
                     <table v-if="users" class="rounded marg-no">
@@ -33,23 +35,23 @@
                                 <td class="desktop-only" v-else>User</td>
 
                                 <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-warning icon-only icon-pen marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-small btn-warning icon-only icon-pen marg-no" data-fancybox></button>
+                                    <button data-src="#edit-user" @click="selectUser(user)" :title="langSnippet('edit')" class="btn btn-warning icon-only icon-pen marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else></td>
 
                                 <td v-if="user.role === 'superadmin' && role === 'superadmin'">
-                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-warning icon-only icon-key marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else-if="user.role === 'admin' && role !== 'user' || user.role === 'user' && role !== 'user'">
-                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-small btn-warning icon-only icon-key marg-no" data-fancybox></button>
+                                    <button data-src="#change-password" @click="selectUser(user)" :title="langSnippet('change_password')" class="btn btn-warning icon-only icon-key marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else></td>
 
                                 <td v-if="user.role !== 'superadmin' && user.username !== this.$user.username">
-                                    <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-small btn-alert icon-only icon-trash marg-no" data-fancybox></button>
+                                    <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-alert icon-only icon-trash marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else></td>
                             </tr>
@@ -78,7 +80,7 @@
                                 <input v-model="newUser.role" type="checkbox" id="newUserrole" name="newUserrole"></label>
                             </p>
                             <p class="text-right">
-                                <button @click="addUser($event)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
+                                <button @click="addUser($event)" class="btn btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="register">{{ langSnippet('save') }}</button>
                             </p>
                         </form>
                     </div>
@@ -99,7 +101,7 @@
                                 <input v-model="selectedUser.role" type="checkbox" id="role" name="role" ></label>
                             </p>
                             <p class="text-right">
-                                <button @click="editUser(selectedUser)" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
+                                <button @click="editUser(selectedUser)" class="btn btn-success icon-left icon-save" :title="langSnippet('save')" type="submit" name="save">{{ langSnippet('save') }}</button>
                             </p>
                         </form>
                     </div>
@@ -122,7 +124,7 @@
                                 </span>
                             </p>
                             <p class="text-right marg-no">
-                                <button @click="changeUserPassword(selectedUser.id)" type="submit" class="btn btn-small btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
+                                <button @click="changeUserPassword(selectedUser.id)" type="submit" class="btn btn-success icon-left icon-save" :title="langSnippet('save')">{{ langSnippet('save') }}</button>
                             </p>
                         </form>
                     </div>
@@ -130,7 +132,7 @@
                     <div id="delete-user" style="display:none;">
                         <p v-html="langSnippet('delete_user', selectedUser.name)"></p>
                         <p class="text-right marg-no">
-                            <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-small btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
+                            <button type="submit" @click="deleteUser(selectedUser.id)" class="btn btn-alert icon-left icon-trash" :title="langSnippet('delete')">{{ langSnippet('delete') }}</button>
                         </p>
                     </div>
                 </div>

@@ -41,7 +41,7 @@
                                     <button
                                     href="#renameFolder"
                                     data-fancybox @click="setOldFolder(media.name)"
-                                    class="btn btn-small btn-transparent icon-only icon-pen marg-no"
+                                    class="btn btn-transparent icon-only icon-pen marg-no"
                                     :title="langSnippet('rename_folder')"></button>
                                 </td>
 
@@ -50,7 +50,7 @@
                                     <button
                                     href="#deleteFolder"
                                     data-fancybox
-                                    class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
+                                    class="btn btn-alert icon-only icon-trash marg-bottom-no"
                                     :title="langSnippet('delete')"
                                     @click="selectFolder(media.path)"></button>
                                 </td>
@@ -68,7 +68,7 @@
                                     :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
-                                    class="btn btn-small btn-transparent icon-only icon-eye marg-no"></button>
+                                    class="btn btn-transparent icon-only icon-eye marg-no"></button>
                                 </td>
 
                                 <!--- Select file button --->
@@ -76,7 +76,7 @@
                                     <button
                                     href="#"
                                     :title="langSnippet('select')"
-                                    class="btn btn-small btn-success icon-only icon-check marg-bottom-no"
+                                    class="btn btn-success icon-only icon-check marg-bottom-no"
                                     @click="saveMediaPath(`${media.path}`, $event)"></button>
                                 </td>
                             </tr>
@@ -95,14 +95,14 @@
                                     :href="`${$mainURL}:8080/${media.path.replace('public/', '')}`"
                                     :title="langSnippet('preview')"
                                     data-fancybox
-                                    class="btn btn-small btn-transparent icon-only icon-eye marg-no"></button>
+                                    class="btn btn-transparent icon-only icon-eye marg-no"></button>
                                 </td>
 
                                 <!--- Delete file button --->
                                 <td class="text-right">
                                     <button href="#deleteFile"
                                     data-fancybox
-                                    class="btn btn-small btn-alert icon-only icon-trash marg-bottom-no"
+                                    class="btn btn-alert icon-only icon-trash marg-bottom-no"
                                     :title="langSnippet('delete')"
                                     @click="selectFile(media.path, media.name)"></button>
                                 </td>
@@ -150,7 +150,7 @@
                     <span v-if="folderExists" class="text-alert formfield-alert">{{ langSnippet('folder_already_exists') }}</span>
                 </p>
                 <p class="text-right marg-no">
-                    <button type="submit" class="btn btn-small btn-success icon-left icon-folder marg-no">{{ langSnippet('create_folder') }}</button>
+                    <button type="submit" class="btn btn-success btn-small icon-left icon-folder marg-no">{{ langSnippet('create_folder') }}</button>
                 </p>
             </form>
         </div>
@@ -165,7 +165,7 @@
                     <span v-if="folderExists" class="text-alert">{{ langSnippet('folder_name_not_empty') }}</span>
                 </p>
                 <p class="text-right marg-no">
-                    <button type="submit" class="btn btn-small btn-success icon-left icon-folder marg-no">{{ langSnippet('rename_folder') }}</button>
+                    <button type="submit" class="btn btn-success btn-small icon-left icon-folder marg-no">{{ langSnippet('rename_folder') }}</button>
                 </p>
             </form>
         </div>
@@ -175,7 +175,7 @@
                 {{ langSnippet('delete_folder') }}
             </p>
             <p class="text-right marg-no">
-                <button type="submit" @click="deleteFolder(selectedFolder)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+                <button type="submit" @click="deleteFolder(selectedFolder)" class="btn btn-alert btn-small icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
             </p>
         </div>
 
@@ -185,7 +185,7 @@
                 {{ langSnippet('delete_file') }}
             </p>
             <p class="text-right marg-no">
-                <button type="submit" @click="deleteFile(selectedFile)" class="btn btn-small btn-alert icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
+                <button type="submit" @click="deleteFile(selectedFile)" class="btn btn-alert btn-small icon-left icon-trash marg-no">{{ langSnippet('delete') }}</button>
             </p>
         </div>
     </div>
