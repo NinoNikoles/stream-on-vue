@@ -28,7 +28,7 @@ header,#header,.header {
             min-height: var(--mnavheight);
 
             @include MQ(medium) {
-                width: 75%;
+                width: 80%;
             }
 
             &.right {
@@ -46,7 +46,7 @@ header,#header,.header {
             }
 
             @include MQ(medium) {
-                width: 25%;
+                width: 20%;
             }
         }
     }
