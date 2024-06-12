@@ -3,7 +3,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const http = require('http');
 const helmet = require('helmet');
-const morgan = require('morgan');
 const { port } = require('./config/config');
 const errorHandler = require('./middlewares/errorHandler');
 const sessionConfig = require('./middlewares/sessionConfig');
@@ -16,14 +15,13 @@ app.use(express.json({ limit: '10000mb' }));
 app.use(sessionConfig);
 app.use(bodyParser.json());
 app.use(helmet());
-app.use(morgan('combined'));
 
 const { dbSetup } = require('./backend/db-setup');
 dbSetup();
 
 // Routes
 const settingsRoutes = require('./backend/routes/settingsRoutes');
-const sessionRoutes = require('./backend/routes/seassionRoutes');
+const sessionRoutes = require('./backend/routes/sessionRoutes');
 const mediaRoutes = require('./backend/routes/mediaRoutes');
 const userRoutes = require('./backend/routes/userRoutes');
 const fileRoutes = require('./backend/routes/fileRoutes');
