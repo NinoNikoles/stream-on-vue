@@ -191,7 +191,8 @@ function formLabels() {
         'input[type="tel"]',
         'input[type="password"]',
         'select',
-        'textarea'
+        'textarea',
+        '.input'
     ];    
 
     inputTypes.forEach(function(type) {
