@@ -387,7 +387,7 @@ export default {
             }
         },
         updateCSS(colors, key) {
-            if (!key.endsWith('Light') || !key.endsWith('Dark')) {
+            if (!key.endsWith('Light') && !key.endsWith('Dark')) {
                 if ( colors[key] !== this.oldColors[key]) {
                     this.colors[key+'Light'] = this.lighten(colors[key], 0.2);
                     this.colors[key+'Dark'] = this.darken(colors[key], 0.2);

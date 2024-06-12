@@ -72,7 +72,8 @@ export default {
                     var dbColors = JSON.parse(response[0].setting_option);
 
                     for (var key in dbColors) {
-                        if (!key.endsWith('Light') || !key.endsWith('Dark')) {
+                        if (!key.endsWith('Light') && !key.endsWith('Dark')) {
+                            console.log(key);
                             document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}`, dbColors[key]);
                             document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}-light`, dbColors[key+'Light']);
                             document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}-dark`, dbColors[key+'Dark']);
