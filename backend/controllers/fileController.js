@@ -1,4 +1,4 @@
-const mediaBrowserAPI = require('../mediaBrowserAPI');
+const mediaBrowserAPI = require('../mediabrowserAPI');
 
 exports.getFolderStructure = mediaBrowserAPI.getFolderStructure;
 exports.createFolder = mediaBrowserAPI.createFolder;
