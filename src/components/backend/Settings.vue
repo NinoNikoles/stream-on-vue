@@ -88,8 +88,9 @@
                 <hr>
 
                 <section class="col12">
+                    
                     <div class="col12">
-                        <h2 class="h4 medium marg-bottom-s">Farben</h2>
+                        <h2 class="h4 medium marg-bottom-s">{{ langSnippet('colors') }}</h2>
                     </div>
 
                     <div class="col12 row" v-if="colors">
@@ -97,7 +98,7 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="primary-color">Primary</label>
+                                        <label for="primary-color">{{ langSnippet('primary') }}</label>
                                         <span class="input" id="primary-color" name="primary-color">
                                             {{ colors.primary }}
                                         </span>
@@ -109,7 +110,7 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="primaryLight-color">Primary Light</label>
+                                        <label for="primaryLight-color">{{ langSnippet('primary') }} - {{ langSnippet('light') }}</label>
                                         <span class="input" id="primaryLight-color" name="primaryLight-color">
                                             {{ colors.primaryLight }}
                                         </span>
@@ -121,7 +122,7 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="primaryDark-color">Primary Dark</label>
+                                        <label for="primaryDark-color">{{ langSnippet('primary') }} - {{ langSnippet('dark') }}</label>
                                         <span class="input" id="primaryDark-color" name="primaryDark-color">
                                             {{ colors.primaryDark }}
                                         </span>
@@ -136,7 +137,7 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="secondary-color">secondary</label>
+                                        <label for="secondary-color">{{ langSnippet('secondary') }}</label>
                                         <span class="input" id="secondary-color" name="secondary-color">
                                             {{ colors.secondary }}
                                         </span>
@@ -148,7 +149,7 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="secondaryLight-color">secondaryLight</label>
+                                        <label for="secondaryLight-color">{{ langSnippet('secondary') }} - {{ langSnippet('light') }}</label>
                                         <span class="input" id="secondaryLight-color" name="secondaryLight-color">
                                             {{ colors.secondaryLight }}
                                         </span>
@@ -160,11 +161,49 @@
                             <div class="col12 field-wrap">
                                 <p>
                                     <span class="input-wrap color-wrap">
-                                        <label for="secondaryDark-color">secondaryDark</label>
+                                        <label for="secondaryDark-color">{{ langSnippet('secondary') }} - {{ langSnippet('dark') }}</label>
                                         <span class="input" id="secondaryDark-color" name="secondaryDark-color">
                                             {{ colors.secondaryDark }}
                                         </span>
                                         <input type="color" disabled id="secondaryDark-color-select" name="secondaryDark-color-select" v-model="colors.secondaryDark" /> 
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col3 column">
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap color-wrap">
+                                        <label for="tertiary-color">{{ langSnippet('tertiary') }}</label>
+                                        <span class="input" id="tertiary-color" name="tertiary-color">
+                                            {{ colors.tertiary }}
+                                        </span>
+                                        <input type="color" id="tertiary-color-select" name="tertiary-color-select" v-model="colors.tertiary" /> 
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap color-wrap">
+                                        <label for="tertiaryLight-color">{{ langSnippet('tertiary') }} - {{ langSnippet('light') }}</label>
+                                        <span class="input" id="tertiaryLight-color" name="tertiaryLight-color">
+                                            {{ colors.tertiaryLight }}
+                                        </span>
+                                        <input type="color" disabled id="tertiaryLight-color-select" name="tertiaryLight-color-select" v-model="colors.tertiaryLight" /> 
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="col12 field-wrap">
+                                <p>
+                                    <span class="input-wrap color-wrap">
+                                        <label for="tertiaryDark-color">{{ langSnippet('tertiary') }} - {{ langSnippet('dark') }}</label>
+                                        <span class="input" id="tertiaryDark-color" name="tertiaryDark-color">
+                                            {{ colors.tertiaryDark }}
+                                        </span>
+                                        <input type="color" disabled id="tertiaryDark-color-select" name="tertiaryDark-color-select" v-model="colors.tertiaryDark" /> 
                                     </span>
                                 </p>
                             </div>
@@ -215,6 +254,9 @@ export default {
                 secondary: '',
                 secondaryLight: '',
                 secondaryDark: '',
+                tertiary: '',
+                tertiaryLight: '',
+                tertiaryDark: '',
             },
             oldColors: {
                 primary: '',
@@ -223,6 +265,9 @@ export default {
                 secondary: '',
                 secondaryLight: '',
                 secondaryDark: '',
+                tertiary: '',
+                tertiaryLight: '',
+                tertiaryDark: '',
             }
         };
     },
@@ -328,23 +373,38 @@ export default {
                 this.colors.primary = dbColors.primary;
                 this.colors.primaryLight = dbColors.primaryLight;
                 this.colors.primaryDark = dbColors.primaryDark;
+
                 this.colors.secondary = dbColors.secondary;
                 this.colors.secondaryLight = dbColors.secondaryLight;
                 this.colors.secondaryDark = dbColors.secondaryDark;
+
+                this.colors.tertiary = dbColors.tertiary;
+                this.colors.tertiaryLight = dbColors.tertiaryLight;
+                this.colors.tertiaryDark = dbColors.tertiaryDark;
             } else {
                 var primary = this.getHexColor('--primary');
                 var primaryLight = this.getHexColor('--primary-light');
                 var primaryDark = this.getHexColor('--primary-dark');
+
                 var secondary = this.getHexColor('--secondary');
                 var secondaryLight = this.getHexColor('--secondary-light');
                 var secondaryDark = this.getHexColor('--secondary-dark');
+
+                var tertiary = this.getHexColor('--tertiary');
+                var tertiaryLight = this.getHexColor('--tertiary-light');
+                var tertiaryDark = this.getHexColor('--tertiary-dark');
                 
                 this.colors.primary = primary;
                 this.colors.primaryLight = primaryLight;
                 this.colors.primaryDark = primaryDark;
+
                 this.colors.secondary = secondary;
                 this.colors.secondaryLight = secondaryLight;
                 this.colors.secondaryDark = secondaryDark;
+
+                this.colors.tertiary = tertiary;
+                this.colors.tertiaryLight = tertiaryLight;
+                this.colors.tertiaryDark = tertiaryDark;
             }
 
             for (var key in this.colors) {
