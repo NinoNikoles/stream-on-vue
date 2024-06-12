@@ -30,7 +30,7 @@ app.use('/api/db', settingsRoutes);
 app.use('/api/db', sessionRoutes);
 app.use('/api/db', mediaRoutes);
 app.use('/api/db', userRoutes);
-app.use('/api', fileRoutes);
+app.use('', fileRoutes);
 
 // WebSocket setup
 const server = http.createServer(app);
