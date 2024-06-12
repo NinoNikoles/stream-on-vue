@@ -121,6 +121,20 @@ const langs = [
             //Delete
             'delete_highlight': 'Do you want to remove "<strong>$content</strong>" from highlights?',
             'delete_user': 'Do you really want to delete the user "<strong>$content</strong>"?',
+
+            // Colors
+            'color': 'Color',
+            'colors': 'Colors',
+            'light': 'light',
+            'dark': 'dark',
+
+            'primary': 'Primary',
+            'secondary': 'Secondary',
+            'tertiary': 'Tertiary',
+
+            'white': 'White',
+            'black': 'Black',
+            'grey': 'Grey',
         }
         
     },
@@ -244,6 +258,20 @@ const langs = [
             //Delete
             'delete_highlight': 'Möchtest du "<strong>$content</strong>" aus den Highlights entfernen?',
             'delete_user': 'Möchtest du den Benutzer "<strong>$content</strong>" wirklich löschen?',
+
+            // Colors
+            'color': 'Farbe',
+            'colors': 'Farben',
+            'light': 'hell',
+            'dark': 'dunkel',
+
+            'primary': 'Primär',
+            'secondary': 'Sekundär',
+            'tertiary': 'Tertiär',
+
+            'white': 'Weiß',
+            'black': 'Schwarz',
+            'grey': 'Grau',
         }
     }
 ]
