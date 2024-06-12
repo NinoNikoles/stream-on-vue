@@ -108,3 +108,17 @@ label {
 .fancybox__container {
     --fancybox-bg: rgb(24,24,27, 90%) !important;
 }
+
+hr {
+    margin: {
+        top: rem-calc($space-base*2);
+        bottom: rem-calc($space-base*2);
+    }
+
+    @include MQ(medium) {
+        margin: {
+            top: rem-calc($space-base*3);
+            bottom: rem-calc($space-base*3);
+        }
+    }
+}
