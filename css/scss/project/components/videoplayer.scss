@@ -329,7 +329,7 @@
             bottom: 100%;
             left: 0;
             z-index: 0;
-            @include transitions(padding $transition-default, margin $transition-default);
+            @include transitions(padding $transition-default, margin $transition-default, bottom $transition-default);
 
             .vjs-progress-holder {
                 background: {
@@ -383,7 +383,7 @@
 
                 .vjs-play-progress {
                     background: {
-                        color: var(--white);
+                        color: var(--primary);
                     }
                     height: 100%;
                     position: absolute;
@@ -394,7 +394,7 @@
                     &::after {
                         content: "";
                         background: {
-                            color: var(--white);
+                            color: var(--primary-light);
                         }
                         border-radius: rem-calc(100);
                         width: rem-calc(12);
@@ -418,12 +418,8 @@
 
             &:hover {
                 padding: {
-                    top: rem-calc(13);
-                    bottom: rem-calc(13);
-                }
-                margin: {
-                    top: rem-calc(13);
-                    bottom: rem-calc(13);
+                    top: rem-calc(7) !important;
+                    bottom: rem-calc(7) !important;
                 }
 
                 .vjs-progress-holder {
