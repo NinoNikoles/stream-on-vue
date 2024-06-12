@@ -76,7 +76,8 @@ label {
 [type="file"],
 [data-type="file"],
 select,
-textarea {
+textarea,
+.input {
     display: block;
     background: {
         color: var(--input-bg);
@@ -462,6 +463,28 @@ select {
         }
 
         &-select { &::after {content: $icon-chevron-down; } }
+    }
+}
+
+input[type="color"] {
+    cursor: pointer;
+}
+
+.color-wrap {
+    input[type="color"] {
+        aspect-ratio: 1;
+        border: {
+            top: none;
+            right: 2px solid transparent;
+            bottom: none;
+            left: 2px solid transparent;
+        }
+        width: auto;
+        height: 100%;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 }
 
