@@ -245,12 +245,9 @@ export default {
             const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
             var genre = response.data;
 
-            return new Promise((resolve, reject) => {
-                if (genre.length > 0) {
-                    resolve(true);
-                } else {
-                    reject(false);
-                }
+            return new Promise((resolve) => {
+                if (genre.length > 0) resolve(true);
+                resolve(false);
             });
         }
     },

@@ -180,6 +180,7 @@ export default {
         async outPutMovies() {
             var order = 'title';
             const response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=media_type="movie"&orderBy=${order}&order=ASC`);
+
             return new Promise((resolve) => {
                 resolve(response.data);
             });
@@ -192,12 +193,9 @@ export default {
             const response = await axios.get(`${this.$mainURL}:3000/api/db/allGenre`);
             var genre = response.data;
 
-            return new Promise((resolve, reject) => {
-                if (genre.length > 0) {
-                    resolve(true);
-                } else {
-                    reject(false);
-                }
+            return new Promise((resolve) => {
+                if (genre.length > 0) resolve(true);
+                resolve(false);
             });
         }
     },
