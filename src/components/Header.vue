@@ -61,7 +61,7 @@
                     </button>
 
                     <!-- Theme Switch button -->
-                    <a href="#" id="theme-switch" class="icon" @click="themeChange($event)"></a>
+                    <!-- <a href="#" id="theme-switch" class="icon" @click="themeChange($event)"></a> -->
 
                     <!-- Mobile Menu Button -->
                     <a href="#" @click="toggleMainMenu($event)" id="menu-button" class="nav-trigger menu-button" title="Menü öffnen">
