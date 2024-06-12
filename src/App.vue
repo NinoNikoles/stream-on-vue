@@ -63,6 +63,25 @@ export default {
             } catch (e) {
                 console.log(e);
             }        
+        },
+        async colors() {
+            try {
+                var response = await this.get("SELECT setting_option FROM settings WHERE setting_name = 'colors'");
+
+                if (response[0].setting_option != undefined || response[0].setting_option != null) {
+                    var dbColors = JSON.parse(response[0].setting_option);
+
+                    for (var key in dbColors) {
+                        if (!key.endsWith('Light') || !key.endsWith('Dark')) {
+                            document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}`, dbColors[key]);
+                            document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}-light`, dbColors[key+'Light']);
+                            document.querySelector('html[data-theme="dark"]').style.setProperty(`--${key}-dark`, dbColors[key+'Dark']);
+                        }
+                    }
+                }
+            } catch(err) {
+                console.log(err);
+            }
         }
     },
     updated() {
@@ -83,6 +102,7 @@ export default {
     },
     async mounted() {
         await this.getDesign();
+        await this.colors();
         Fancybox.bind('[data-fancybox]', {
             dragToClose: false,
         });
