@@ -227,7 +227,8 @@ async function initSettings(db) {
                         ['api_lang', 'en-US'],
                         ['site_title', 'Stream On'],
                         ['enable_edit_btn', 'false'],
-                        ['design', 'false']
+                        ['design', 'false'],
+                        ['colors', null]
                     ];
 
                     const stmt = db.prepare('INSERT INTO settings (setting_name, setting_option) VALUES (?, ?)');
