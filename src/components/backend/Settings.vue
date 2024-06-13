@@ -88,7 +88,7 @@
                 <hr>
 
                 <section class="col12">
-                    
+
                     <div class="col12">
                         <h2 class="h4 medium marg-bottom-s">{{ langSnippet('colors') }}</h2>
                     </div>
@@ -211,9 +211,18 @@
                     </div>
 
                     <div class="col12">
-                        <p class="text-right">
-                            <button @click="updateColors($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">{{ langSnippet('save') }}</button>
-                        </p>
+                        <div class="row text-right">
+                            <span class="column">
+                                <p>
+                                    <button @click="resetColors($event)" class="btn btn-small btn-warning icon-left icon-replay loading" :value="langSnippet('reset')">{{ langSnippet('reset') }}</button>
+                                </p>
+                            </span>
+                            <span class="column">
+                                <p>
+                                    <button @click="updateColors($event)" class="btn btn-small btn-success icon-left icon-save loading" :value="langSnippet('save')">{{ langSnippet('save') }}</button>
+                                </p>
+                            </span>
+                        </div>
                     </div>
 
                 </section>
@@ -444,6 +453,21 @@ export default {
                 this.enableButton(saveButton);
             } catch(err) {
                 console.log(err);
+            }
+        },
+        resetColors() {
+            document.documentElement.style = "";
+
+            for (var key in this.colors) {
+                if (!key.endsWith('Light') && !key.endsWith('Dark')) {                    
+                    this.colors[key] = this.getHexColor(`--${key}`);
+                    this.colors[key+'Light'] = this.lighten(this.colors[key], 0.2);
+                    this.colors[key+'Dark'] = this.darken(this.colors[key], 0.2);
+
+                    this.oldColors[key] = this.colors[key];
+                    this.oldColors[key+'Light'] = this.colors[key+'Light'];
+                    this.oldColors[key+'Dark'] = this.colors[key+'Dark'];
+                }
             }
         },
         updateCSS(colors, key) {
