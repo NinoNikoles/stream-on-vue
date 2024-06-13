@@ -54,12 +54,6 @@ nav.header-menu-main {
         left: 0;
     }
     @include transitions(width $transition-default, min-width $transition-default);
-
-    
-
-    &-wrap {
-
-    }
 }
 
 .backend-content {
