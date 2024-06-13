@@ -20,7 +20,7 @@ debounceScroll = function(e){
 };
 
 function domObserver() {
-    function observeDOMChanges(targetNode, callback) {
+    function observeDOMChangesChilds(targetNode, callback) {
         // Erstellen eines MutationObservers mit einer Callback-Funktion
         const observer = new MutationObserver((mutationsList, observer) => {
             // Durchlaufe jede Mutation in der Liste
@@ -32,9 +32,45 @@ function domObserver() {
                 }
             }
         });
+
+        const observerClasses = new MutationObserver((mutationsList, observer) => {
+            // Durchlaufe jede Mutation in der Liste
+            for (const mutation of mutationsList) {
+                // Führe die Callback-Funktion aus, wenn sich die Struktur des Zielknotens ändert
+                if (mutation.attributeName === 'class' && mutation.type === 'attributes') {
+                    callback();
+                    break; // Beende die Schleife, sobald eine Änderung festgestellt wurde
+                }
+            }
+        });
       
         // Konfigurationsoptionen für den Observer
         const config = { childList: true, subtree: true };
+        const configClasses = { attributes: true, attributeFilter: ['class'] };
+      
+        // Starte die Überwachung des Zielknotens mit den angegebenen Konfigurationsoptionen
+        observer.observe(targetNode, config);
+        observerClasses.observe(targetNode, configClasses);
+      
+        // Rückgabe des Observers für spätere Verwendung oder Anhalten der Überwachung
+        return observer;
+    }
+
+    function observeDOMChangesClasses(targetNode, callback) {
+        // Erstellen eines MutationObservers mit einer Callback-Funktion
+        const observer = new MutationObserver((mutationsList, observer) => {
+            // Durchlaufe jede Mutation in der Liste
+            for (const mutation of mutationsList) {
+                // Führe die Callback-Funktion aus, wenn sich die Struktur des Zielknotens ändert
+                if (mutation.attributeName === 'class' && mutation.type === 'attributes') {
+                    callback();
+                    break; // Beende die Schleife, sobald eine Änderung festgestellt wurde
+                }
+            }
+        });
+      
+        // Konfigurationsoptionen für den Observer
+        const config = { attributes: true, attributeFilter: ['class'] };
       
         // Starte die Überwachung des Zielknotens mit den angegebenen Konfigurationsoptionen
         observer.observe(targetNode, config);
@@ -46,6 +82,7 @@ function domObserver() {
     // Beispielaufruf der Funktion
     // Zielknoten, dessen Struktur überwacht werden soll
     const ambientNode = document.getElementById('media-content');
+    const body = document.body;
 
     const windowCallback = () => {
         mobileBodyHeightFix();
@@ -54,8 +91,8 @@ function domObserver() {
         ambientInit();
     }
     
-    observeDOMChanges(document.body, windowCallback);
-    observeDOMChanges(ambientNode, ambientCallback);
+    observeDOMChangesClasses(body, windowCallback);
+    observeDOMChangesChilds(ambientNode, ambientCallback);
 }
 
 function resizeElementHeight() {
@@ -81,9 +118,11 @@ function resizeElementHeight() {
 function mobileBodyHeightFix() {
     var body = document.body;
     var navMain = document.getElementById('navMain');
+    var windowHeight = window.innerHeight;
 
     if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
-        const windowHeight = window.innerHeight;
+        if (body.style.height === `${windowHeight}px` || navMain.style.height === `${windowHeight-50}px` ) return;
+
         body.style.height = `${windowHeight}px`;
         if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
     } else {
@@ -159,7 +198,7 @@ function userMenuBtn() {
 
 function scrollTrigger() {
 
-    function checkVisibility(className, offset = 100) {
+    function checkVisibility(className, offset = 25) {
         var elements = document.querySelectorAll('.' + className);
 
         elements.forEach(function(element) {
@@ -346,9 +385,6 @@ function YTplayer() {
             }
 
             if (event.data == YT.PlayerState.ENDED && !done && highlight) {
-                highlightTexts.forEach(text => {
-                    text.style.opacity = 1;
-                });
                 setTimeout(hideVideo, 1000);
                 done = true;
             }
@@ -358,6 +394,9 @@ function YTplayer() {
             document.getElementById('player-wrap').style.opacity = '0';
             setTimeout(function() {
                 document.getElementById('player-wrap').style.display = 'none';
+                highlightTexts.forEach(text => {
+                    text.style.opacity = 1;
+                });
             }, 350);
         }
 
