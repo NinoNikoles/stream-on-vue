@@ -23,6 +23,22 @@
                         </div>
                     </div>
 
+                    <!-- Profil -->
+                    <button id="user-menu-btn">
+                        <figure class="square">
+                            <img v-if="this.$user.img" :src="`${this.$user.img}`" loading="lazy" alt="" id="userIcon">
+                        </figure>
+
+                        <menu class="user-menu">
+                            <ul>
+                                <li><router-link :to="`/b/settings`" :title="langSnippet('settings')" @click="closeMainMenu()">{{ langSnippet('settings') }}</router-link></li>
+                                
+                                <li class="menu-item"><router-link :to="`/u/${this.$user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
+                                <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
+                            </ul>
+                        </menu>
+                    </button>
+
                     <!-- Navigation -->
                     <nav id="navMain" class="header-menu-main" style="top: 50px; height: calc(widescreen - 50px);">
                         <ul class="menu">
@@ -43,22 +59,6 @@
                             </li>
                         </ul>
                     </nav>
-
-                    <!-- Profil -->
-                    <button id="user-menu-btn">
-                        <figure class="square">
-                            <img v-if="this.$user.img" :src="`${this.$user.img}`" loading="lazy" alt="" id="userIcon">
-                        </figure>
-
-                        <menu class="user-menu">
-                            <ul>
-                                <li><router-link :to="`/b/settings`" :title="langSnippet('settings')" @click="closeMainMenu()">{{ langSnippet('settings') }}</router-link></li>
-                                
-                                <li class="menu-item"><router-link :to="`/u/${this.$user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
-                                <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
-                            </ul>
-                        </menu>
-                    </button>
 
                     <!-- Theme Switch button -->
                     <!-- <a href="#" id="theme-switch" class="icon" @click="themeChange($event)"></a> -->
