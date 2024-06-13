@@ -13,8 +13,10 @@
         <div class="col12 backend-content pad-top-xl pad-bottom-l">
             <div class="innerWrap" v-if="movie">
                 <div class="col7">
-                    <div class="col12"><h1>{{ movie.title }}</h1></div>
-                    <div v-if="movie.tagline" class="col12">{{ movie.tagline }}</div>
+                    <div class="col12">
+                        <h1 v-if="movie.tagline">{{ movie.title }}<br>{{ movie.tagline }}</h1>
+                        <h1 v-else>{{ movie.title }}</h1>
+                    </div>
                     <div class="col12"><p>{{ movie.overview }}</p></div>
                     <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ movie.rating }}</p></div>
                     <div class="col5"><p><strong>{{ langSnippet('release_date') }}:</strong><br>{{ movie.release_date }}</p></div>
@@ -258,18 +260,17 @@ export default {
 
             this.genre = genreData;
         },
-        async getAllImages(mediaID) {
-            try {
-                var posters = await this.getPosters('movie', mediaID);
-                var backdrops = await this.getBackdrops('movie', mediaID);
-
-                this.allPosters = posters;
-                this.allBackdrops = backdrops;
-            } catch(err) {
-                console.log(err);
-                this.allPosters = '';
-                this.allBackdrops = '';
-            }
+        async getAllPosters(mediaID) {
+            var posters = await this.getPosters('movie', mediaID);
+            return new Promise((resolve) => {
+                resolve(posters);
+            });
+        },
+        async getAllBackdrops(mediaID) {
+            var backdrops = await this.getBackdrops('movie', mediaID);
+            return new Promise((resolve) => {
+                resolve(backdrops);
+            });
         },
         async savePoster() {
             var posterSelect = document.querySelector('input[name="poster"]:checked');
@@ -398,9 +399,10 @@ export default {
                     this.movie.tmdbID  // tmdbID hinzufügen, um das WHERE-Kriterium zu erfüllen
                 ];
             } else {
-                query = `UPDATE media SET title = ?, overview = ?, trailer = ? WHERE tmdbID = ?`;
+                query = `UPDATE media SET title = ?, tagline = ?, overview = ?, trailer = ? WHERE tmdbID = ?`;
                 data = [
                     this.movie.title,
+                    '',
                     this.movie.overview,
                     this.movie.trailer,
                     this.movie.tmdbID  // tmdbID hinzufügen, um das WHERE-Kriterium zu erfüllen
@@ -490,11 +492,13 @@ export default {
             const genres = JSON.parse(this.movie.genres);
             const collection = this.movie.collection;
             
-            await this.getAllImages(movieID);
             await this.getGenre(genres);
             await this.returnCollectionMovies(collection);
             await this.returnSimilarMovies(movieID);
+
             this.isHighlight = await this.checkForHighlight();
+            this.allPosters = await this.getAllPosters(movieID);
+            this.allBackdrops = await this.getAllBackdrops(movieID);
         });
     }
         
