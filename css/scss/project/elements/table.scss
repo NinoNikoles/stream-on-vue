@@ -22,6 +22,14 @@ table, .table {
             }
         }
     }
+
+    tbody, .tbody {
+        background-color: transparent;
+
+        tr, .tr {
+            background-color: var(--table-bg);
+        }
+    }
     
     td, .td {
         color: var(--font-color);
