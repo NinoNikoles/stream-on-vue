@@ -9,7 +9,7 @@
                     <h1>Genre</h1>
                 </div>
 
-                <div class="col12">
+                <div class="col12" v-if="apiCheck">
                     <table class="rounded marg-no" v-if="genre">
                         <thead>
                             <th class="desktop-only">ID</th>
@@ -25,6 +25,10 @@
                         </tbody>
                     </table>
                     <button @click="saveGenre" class="btn btn-success icon-left icon-add loading" id="add-genre" name="add-genre" v-else>Add</button>
+                </div>
+
+                <div class="col12" v-else>
+                    <p>Please finish the setup first.</p>
                 </div>
             </div>
         </div>
@@ -46,7 +50,8 @@ export default {
     data() {
         return {
             genre: null,
-            url: window.location.protocol + '//' + window.location.hostname
+            url: window.location.protocol + '//' + window.location.hostname,
+            apiCheck: false
         };
     },
     methods: {
@@ -85,16 +90,29 @@ export default {
                 console.log(error);
                 return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
             }
+        },
+        async apiKeyCheck() {
+            const response = await axios.get(`${this.$mainURL}:3000/api/db/getApiKey`);
+            var result = false;
+            if (response.data[0].setting_option !== null) result = true;
+
+            return new Promise((resolve) => {
+                resolve(result);
+            });
         }
     },
     async mounted() {
-        await this.outPutGenres().then(genres => {
-            if ( genres.length > 0 ) {
-                this.genre = genres;
-            } else {
-                this.genre = null;
-            }            
-        });
+        this.apiCheck = await this.apiKeyCheck();
+
+        if (this.apiCheck) {
+            await this.outPutGenres().then(genres => {
+                if ( genres.length > 0 ) {
+                    this.genre = genres;
+                } else {
+                    this.genre = null;
+                }            
+            });
+        }
     }
 };
 </script>
