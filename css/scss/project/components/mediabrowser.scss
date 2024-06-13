@@ -41,6 +41,11 @@
                     flex-grow: 1;
                 }
             }
+
+            .folder:last-of-type,
+            .folder:last-of-type {
+                margin-bottom: rem-calc($space-base);
+            }
         }
     }
 }
