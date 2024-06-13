@@ -26,7 +26,8 @@
                 <div class="col12 marg-top-s">
                     <div class="col12">
                         <div class="col-9">
-                            <p class="h2">{{ media.title }}</p>
+                            <p class="h2" v-if="media.tagline">{{ media.title }}<br>{{ media.tagline }}</p>
+                            <p class="h2" v-else>{{ media.title }}</p>
                         </div>
 
                         <div class="col-3">
