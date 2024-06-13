@@ -249,14 +249,16 @@
     }
 }
 
+.slider-headline {
+    @include MQ(medium) {
+        padding: {
+            right: rem-calc($grid-padding*2);
+            left: rem-calc($grid-padding*2);
+        }
+    }
+}
+
 .card-slider {
-   /* opacity: 0;
-    @include transition(opacity 1s ease-in 0.75s);
-
-    &.visible {
-        opacity: 1;
-    }*/
-
     .swiper-slide {
         height: auto;
         //flex-grow: 1;
