@@ -11,19 +11,52 @@ export default {
         };
     },
     methods: {
-        async tmdbApiRequest(request, query = null, append = null ) {
+        async tmdbApiRequest(request, query = null, append = null) {
             if ( this.API_KEY === null ) return false;
             var requestQuery = '';
             var requestLanguage = '';
             var requestAppend = '';
+            var data = '';
 
             if ( query ) requestQuery = `&query=${query}`;
             if ( this.LANGUAGE && this.LANGUAGE !== '') requestLanguage = `&language=${this.LANGUAGE}`;
             if ( append ) requestAppend = `&append_to_response=${append}`;
 
-            const response = await axios.get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}${requestAppend}`);
+            await axios
+            .get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestLanguage}${requestAppend}`)
+            .then(function (response) {
+                data = response;
+            })
+            .catch(function (error) {
+                console.log(error);
+                data = error;
+            });
+
             return new Promise((resolve) => {
-                resolve(response);
+                resolve(data);
+            });
+        },
+        async tmdbApiRequestNoLang(request, query = null, append = null) {
+            if ( this.API_KEY === null ) return false;
+            var requestQuery = '';
+            var requestAppend = '';
+            var data = '';
+
+            if ( query ) requestQuery = `&query=${query}`;
+            if ( append ) requestAppend = `&append_to_response=${append}`;
+
+            await axios
+            .get(`${this.TMDB_URL}/${request}?api_key=${this.API_KEY}${requestQuery}${requestAppend}`)
+            .then(function (response) {
+                data = response;
+            })
+            .catch(function (error) {
+                console.log(error);
+                data = error;
+            });
+
+            return new Promise((resolve) => {
+                resolve(data);
             });
         },
         async checkApiKey(key) {
@@ -99,14 +132,14 @@ export default {
         },
         // Thumbnails
         async getBackdrops(type, mediaID) {
-            const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
+            const response = await this.tmdbApiRequestNoLang(`${type}/${mediaID}/images`);
             return new Promise((resolve) => {
                 resolve(response.data.backdrops);
             });
         },
         // Poster
         async getPosters(type, mediaID) {
-            const response = await this.tmdbApiRequest(`${type}/${mediaID}/images`);
+            const response = await this.tmdbApiRequestNoLang(`${type}/${mediaID}/images`);
             return new Promise((resolve) => {
                 resolve(response.data.posters);
             });
