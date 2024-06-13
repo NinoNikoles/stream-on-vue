@@ -67,13 +67,13 @@
         <template v-if="availableSlider && allMedia">
             <div v-for="(slider, index) in availableSlider" :key="index" :class="`genre-slider genre-slider-${index} marg-top-l`">
                 <div class="col12">
-                    <div class="column column-space-2">
+                    <div class="column slider-headline">
                         <h3>{{ slider.genre.genre_name }}</h3>
                     </div>
 
-                    <div class="col12">
+                    <div class="col12 column swiper-wrap">
 
-                        <div class="swiper card-slider column column-space-2">
+                        <div class="swiper card-slider">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
