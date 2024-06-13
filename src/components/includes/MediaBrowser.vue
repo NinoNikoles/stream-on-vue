@@ -29,7 +29,7 @@
                         <template v-for="(media, index) in folderStructure.children" :key="index">
 
                             <!--- If type is folder --->
-                            <tr v-if="media.type === 'folder'">
+                            <tr v-if="media.type === 'folder'" class="folder">
                                 <td>
                                     <span class="marg-no">
                                         <a href="#" @click="changeDirectory(media.path, $event)" class="icon-left icon-folder marg-no">{{ media.name }} /</a>
