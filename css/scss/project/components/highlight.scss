@@ -1,7 +1,7 @@
 .highlight {
     &-wrapper {
         display: flex;
-        height: 100vh;
+        height: 90vh;
         margin: {
             bottom: rem-calc(-180);
         }
@@ -9,6 +9,7 @@
         overflow: hidden;
 
         @include MQ(medium) {
+            height: 100vh;
             margin: {
                 top: rem-calc(-50);
                 bottom: rem-calc(-180);
@@ -42,6 +43,8 @@
 
                 img {
                     height: 100%;
+                    object-fit: cover;
+                    object-position: center;
                 }
             }
         }
@@ -177,6 +180,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 object-fit: cover;
+                object-position: center;
             }
         }
 
