@@ -10,3 +10,43 @@ img {
         }
     }
 }
+
+.cropper-img {
+    display: block !important;
+    max-width: 100% !important;
+    // width: initial !important;
+    // height: initial !important;
+    // position: initial;
+    // aspect-ratio: initial;
+    transition: unset !important;
+    // object-fit: initial;
+    // object-position: initial;
+    // vertical-align: middle;
+}
+
+#cropper-preview {
+    overflow: hidden;
+    aspect-ratio: 1;
+//     max-width: 100% !important;
+//     width: 100% !important;
+//     height: auto !important;
+//     aspect-ratio: 1 !important;
+
+//     img {
+//         min-height: 100% !important;
+//     }
+}
+
+.cropper-container {
+    img {
+        // width: initial;
+        // height: initial;
+        // position: initial;
+        // aspect-ratio: initial;
+        // transition: unset;
+        transition: unset !important;
+        // object-fit: initial;
+        // object-position: initial;
+        // vertical-align: middle;
+    }
+}
