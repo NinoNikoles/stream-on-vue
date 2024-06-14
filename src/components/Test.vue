@@ -2,14 +2,23 @@
     <div class="innerWrap">
         <div class="col12">
             <p><button id="theme-switch" class="btn" @click="themeChange($event)">Change</button></p>
+            <input type="file" class="btn btn-primary hollow" @change="onImgSelect($event)" placeholder="Select img" style="width: auto;">
         </div>
 
-        <div class="col6 marg-right-col6">
+        <div class="col6 marg-right-col1">
         
-
-            <!-- <button class="btn" @click="bearbeiteJSON">JSON Bearbeiten</button> -->
+            <figure class="square">
+                <img v-if="selectedImg" id="image" class="cropper-img" :src="selectedImg" style="transition: unset !important;">
+            </figure>
+            
+            <button class="btn icon-only icon-add" @click="cropperZoom(0.1)"></button>
+            <button class="btn icon-only icon-minus" @click="cropperZoom(-0.1)"></button>
+            <button class="btn icon-only icon-save" @click="crop()"></button>
         </div>
 
+        <div class="col5">
+            <div v-if="selectedImg" class="" id="cropper-preview"><img id="image" class="cropper-img" :src="selectedImg" style="transition: unset !important;"></div>
+        </div>
         <div class="col6">
             <h1>Lorem ipsum dolor sit amet.</h1>
             <h2>Lorem ipsum dolor sit amet.</h2>
@@ -92,11 +101,10 @@
 </template>
   
 <script>
-// import axios from 'axios';
-import 'cropperjs/dist/cropper.css';
+import axios from 'axios';
+// import 'cropperjs/dist/cropper.css';
 import functions from './mixins/functions.vue';
 import Cropper from 'cropperjs';
-// import ImageLoader from './includes/ImageLoader.vue';
 
 export default {
     name: 'AppTest',
@@ -110,12 +118,14 @@ data() {
             url: window.location.protocol + '//' + window.location.hostname,
             allMedia: null,
             userWatchList: null,
-            file: null,
             selectedImg: null,
-            croppedImg: null,
-            cropperEl: null,
-            zoomVal: 0,
-            prevZoomVal: 0
+            cropperObj: {
+                el: null,
+                currentZoom: 0.5,
+                minZoom: 0.4,
+                maxZoom: 0.9,
+                cropped: null,
+            }
         };
     },
     methods: {
@@ -137,79 +147,55 @@ data() {
                 alert("Bitte wählen Sie ein Bild aus.");
             }
         },
-        cropper() {
+        async cropper() {
             const image = document.getElementById('image');
 
             const cropper = new Cropper(image, {
-                viewMode: 0,
+                viewMode: 1,
                 initialAspectRatio: 1/1,
                 aspectRatio: 1/1,
-                autoCropArea: 5,
+                restore: false,
+                preview: document.getElementById('cropper-preview'),
                 zoomOnWheel: false,
-                crop() {
-                    // console.log(event.detail);
-                    this.croppedImg = cropper.getCroppedCanvas().toDataURL();
-                    // console.log(this.croppedImg);
-                },
+                responsive: true,
+                movable: false,
             });
 
-            this.cropperEl = cropper;
+            this.cropperObj.el = cropper;
         },
-        cropperScale(slider) {
-            const currentValue = parseInt(slider.target.value);
-            var zoomValue = currentValue/100+1;
-            this.cropperEl.scale(zoomValue);
+        crop() {
+            this.cropperObj.cropped = this.cropperObj.el.getCroppedCanvas().toDataURL();
+            console.log(this.cropperObj.cropped);
+            this.$globalState.user.img = this.cropperObj.cropped;
 
-            this.prevZoomVal = currentValue;
-            this.zoomVal = currentValue;
-        },
-        async bearbeiteJSON() {
-            // JSON Datei URL
-            const jsonURL = '/media/test.json';
-            const response = await fetch(jsonURL);
-            console.log(response);
+            var query = 'UPDATE users SET img = ? WHERE id = ?';
+            var data = [
+                this.$globalState.user.img,
+                this.$globalState.user.id
+            ]
+
             try {
-                // Daten laden
-                
+                axios.post(`${this.$mainURL}:3000/api/db/postQuery`, { query, data });
 
-                if (response.ok) {
-                    // JSON Daten parsen
-                    const data = await response.json();
-                    console.log(data.uploads);
-
-                    // Neue Nummer generieren (die Länge des Arrays + 1)
-                    const neueNummer = data.uploads.length + 1;
-
-                    // Neuen Eintrag hinzufügen
-                    data.uploads.push({ "id": neueNummer, "image": 'Beispiel' });
-                    console.log(data);
-                    // Daten speichern
-                    await fetch(jsonURL, {
-                        method: 'POST',
-                        headers: {
-                        'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    });
-                } else if (response.status === 404) {
-                // JSON Datei existiert nicht, also erstellen
-                const newData = {
-                    eintraege: [{ nummer: 1, string: 'Beispiel' }]
-                };
-
-                // Daten speichern
-                await fetch(jsonURL, {
-                    method: 'PUT',
-                    headers: {
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newData)
-                });
-                }
-            } catch (error) {
-                console.error('Fehler beim Bearbeiten der JSON-Datei:', error);
+            } catch(err) {
+                console.log(err);
             }
         },
+        async cropperZoom(zoom) {
+            if (zoom > 0) {
+                if (!(this.cropperObj.currentZoom <= this.cropperObj.maxZoom)) return;
+                this.cropperObj.el.zoom(zoom);
+                this.cropperObj.currentZoom = this.cropperObj.currentZoom+zoom;
+            } else if (zoom < 0) {
+                if (!(this.cropperObj.currentZoom >= this.cropperObj.minZoom)) return;
+                this.cropperObj.el.zoom(zoom);
+                this.cropperObj.currentZoom = this.cropperObj.currentZoom+zoom;
+            }
+            console.log(this.cropperObj.currentZoom);
+        },
     },
+    async mounted() {
+        // await this.cropper();
+    }
 };
 </script>
