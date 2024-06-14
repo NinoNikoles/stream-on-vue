@@ -143,7 +143,7 @@ export default {
     },
     methods: {
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.$user.id, mediaID, buttonID);
+            this.watchListTrigger(this.$globalState.user.id, mediaID, buttonID);
         },       
     }
 }

@@ -69,7 +69,7 @@ export default {
 
             query +=
             ` FROM media
-            LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${this.$user.id}
+            LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${this.$globalState.user.id}
             LEFT JOIN genre ON EXISTS (
                 SELECT 1
                 FROM json_each(media.genres) AS json_genre
@@ -78,11 +78,11 @@ export default {
 
             // Wenn nicht alle Medien ausgegeben werden sollen
             if ( !mediaWatched ) query += `
-            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$user.id}`;
+            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$globalState.user.id}`;
             
             // Wenn NUR geschaute Medien ausgegeben werden sollen
             if ( mediaWatched === 1 ) query += `
-            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$user.id}`;
+            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$globalState.user.id}`;
 
             // Wenn bestimmte Medien ausgewählt werden sollen
             if ( type || ids || watchlist === 1 ) query += `
@@ -409,11 +409,11 @@ export default {
         //-- API --
         async getCurrentUserInfos() {
             try {
-                var response = await this.fetchDB(`getUser?userID=${this.$user.id}`);
+                var response = await this.fetchDB(`getUser?userID=${this.$globalState.user.id}`);
                 const user = response.data[0];
 
-                this.$user.activeImg = `/media/avatar.webp`;
-                if ( user.img !== '-1' ) this.$user.activeImg = user.img;
+                this.$globalState.user.activeImg = `/media/avatar.webp`;
+                if ( user.img !== '-1' ) this.$globalState.user.activeImg = user.img;
             } catch (error) {
                 console.error(error);
                 return [];
@@ -428,9 +428,9 @@ export default {
         async logout_function() {
             await this.postDB(`logout`, { username: '', role: ''}, { withCredentials: true })
             .then(() => {
-                this.$user.username = null;
-                this.$user.role = null;
-                this.$user.isLoggedIn = false;
+                this.$globalState.user.username = null;
+                this.$globalState.user.role = null;
+                this.$globalState.user.isLoggedIn = false;
                 window.location.href = '/';
             });
         },

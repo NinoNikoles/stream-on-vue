@@ -12,7 +12,7 @@
                 <div class="col5 marg-right-col1">
                     <div class="col12" v-if="!selectedImg">
                         <figure class="square userImgContainer">
-                            <img :src="`${$user.img}`"  id="image" title="">
+                            <img :src="`${$globalState.user.img}`"  id="image" title="">
                             <span class="text-center"><i class="icon-only icon-image marg-no"></i><br><span class="marg-no">Select Img</span></span>
                             <input type="file" @change="onImgSelect">
                         </figure>
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="col6 pad-top-xs">
-                    <h1>{{ $user.username }}</h1>
+                    <h1>{{ $globalState.user.username }}</h1>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@ export default {
         },
     },
     async mounted() {
-        if ( this.$user.username !== this.$route.params.username ) {
+        if ( this.$globalState.user.username !== this.$route.params.username ) {
             this.userDBcheck = false;
             return;
         }

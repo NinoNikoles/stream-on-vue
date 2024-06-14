@@ -36,7 +36,7 @@ export default {
         },
         async backendRouter() {
             this.backendRoutes = this.routes.filter(route => {
-                if ( this.$user.role === 'superadmin' || this.$user.role === 'admin') return route.meta.backend;                
+                if ( this.$globalState.user.role === 'superadmin' || this.$globalState.user.role === 'admin') return route.meta.backend;                
             });
         },
         toggleBEmenu(event) {

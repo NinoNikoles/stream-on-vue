@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, reactive } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { mainURL, loadImg, truncate, fetchSessionStatus, fetchPageSettings } from './utils';
@@ -10,22 +10,28 @@ app.config.globalProperties.productionTip = false; // Setze den Wert auf true od
 const user = await fetchSessionStatus();
 const pageSettings = await fetchPageSettings();
 
+const globalState = reactive({
+    user: user,
+    pageSettings: pageSettings
+});
+
 app.config.globalProperties.$mainURL = mainURL;
 app.config.globalProperties.$loadImg = loadImg;
 app.config.globalProperties.$truncate = truncate;
-app.config.globalProperties.$user = user;
-app.config.globalProperties.$pageSettings = pageSettings;
+// app.config.globalProperties.$globalState.user = user;
+// app.config.globalProperties.$globalState.pageSettings = pageSettings;
+app.config.globalProperties.$globalState = globalState;
 
 app.mixin({
-    updated() {
+    async created() {
         this.$nextTick(async () => {
             window.initCustomJS();
 
             const user = await fetchSessionStatus();
             const pageSettings = await fetchPageSettings();
 
-            if (user) app.config.globalProperties.$user = user;
-            app.config.globalProperties.$pageSettings = pageSettings;
+            if (user) globalState.user = user;
+            globalState.pageSettings = pageSettings;
         });
     }
 });

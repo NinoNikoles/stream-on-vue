@@ -249,11 +249,11 @@ export default {
     data() {
         return {
             settings: null,
-            title: this.$pageSettings[3].setting_option,
-            apikey: this.$pageSettings[1].setting_option,
-            language: this.$pageSettings[2].setting_option,
-            edit: this.$pageSettings[4].setting_option,
-            design: this.$pageSettings[5].setting_option,
+            title: this.$globalState.pageSettings[3].setting_option,
+            apikey: this.$globalState.pageSettings[1].setting_option,
+            language: this.$globalState.pageSettings[2].setting_option,
+            edit: this.$globalState.pageSettings[4].setting_option,
+            design: this.$globalState.pageSettings[5].setting_option,
             titleError: null,
             keyError: null,
             colors: {
@@ -316,7 +316,7 @@ export default {
                     });
                 });
 
-                this.$pageSettings = this.settings = await this.getSettings();
+                this.$globalState.pageSettings = this.settings = await this.getSettings();
 
                 this.callout('success', this.langSnippet('save'));
             } else {

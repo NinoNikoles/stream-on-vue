@@ -1,5 +1,5 @@
 <template>
-    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="this.$user && $route.meta.noHeader !== true">
+    <header id="header" class="bar-active-root bar-active fixed-header overlay" v-if="$globalState.user && $route.meta.noHeader !== true">
         <div class="row header--content">
             <div class="col12 column header--content--nav">
 
@@ -26,14 +26,14 @@
                     <!-- Profil -->
                     <button id="user-menu-btn">
                         <figure class="square">
-                            <img v-if="this.$user.img" :src="`${this.$user.img}`" loading="lazy" alt="" id="userIcon">
+                            <img :src="$globalState.user.img" loading="lazy" alt="" id="userIcon">
                         </figure>
 
                         <menu class="user-menu">
                             <ul>
                                 <li><router-link :to="`/b/settings`" :title="langSnippet('settings')" @click="closeMainMenu()">{{ langSnippet('settings') }}</router-link></li>
                                 
-                                <li class="menu-item"><router-link :to="`/u/${this.$user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
+                                <li class="menu-item"><router-link :to="`/u/${$globalState.user.username}`" @click="closeMainMenu()" :title="langSnippet('profile')">{{langSnippet('profile')}}</router-link></li>
                                 <li class="menu-item"><router-link :to="`/logout`" class="bg-alert" :title="langSnippet('logout')">{{langSnippet('logout')}}</router-link></li>
                             </ul>
                         </menu>
@@ -50,7 +50,7 @@
                                 <router-link :to="`${route.path}`" :title="`${route.name}`" @click="closeMainMenu()">{{ route.name }}</router-link>
                             </li>
 
-                            <div class="col12 mobile-only marg-top-m" v-if="this.$user.role === 'superadmin' || this.$user.role === 'admin'">
+                            <div class="col12 mobile-only marg-top-m" v-if="$globalState.user.role === 'superadmin' || $globalState.user.role === 'admin'">
                                 <li class="menu-item spacer"><span>{{ langSnippet('admin') }}</span></li>
                             </div>
 
@@ -143,7 +143,7 @@ export default {
         },
         async backendRouter() {
             return this.routes.filter(route => {
-                if ( this.$user.role === 'superadmin' || this.$user.role === 'admin') return route.meta.backend;                
+                if ( this.$globalState.user.role === 'superadmin' || this.$globalState.user.role === 'admin') return route.meta.backend;                
             });
         },
         async handleSearchInput() {
@@ -233,7 +233,7 @@ export default {
     //     }
     // },
     async mounted() {
-        if ( this.$user && this.$user.isLoggedIn === true ) {
+        if ( this.$globalState.user && this.$globalState.user.isLoggedIn === true ) {
             await this.mainRouter().then(routes => {
                 // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                 this.mainRoutes = routes;

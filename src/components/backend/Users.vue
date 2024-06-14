@@ -27,7 +27,12 @@
                         </thead>
                         <tbody>
                             <tr v-for="(user, index) in users" :key="index">
-                                <td class="desktop-only"><figure class="square rounded"><img :src="user.user_img" loading="lazy" alt=""></figure></td>
+                                <td class="desktop-only">
+                                    <figure class="square rounded" style="width: 60px;">
+                                        <img v-if="user.img === '-1'" src="/media/avatar.webp" loading="lazy" alt="">
+                                        <img v-else :src="user.img" loading="lazy" alt="">
+                                    </figure>
+                                </td>
                                 <td>{{ user.username }}</td>
 
                                 <td class="desktop-only" v-if="user.role === 'superadmin'">Super Admin</td>
@@ -50,7 +55,7 @@
                                 </td>
                                 <td v-else></td>
 
-                                <td v-if="user.role !== 'superadmin' && user.username !== this.$user.username">
+                                <td v-if="user.role !== 'superadmin' && user.username !== $globalState.user.username">
                                     <button data-src="#delete-user" @click="selectUser(user)" :title="langSnippet('delete')" class="btn btn-alert icon-only icon-trash marg-no" data-fancybox></button>
                                 </td>
                                 <td v-else></td>
@@ -341,7 +346,7 @@ export default {
     },
     async mounted() {
         await this.fetchSessionStatus();
-        this.users = await this.getUsers();    
+        this.users = await this.getUsers();
     }
 };
 </script>

@@ -119,7 +119,7 @@ export default {
             this.visibleMedia = this.mediaAll.slice(0, this.page * this.pageSize);
         },
         async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.$user.id, mediaID, buttonID);
+            this.watchListTrigger(this.$globalState.user.id, mediaID, buttonID);
         },
         async popUpTrigger(index, media, event) {
             var status =  await this.checkWatchlist(media.tmdbID);

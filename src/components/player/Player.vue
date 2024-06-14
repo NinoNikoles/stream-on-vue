@@ -151,7 +151,7 @@ export default {
             
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
-                    userID: this.$user.id,
+                    userID: this.$globalState.user.id,
                     mediaID: this.media.tmdbID,
                     nextMediaID: nextMediaID,
                     showID: showID,
@@ -173,7 +173,7 @@ export default {
         },
         async setPlayerStartTime() {
             try {
-                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.media.tmdbID}&userID=${this.$user.id}`);
+                const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.media.tmdbID}&userID=${this.$globalState.user.id}`);
 
                 await this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
                 if ( response.data ) this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
@@ -184,7 +184,7 @@ export default {
         },
         async saveUserVolume() {
             try {
-                await axios.post(`${this.$mainURL}:3000/api/db/saveUserVolume?userID=${this.$user.id}&volume=${this.$user.volume}`);
+                await axios.post(`${this.$mainURL}:3000/api/db/saveUserVolume?userID=${this.$globalState.user.id}&volume=${this.$globalState.user.volume}`);
             } catch(err) {
                 console.log(err);
             }
@@ -204,7 +204,7 @@ export default {
                     await this.setPlayerStartTime();
 
                     this.player.el.on('durationchange', async () => {
-                        if ( this.$user.volume === undefined ) this.$user.volume = 1;
+                        if ( this.$globalState.user.volume === undefined ) this.$globalState.user.volume = 1;
 
                         await this.playerFunctions();
                     });
@@ -220,7 +220,7 @@ export default {
             var playerEL = this.player.el;
             var player = this.player;
 
-            playerEL.volume(this.$user.volume);
+            playerEL.volume(this.$globalState.user.volume);
 
             player.duration = playerEL.duration();
 
@@ -270,7 +270,7 @@ export default {
             });
 
             playerEL.on('volumechange', () => {
-                this.$user.volume = playerEL.volume();
+                this.$globalState.user.volume = playerEL.volume();
                 this.saveUserVolume();
             });
         },

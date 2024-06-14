@@ -25,7 +25,7 @@
                 <router-link v-else-if="media.media_type === 'show' && media['episodes'][0].file_path" :to="`/watch?id=${media['episodes'][0].tmdbID}`" :title="`${media['episodes'][0].title}`" class="play-trigger"></router-link>
                 
                 <button @click="openPopUp($event, id)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
-                <router-link v-if="$pageSettings[4].setting_option === 'true' && ($user.role ==='superadmin' || $user.role === 'admin')" :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                <router-link v-if="$globalState.pageSettings[4].setting_option === 'true' && ($globalState.user.role ==='superadmin' || $globalState.user.role === 'admin')" :to="`/backend/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>
         <div v-if="mediaWatchList" class="watched-bar">
