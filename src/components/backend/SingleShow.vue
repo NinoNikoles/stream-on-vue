@@ -45,15 +45,22 @@
                                     <button :href="`#deleteSeason-${season.season_number}`" data-fancybox class="btn btn-small btn-alert icon-left icon-trash marg-bottom-no">{{ langSnippet('delete') }}</button>
                                 </p>
                             </div>
-                            <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col-6-xxsmall col-4-medium">
+
+                            <div v-for="(episode, index) in episodes.filter(episode => episode.season_number === season.season_number)" :key="index" class="col-6-xxsmall col-4-medium marg-bottom-s">
                                 <figure class="widescreen disabled" v-if="episode.file_path === null">
                                     <img :src="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                                 </figure>
                                 <figure class="widescreen" v-else>
-                                    <img :src="$loadImg(media.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
+                                    <img :src="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                                 </figure>
                                 <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
-                                <button href="#media-browser" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
+                                <button :href="`#media-browser-${episode.episode_number}`" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
+                                
+                                <div :id="`media-browser-${episode.episode_number}`" style="display: none;">
+                                    <div class="row">
+                                        <media-browser :selectedMedia="episode.file_path"></media-browser>
+                                    </div>
+                                </div>
                             </div>
 
                             <div :id="`deleteSeason-${season.season_number}`" style="display: none;">
@@ -64,12 +71,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div id="media-browser" style="display: none;">
-                <div class="row">
-                    <media-browser-component></media-browser-component>
                 </div>
             </div>
 
@@ -88,7 +89,7 @@ import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
 import functions from '../mixins/functions.vue';
-import Mediabrowser from '../includes/MediaBrowser.vue';
+import ContentManager from '../includes/MediaBrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
 import BackendMenu from './../includes/BackendMenu.vue';
 
@@ -97,7 +98,7 @@ export default {
     mixins: [functions, tmdbAPI, language],
     components: {
         'backend-menu': BackendMenu,
-        'media-browser-component': Mediabrowser,
+        'media-browser': ContentManager,
     },
     data() {
         return {
@@ -222,7 +223,7 @@ export default {
     mounted() {
         const showID = this.$route.params.id;
         
-        this.outPutShow(showID).then(async(show) => {
+        this.outPutShow(showID).then(async (show) => {
             // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
             this.show = show[0];
 
