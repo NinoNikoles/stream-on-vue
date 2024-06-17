@@ -212,7 +212,7 @@ const getMediaByInput = (req, res) => {
     if (order) {
         query += ` ${order}`;
     }
-    console.log(query);
+
     db.all(query, [], (err, rows) => {
         if (err) {
             // res.status(500).send(err);
@@ -333,7 +333,7 @@ const addVideoPathToMedia = (req, res) => {
 
     let query = `UPDATE ${mediaType} SET file_path = ? WHERE tmdbID = ?`;
     
-    db.all(query, [`${videoPath}`, mediaID], (err, rows) => {
+    db.all(query, [videoPath, mediaID], (err) => {
         if (err) {
             res.status(500).send(err);
             return;
