@@ -152,6 +152,8 @@ a.icon-right:hover {
     &-volume-mute { &::before { content: $icon-volume-mute; } }
     &-volume-off { &::before { content: $icon-volume-off; } }
     &-volume-up { &::before { content: $icon-volume-up; } }
+    &-zoom-in { &::before { content: $icon-zoom-in; } }
+    &-zoom-out { &::before { content: $icon-zoom-out; } }
 }
 
 // Brand Icons
