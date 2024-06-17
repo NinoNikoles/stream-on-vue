@@ -12,9 +12,13 @@
                 <div class="col5 marg-right-col1">
                     <div class="col12" v-if="!selectedImg">
                         <figure class="square userImgContainer">
-                            <img :src="`${$globalState.user.img}`"  id="image" title="">
-                            <span class="text-center"><i class="icon-only icon-image marg-no"></i><br><span class="marg-no">Select Img</span></span>
-                            <input type="file" @change="onImgSelect">
+                            <img :src="$globalState.user.img"  id="image" title="">
+                            <span class="text-center text-small">
+                                <i class="icon-only icon-image marg-no"></i>
+                                <br>
+                                <span class="marg-no">{{ langSnippet('select_image') }}</span>
+                            </span>
+                            <input type="file" accept="image/png, image/jpeg, image/jpg" @change="onImgSelect">
                         </figure>
                     </div>
 
@@ -22,11 +26,25 @@
                         <figure class="square cropper">
                             <img :src="selectedImg" id="image" title="">
                         </figure>
-                        <input type="range" id="scale" name="scale" min="0" max="500" step="10" v-model="zoomVal" @input="cropperScale($event)"/>
-                        <button 
-                            class="btn icon-only icon-facebook" 
-                            @click="cropperEl.reset(); zoomVal = 0"
-                        ></button>
+
+                        <p class="text-center marg-top-xxs">
+                            <span class="marg-right-xxs">
+                                <button class="btn btn-primary icon-only icon-zoom-in" @click="cropperZoom(0.1)"></button>
+                            </span>
+
+                            <span class="marg-right-xxs">
+                                <button class="btn btn-primary icon-only icon-zoom-out" @click="cropperZoom(-0.1)"></button>
+                            </span>
+
+                            <span class="marg-right-xxs">
+                                <button 
+                                    class="btn btn-warning icon-only icon-replay" 
+                                    @click="cropperObj.el.reset(); zoomVal = 0"
+                                ></button>
+                            </span>
+
+                            <button class="btn btn-success icon-only icon-save loading" @click="crop($event)"></button>
+                        </p>
                     </div>
                 </div>
 
@@ -39,7 +57,7 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
@@ -56,9 +74,15 @@ export default {
             file: null,
             selectedImg: null,
             croppedImg: null,
-            cropperEl: null,
             zoomVal: 0,
-            prevZoomVal: 0
+            prevZoomVal: 0,
+            cropperObj: {
+                el: null,
+                currentZoom: 0.5,
+                minZoom: 0,
+                maxZoom: 1,
+                cropped: null,
+            }
         };
     },
     methods: {
@@ -84,27 +108,56 @@ export default {
             const image = document.getElementById('image');
 
             const cropper = new Cropper(image, {
-                viewMode: 0,
+                viewMode: 1,
                 initialAspectRatio: 1/1,
                 aspectRatio: 1/1,
-                autoCropArea: 5,
+                autoCropArea: 1,
+                restore: false,
+                // preview: document.getElementById('cropper-preview'),
                 zoomOnWheel: false,
-                crop() {
-                    // console.log(event.detail);
-                    this.croppedImg = cropper.getCroppedCanvas().toDataURL();
-                    // console.log(this.croppedImg);
-                },
+                responsive: true,
+                movable: false,
             });
 
-            this.cropperEl = cropper;
+            this.cropperObj.el = cropper;
         },
-        cropperScale(slider) {
-            const currentValue = parseInt(slider.target.value);
-            var zoomValue = currentValue/100+1;
-            this.cropperEl.scale(zoomValue);
+        cropperZoom(zoom) {
+            if (zoom > 0) {
+                if (!(this.cropperObj.currentZoom <= this.cropperObj.maxZoom)) return;
+                this.cropperObj.el.zoom(zoom);
+                this.cropperObj.currentZoom = this.cropperObj.currentZoom+zoom;
+            } else if (zoom < 0) {
+                if (!(this.cropperObj.currentZoom >= this.cropperObj.minZoom)) return;
+                this.cropperObj.el.zoom(zoom);
+                this.cropperObj.currentZoom = this.cropperObj.currentZoom+zoom;
+            }
+        },
+        async crop(e) {
+            const saveButton = e.target;
+            await this.disableButton(saveButton);
 
-            this.prevZoomVal = currentValue;
-            this.zoomVal = currentValue;
+            this.cropperObj.cropped = this.cropperObj.el.getCroppedCanvas().toDataURL();
+
+            this.$globalState.user.img = this.cropperObj.cropped;
+
+            var query = 'UPDATE users SET img = ? WHERE id = ?';
+            var data = [
+                this.$globalState.user.img,
+                this.$globalState.user.id
+            ]
+
+            try {
+                await axios.post(`${this.$mainURL}:3000/api/db/postQuery`, { query, data });
+                this.cropperObj.el.destroy();
+                this.file = null;
+                this.croppedImg = null;
+                this.selectedImg = null;
+
+                this.callout('success', this.langSnippet('saved'));
+                this.enableButton(saveButton);
+            } catch(err) {
+                console.log(err);
+            }
         },
     },
     async mounted() {
