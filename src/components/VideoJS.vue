@@ -1,5 +1,5 @@
 <template>
-    <video ref="videoPlayer" class="video-js"></video>
+    <video ref="videoPlayer" class="video-js" id="video-js"></video>
 </template>
   
 <script>
@@ -23,26 +23,16 @@ export default {
         }
     },
     methods: {
-        moveButtons(playerID) {
-            var player = document.getElementById(playerID)
-            var backButton = document.getElementById('player-back-btn');
-            player.appendChild(backButton);
-
-            if ( document.getElementById('player-session-btn') ) {
-                var sessionBtn = document.getElementById('player-session-btn');
-                player.appendChild(sessionBtn);
-            } else {
-                var chatBtn = document.getElementById('chat-open');
-                player.appendChild(chatBtn);
-            }
-        },
+        
     },
     mounted() {
-        this.player = videojs(this.$refs.videoPlayer, this.options, () => {
+        this.player = videojs('video-js', this.options, () => {
             this.player.ready(() => {
                 this.moveButtons(this.player.id_);
             });
         });
+
+        console.log(this.player);
     },
     beforeUnmount() {
         if (this.player) {
