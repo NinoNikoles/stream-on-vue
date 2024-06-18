@@ -744,8 +744,8 @@
     position: absolute;
     right: rem-calc(16);
     bottom: rem-calc(96);
-    // visibility: hidden;
-    // opacity: 0;
+    visibility: hidden;
+    opacity: 0;
     @include transitions(opacity $transition-default, bottom $transition-default);
 
     @include MQ(medium) {
