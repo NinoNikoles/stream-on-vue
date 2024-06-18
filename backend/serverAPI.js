@@ -1037,25 +1037,12 @@ const safeWatchTime = (req, res) => {
     var formattetDate = currentDate.toISOString();
 
     let query = `INSERT OR REPLACE INTO media_watched(user_id, media_id, show_id, watched_seconds, total_length, watched, last_watched)
-    VALUES
-        (?, ?, ?, ?, ?, ?, ?);`;
+    VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
     db.all(query, [userID, mediaID, showID, currentTime, totalLength, watched, formattetDate], (err, rows) => {
         if (err) {
             res.status(500).send(err);
             return;
-        }
-        if (showID !== null) {
-            let query = `INSERT OR REPLACE INTO media_watched(user_id, media_id, show_id, watched_seconds, total_length, watched, last_watched)
-            VALUES
-                (?, ?, ?, ?, ?, ?, ?);`;
-
-            db.all(query, [userID, nextMediaID, showID, nextTime, nextTotalLength, nextWatched, formattetDate], (err) => {
-                if (err) {
-                    res.status(500).send(err);
-                    return;
-                }
-            });
         }
         res.json(rows);
     });
