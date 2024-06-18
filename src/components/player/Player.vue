@@ -82,7 +82,7 @@
                                         {{ langSnippet('episodes') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
                                     <p class="smaller">{{ $truncate(episode.overview, 100) }}</p>
                                 </div>
-                                
+
                                 <div class="link-wrapper" v-if="episode.file_path">
                                     <a :href="`/w?id=${episode.tmdbID}`" v-if="uuid && !$route.query.uuid" class="play-trigger" :title="`${langSnippet('episode')} ${episode.episode_number}:  ${episode.title}`">
                                         <span class="icon-wrap col-3 pad-top-xxs pad-bottom-xxs">
@@ -102,7 +102,7 @@
             </div>
         </figure>
 
-        <div id="chat" v-if="$route.query.uuid">    
+        <div id="chat" v-if="$route.query.uuid">
             <div class="chat-wrap grid-padding">
                 <p id="chat-headline" class="text-center pad-top-xs pad-bottom-xs"><button id="chat-close" class="icon icon-close" @click="toggleChat($event)"></button>Chat</p>
                 
@@ -232,21 +232,28 @@ export default {
         },
         async saveTime(currentTime) {
             this.player.duration = this.player.el.duration();
-            const showID = this.show ? this.show.info.tmdbID : null;
+            const showID = this.show.info ? this.show.info.tmdbID : null;
             const watched = currentTime === this.player.duration ? 1 : 0;
+            var mediaID = this.media.tmdbID;
+            var tvime = currentTime;
+            var vlength = this.player.duration;
+
+            if ( currentTime >= this.player.duration-20 ) {
+                if ( this.show.nextEpisode ) {
+                    mediaID = this.show.nextEpisode.tmdbID;
+                    tvime = 0;
+                    vlength = 100;
+                }
+            }
 
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
                     userID: this.$globalState.user.id,
-                    mediaID: this.media.tmdbID,
-                    nextMediaID: false,
+                    mediaID: mediaID,
                     showID: showID,
-                    currentTime: currentTime,
-                    nextTime: false,
+                    currentTime: tvime,
                     watched: watched,
-                    nextWatched: false,
-                    totalLength: this.player.duration,
-                    nextTotalLength: false,
+                    totalLength: vlength
                 });
             } catch (err) {
                 console.log(err);
@@ -272,7 +279,6 @@ export default {
                 console.log(err);
             }
         },
-
         async setUpPlayer() {
             try {
                 this.media = await this.getMedia(this.$route.query.id);
@@ -288,7 +294,7 @@ export default {
                         console.log('ready');
 
                         if (!this.$route.query.uuid) await this.generateUUID();
-                        
+
                         this.moveButtons();
                         await this.setPlayerStartTime();
                         await this.playerFunctions();
@@ -333,7 +339,7 @@ export default {
                 if ( player.classList.contains('vjs-scrubbing') ) {
                     saveInterval();
                     this.saveTime(playerEL.currentTime());
-                }            
+                }
             });
 
             // On video ended
@@ -344,8 +350,8 @@ export default {
             });
 
             // On video pause
-            playerEL.on('pause', () => {     
-                clearInterval(interval);                   
+            playerEL.on('pause', () => {
+                clearInterval(interval);
                 if ( playerEL.currentTime() !== player.duration) {
                     this.saveTime(playerEL.currentTime());
                 } else {
@@ -435,7 +441,7 @@ export default {
                     }
                 } catch (error) {
                     console.log(error);
-                }                            
+                }
             }
 
             this.socket.onclose = () => {
@@ -447,7 +453,7 @@ export default {
             const ajaxMessage = (msg, username, userImg) => {
                 if (userImg === '-1') userImg = '/media/avatar.webp';
                 const message = document.createElement('div');
-                message.classList.add('message', 'marg-bottom-xs', username === this.$globalState.user.username ? 'self' : 'remote'); // , this.$globalState.user.id ? 'self' : 'remote'
+                message.classList.add('message', 'marg-bottom-xs', username === this.$globalState.user.username ? 'self' : 'remote');
                 message.innerHTML = `
                     <div class="message-content-wrap">
                         <p class="message-username marg-bottom-no strong">${username}</p>
@@ -498,11 +504,11 @@ export default {
             videoPlayer.addEventListener('play', () => {
                 this.socket.send('play');
             });
-    
+
             videoPlayer.addEventListener('pause', () => {
                 if (!this.isVideoEnded) this.socket.send('pause');
             });
-    
+
             videoPlayer.addEventListener('timeupdate', () => {
                 if (!this.isVideoEnded) this.socket.send(`timeupdate:${videoPlayer.currentTime}`);
             });
@@ -547,12 +553,6 @@ export default {
             this.multiWatch = (this.$route.query.uuid ? true : false);
         }
     },
-    // async mounted() {
-    //     this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
-    //     this.multiWatch = (this.$route.query.uuid ? true : false);
-
-    //     await this.setUpPlayer();        
-    // },
     async created() {
         this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
         this.multiWatch = (this.$route.query.uuid ? true : false);
