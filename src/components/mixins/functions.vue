@@ -60,15 +60,18 @@ export default {
         async getAllMediaInfos(orderBy = null, orderType = null, ids = null, type = null, watchlist = null, mediaWatched = null) {
             var mediaInfos = [];
             let query =
-            `SELECT media.*, json_group_array(genre.genre_name) AS genre_names,
-                CASE WHEN watchlist.user_id IS NOT NULL THEN 1 ELSE 0 END AS in_watchlist,
-                media_watched.watched_seconds,
-                media_watched.total_length,
-                media_watched.watched,
-                media_watched.last_watched`;
-
-            query +=
-            ` FROM media
+            `SELECT media.*, 
+                    json_group_array(genre.genre_name) AS genre_names,
+                    CASE WHEN watchlist.user_id IS NOT NULL THEN 1 ELSE 0 END AS in_watchlist,
+                    media_watched.watched_seconds,
+                    media_watched.total_length,
+                    media_watched.watched,
+                    media_watched.last_watched,
+                    CASE 
+                        WHEN media_watched.show_id IS NOT NULL THEN media_watched.media_id
+                        ELSE NULL
+                    END AS episode_id
+            FROM media
             LEFT JOIN watchlist ON media.tmdbID = watchlist.media_id AND watchlist.user_id = ${this.$globalState.user.id}
             LEFT JOIN genre ON EXISTS (
                 SELECT 1
@@ -77,40 +80,46 @@ export default {
             )`;
 
             // Wenn nicht alle Medien ausgegeben werden sollen
-            if ( !mediaWatched ) query += `
-            LEFT JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$globalState.user.id}`;
+            if (!mediaWatched) query += `
+            LEFT JOIN media_watched ON media.tmdbID = COALESCE(media_watched.show_id, media_watched.media_id) AND media_watched.user_id = ${this.$globalState.user.id}
+            AND media_watched.last_watched = (
+                SELECT MAX(mw2.last_watched)
+                FROM media_watched mw2
+                WHERE mw2.user_id = ${this.$globalState.user.id}
+                AND media.tmdbID = COALESCE(mw2.show_id, mw2.media_id)
+            )`;
             
             // Wenn NUR geschaute Medien ausgegeben werden sollen
-            if ( mediaWatched === 1 ) query += `
-            INNER JOIN media_watched ON media.tmdbID = media_watched.media_id AND media_watched.user_id = ${this.$globalState.user.id}`;
+            if (mediaWatched === 1) query += `
+            INNER JOIN media_watched ON media.tmdbID = COALESCE(media_watched.show_id, media_watched.media_id) AND media_watched.user_id = ${this.$globalState.user.id}
+            AND media_watched.last_watched = (
+                SELECT MAX(mw2.last_watched)
+                FROM media_watched mw2
+                WHERE mw2.user_id = ${this.$globalState.user.id}
+                AND media.tmdbID = COALESCE(mw2.show_id, mw2.media_id)
+            )`;
 
             // Wenn bestimmte Medien ausgewählt werden sollen
-            if ( type || ids || watchlist === 1 ) query += `
-            WHERE`;
+            if (type || ids || watchlist === 1) query += ` WHERE`;
 
-            if ( type ) query += ` media.media_type = '${type}'`; // Wenn nur Filme ODER Serien ausgewählt werden sollen
-            if ( type && ids ) { // Wenn nur bestimmte Filme ODER bestimmte Serien ausgewählt werden sollen
-                query += `
-                AND media.tmdbID IN (${ids.join(', ')})`;
-            } else if ( !type && ids ) { // Wenn nur bestimmte Filme UND bestimmte Serien ausgewählt werden sollen
+            if (type) query += ` media.media_type = '${type}'`; // Wenn nur Filme ODER Serien ausgewählt werden sollen
+            if (type && ids) { // Wenn nur bestimmte Filme ODER bestimmte Serien ausgewählt werden sollen
+                query += ` AND media.tmdbID IN (${ids.join(', ')})`;
+            } else if (!type && ids) { // Wenn nur bestimmte Filme UND bestimmte Serien ausgewählt werden sollen
                 query += ` media.tmdbID IN (${ids.join(', ')})`;
             }
 
-            if ( type && ids && watchlist === 1 ) {
-                query += `
-                AND in_watchlist = 1`;
-            } else if ( !type && ids && watchlist === 1 ) {
-                query += `
-                AND in_watchlist = 1`;
-            } else if ( !type && !ids && watchlist === 1 ) {
+            if (type && ids && watchlist === 1) {
+                query += ` AND in_watchlist = 1`;
+            } else if (!type && ids && watchlist === 1) {
+                query += ` AND in_watchlist = 1`;
+            } else if (!type && !ids && watchlist === 1) {
                 query += ` in_watchlist = 1`;
             }
 
-            query += `
-            GROUP BY media.tmdbID`;
+            query += ` GROUP BY media.tmdbID`;
 
-            if (orderBy) query += `
-            ORDER BY ${orderBy}`;
+            if (orderBy) query += ` ORDER BY ${orderBy}`;
             if (orderType) query += ` ${orderType}`;
 
             try {
@@ -122,7 +131,7 @@ export default {
             for (let i = 0; i < mediaInfos.length; i++) {
                 // Gets all seasons and episodes if media is show
                 if (mediaInfos[i].media_type === "show") {
-                    try {                                    
+                    try {
                         mediaInfos[i]['seasons'] = await this.getSeasons(mediaInfos[i].tmdbID);
                         mediaInfos[i]['episodes'] = await this.getEpisodes(mediaInfos[i].tmdbID);                      
                     } catch (error) {
