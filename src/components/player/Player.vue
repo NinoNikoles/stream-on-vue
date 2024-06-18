@@ -8,8 +8,10 @@
             <router-link id="player-back-btn" :to="lastPath" title=""></router-link>
             <a id="player-session-btn" :href="`/w?id=${$route.query.id}&uuid=${uuid}`" title="Group session" v-if="uuid && !$route.query.uuid"></a>
             
+            <!-- Chat button -->
             <button id="chat-open" @click="toggleChat($event)" v-show="multiWatch"></button>
 
+            <!-- Next episode button -->
             <a :href="`/w?id=${show.nextEpisode.tmdbID}&uuid=${$route.query.uuid}`" v-if="show.nextEpisode && $route.query.uuid" id="next-episode-btn" class="next-episode-btn">
                 <figure class="widescreen">
                     <img :src="$loadImg(show.nextEpisode.backdrop)">
@@ -25,8 +27,10 @@
                 <span>{{ langSnippet('next_episode') }}</span>
             </a>
 
+            <!-- All episodes button -->
             <button href="#" id="show-eps-btn" @click="toggleShowMenu($event)" class="icon icon-multilayer" title="All episodes" v-if="show.episodes"></button>
 
+            <!-- All episodes popup  -->
             <div id="show-container" v-if="show.seasons">
                 <ul class="menu">
 
@@ -100,8 +104,10 @@
                     </template>
                 </ul>
             </div>
+
         </figure>
 
+        <!-- Chat -->
         <div id="chat" v-if="$route.query.uuid">
             <div class="chat-wrap grid-padding">
                 <p id="chat-headline" class="text-center pad-top-xs pad-bottom-xs"><button id="chat-close" class="icon icon-close" @click="toggleChat($event)"></button>Chat</p>
@@ -241,11 +247,12 @@ export default {
             if ( currentTime >= this.player.duration-20 ) {
                 if ( this.show.nextEpisode ) {
                     mediaID = this.show.nextEpisode.tmdbID;
-                    tvime = 0;
+                    tvime = 0.000001;
                     vlength = 100;
                 }
             }
 
+            console.log(mediaID);
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
                     userID: this.$globalState.user.id,
@@ -309,17 +316,17 @@ export default {
 
         async playerFunctions() {
             var playerEL = this.player.el;
-            var player = document.getElementById('main-video');
+            var nextEpisodeBtn = document.getElementById('next-episode-btn');
 
             // Set Volume of player
             playerEL.volume(this.$globalState.user.volume);
 
             // Get total duration of video
-            player.duration = playerEL.duration();
+            this.player.duration = playerEL.duration();
 
             // Set player current time
-            if ( player.currentTime === player.duration ) player.currentTime = 0;
-            playerEL.currentTime(player.currentTime);
+            if ( this.player.currentTime === this.player.duration ) this.player.currentTime = 0;
+            playerEL.currentTime(this.player.currentTime);
 
             var interval = false;
             const saveInterval = () => {
@@ -336,7 +343,7 @@ export default {
 
             // On video seeking
             playerEL.on('seeking', () => {
-                if ( player.classList.contains('vjs-scrubbing') ) {
+                if ( document.getElementById('main-video').classList.contains('vjs-scrubbing') ) {
                     saveInterval();
                     this.saveTime(playerEL.currentTime());
                 }
@@ -352,11 +359,11 @@ export default {
             // On video pause
             playerEL.on('pause', () => {
                 clearInterval(interval);
-                if ( playerEL.currentTime() !== player.duration) {
+                if ( playerEL.currentTime() !== this.player.duration) {
                     this.saveTime(playerEL.currentTime());
                 } else {
                     this.isVideoEnded = true;
-                    this.saveTime(player.duration);
+                    this.saveTime(this.player.duration);
                 }
             });
 
@@ -366,7 +373,21 @@ export default {
                 this.saveUserVolume();
             });
 
-            const nextEpisodeBtn = document.getElementById('next-episode-btn');
+            // On video time update
+            playerEL.on('timeupdate', () => {
+                if ( nextEpisodeBtn ) {
+                    if (playerEL.currentTime() >= playerEL.duration()-20) {
+                        if ( !nextEpisodeBtn.classList.contains('visible') ) {
+                            nextEpisodeBtn.classList.add('visible');
+                        }
+                    } else {
+                        if ( nextEpisodeBtn.classList.contains('visible') ) {
+                            nextEpisodeBtn.classList.remove('visible');
+                        }
+                    }
+                }
+            });
+
             if ( nextEpisodeBtn ) {
                 nextEpisodeBtn.addEventListener('click', (e) =>{
                     e.preventDefault();
