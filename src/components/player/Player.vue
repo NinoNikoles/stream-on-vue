@@ -10,8 +10,18 @@
             
             <button id="chat-open" @click="toggleChat($event)" v-show="multiWatch"></button>
 
-            <a :href="`/w?id=${show.nextEpisode.tmdbID}`" id="next-episode-btn" class="next-episode-btn" v-if="show.nextEpisode">
-                <figure class="widescreen"><img :src="$loadImg(show.nextEpisode.backdrop)"><i class="icon icon-play"></i></figure>
+            <a :href="`/w?id=${show.nextEpisode.tmdbID}&uuid=${$route.query.uuid}`" v-if="show.nextEpisode && $route.query.uuid" id="next-episode-btn" class="next-episode-btn">
+                <figure class="widescreen">
+                    <img :src="$loadImg(show.nextEpisode.backdrop)">
+                    <i class="icon icon-play"></i>
+                </figure>
+                <span>{{ langSnippet('next_episode') }}</span>
+            </a>
+            <a :href="`/w?id=${show.nextEpisode.tmdbID}`" v-else-if="show.nextEpisode && !$route.query.uuid" id="next-episode-btn" class="next-episode-btn">
+                <figure class="widescreen">
+                    <img :src="$loadImg(show.nextEpisode.backdrop)">
+                    <i class="icon icon-play"></i>
+                </figure>
                 <span>{{ langSnippet('next_episode') }}</span>
             </a>
 
@@ -114,10 +124,8 @@
 <script>
 import axios from 'axios';
 import videojs from 'video.js';
-//import { Fancybox } from '@fancyapps/ui';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
-import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
@@ -158,13 +166,6 @@ export default {
                         },
                         pictureInPictureToggle: false,
                     },
-                    // src: null,
-                    // sources: [
-                    //     {
-                    //         src: null,
-                    //         type: 'video/mp4'
-                    //     }
-                    // ],
                     userActions: {
                         click: true
                     }
@@ -177,16 +178,16 @@ export default {
     methods: {
         async definePlayer() {
             this.$nextTick(() => {
-                const videoElement = document.getElementById('main-video');
-                return videoElement;
+                return  document.getElementById('main-video')
             });
         },
         async getMedia(tmdbID) {
-            if ( tmdbID !== null && tmdbID !== undefined ) {
-                var response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID=${tmdbID}`);
-                if ( response.data.length === 0) response = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
+            if ( tmdbID ) {
+                let response = await axios.get(`${this.$mainURL}:3000/api/db/media?whereClause=tmdbID=${tmdbID}`);
+                if (response.data.length === 0) {
+                    response = await axios.get(`${this.$mainURL}:3000/api/db/episode?tmdbID=${tmdbID}`);
+                }
 
-                console.log(`${this.$mainURL}:8080/${response.data[0].file_path.replace('/public/', '')}`);
                 this.src = `/${response.data[0].file_path.replace('/public/', '')}`;
 
                 return new Promise((resolve) => {
@@ -196,23 +197,23 @@ export default {
         },
         async getShow(showID) {
             try {
-                const responseShow = await this.get(`SELECT * FROM media WHERE tmdbID = ${showID}`);
-                const responseSeasons = await this.get(`SELECT * FROM seasons WHERE show_tmdbID = ${showID}`);
-                const responseEpisodes = await this.get(`SELECT * FROM episodes WHERE show_id = ${showID}`);
+                const [responseShow, responseSeasons, responseEpisodes] = await Promise.all([
+                    this.get(`SELECT * FROM media WHERE tmdbID = ${showID}`),
+                    this.get(`SELECT * FROM seasons WHERE show_tmdbID = ${showID}`),
+                    this.get(`SELECT * FROM episodes WHERE show_id = ${showID}`)
+                ]);
 
-                var show = {
+                const show = {
                     info: responseShow[0],
                     seasons: responseSeasons,
                     episodes: responseEpisodes,
                     lastEpisode: responseEpisodes[responseEpisodes.length - 1],
                     nextEpisode: null,
-                }
-
-                console.log(show.episodes);
+                };
 
                 if ( this.media.id !== show.lastEpisode.id) {
                     show.episodes.forEach(episode => {
-                        if ( this.media.id === episode.id-1 ) show.nextEpisode = episode;
+                        if ( this.media.id === episode.id-1 && episode.file_path ) show.nextEpisode = episode;
                     });
                 }
 
@@ -221,7 +222,7 @@ export default {
                 });
             } catch (error) {
                 console.error('Fehler beim Überprüfen des Films in der Datenbank:', error);
-                return []; // Geben Sie ein leeres Array zurück, um anzuzeigen, dass keine Daten gefunden wurden
+                return [];
             }
         },
         async generateUUID() {
@@ -229,47 +230,25 @@ export default {
                 this.uuid = uuidv4();
             }
         },
-
         async saveTime(currentTime) {
             this.player.duration = this.player.el.duration();
-            var showID = null;
-            var watched = 0;
-            if ( this.show ) showID = this.show.info.tmdbID;
+            const showID = this.show ? this.show.info.tmdbID : null;
+            const watched = currentTime === this.player.duration ? 1 : 0;
 
-            var nextMediaID = false;
-            var nextCurrentSecond = false;
-            var nextTotalDuration = false;
-            var nextWatched = false;
-
-            if ( currentTime === this.duration ) {
-                watched = 1;
-
-                // if ( document.getElementById('next-episode-btn') ) {
-                //     const nextBtn = document.getElementById('next-episode-btn');
-
-                //     nextCurrentSecond = $nextBtn.attr('data-current-time');
-                //     if ( nextCurrentSecond == 0 ) {
-                //         nextCurrentSecond = 0.000001;
-                //     }
-                //     nextTotalDuration = $nextBtn.attr('data-length');
-                //     nextWatched = 0;
-                // }
-            }
-            
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
                     userID: this.$globalState.user.id,
                     mediaID: this.media.tmdbID,
-                    nextMediaID: nextMediaID,
+                    nextMediaID: false,
                     showID: showID,
                     currentTime: currentTime,
-                    nextTime: nextCurrentSecond,
+                    nextTime: false,
                     watched: watched,
-                    nextWatched: nextWatched,
+                    nextWatched: false,
                     totalLength: this.player.duration,
-                    nextTotalLength: nextTotalDuration,
+                    nextTotalLength: false,
                 });
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         },
@@ -281,11 +260,8 @@ export default {
         async setPlayerStartTime() {
             try {
                 const response = await axios.get(`${this.$mainURL}:3000/api/db/getMediaWatched?mediaID=${this.media.tmdbID}&userID=${this.$globalState.user.id}`);
-
-                await this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
-                if ( response.data ) this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
-
-            } catch(err) {
+                this.setPlayerTime(response.data.watched_seconds, response.data.total_length);
+            } catch (err) {
                 console.log(err);
             }
         },
@@ -314,15 +290,10 @@ export default {
                         if (!this.$route.query.uuid) await this.generateUUID();
                         
                         this.moveButtons();
-
                         await this.setPlayerStartTime();
+                        await this.playerFunctions();
 
-                        this.player.el.on('durationchange', async () => {
-                            if ( this.$globalState.user.volume === undefined ) this.$globalState.user.volume = 1;
-
-                            await this.playerFunctions();
-                            if ( this.$route.query.uuid ) await this.webSocket();
-                        });
+                        if ( this.$route.query.uuid ) await this.webSocket();
                     });
                 });
             } catch(err) {
@@ -332,47 +303,47 @@ export default {
 
         async playerFunctions() {
             var playerEL = this.player.el;
-            var player = this.player;
+            var player = document.getElementById('main-video');
 
+            // Set Volume of player
             playerEL.volume(this.$globalState.user.volume);
 
+            // Get total duration of video
             player.duration = playerEL.duration();
 
-            if ( player.currentTime === player.duration ) {
-                player.currentTime = 0;
-            }
-
+            // Set player current time
+            if ( player.currentTime === player.duration ) player.currentTime = 0;
             playerEL.currentTime(player.currentTime);
-            var interval = false;
 
+            var interval = false;
+            const saveInterval = () => {
+                clearInterval(interval);
+                interval = setInterval(() => this.saveTime(playerEL.currentTime()), 30000);
+            };
+
+            // On video playing
             playerEL.on('play', () => {
                 this.isVideoEnded = false;
-                clearInterval(interval);
+                saveInterval();
                 this.saveTime(playerEL.currentTime());
-                interval = setInterval(() => {
-                    this.saveTime(playerEL.currentTime());
-                }, 30000);
             });
 
+            // On video seeking
             playerEL.on('seeking', () => {
-                var playerClass = document.getElementsByClassName('video-js');
-                var newPlayer = document.getElementById(playerClass[0].id);
-
-                if ( newPlayer.classList.contains('vjs-scrubbing') ) {
-                    clearInterval(interval);
+                if ( player.classList.contains('vjs-scrubbing') ) {
+                    saveInterval();
                     this.saveTime(playerEL.currentTime());
-                    interval = setInterval(() => {
-                        this.saveTime(playerEL.currentTime());
-                    }, 30000);
                 }            
             });
 
+            // On video ended
             playerEL.on('ended', () => {
                 this.isVideoEnded = true;
-                clearInterval(interval);
-                this.saveTime(player.duration);
+                saveInterval();
+                this.saveTime(playerEL.currentTime());
             });
 
+            // On video pause
             playerEL.on('pause', () => {     
                 clearInterval(interval);                   
                 if ( playerEL.currentTime() !== player.duration) {
@@ -383,10 +354,22 @@ export default {
                 }
             });
 
+            // On video volume change
             playerEL.on('volumechange', () => {
                 this.$globalState.user.volume = playerEL.volume();
                 this.saveUserVolume();
             });
+
+            const nextEpisodeBtn = document.getElementById('next-episode-btn');
+            if ( nextEpisodeBtn ) {
+                nextEpisodeBtn.addEventListener('click', (e) =>{
+                    e.preventDefault();
+
+                    const nextEpisodeLink = nextEpisodeBtn.getAttribute('href');
+                    if (this.socket) this.socket.send(`url:${nextEpisodeLink}`);
+                    window.location = nextEpisodeLink;
+                });
+            }
         },
         toggleShowMenu(e) {
             e.preventDefault();
@@ -395,7 +378,7 @@ export default {
         openSeasonContainer(e, id) {
             e.preventDefault();
             const showContainer = document.getElementById('show-container');
-            var seasonContainer = document.getElementById(id);
+            const seasonContainer = document.getElementById(id);
 
             showContainer.classList.add('active-submenu');
             seasonContainer.classList.add('active');
@@ -403,60 +386,49 @@ export default {
         closeSeasonContainer(e) {
             e.preventDefault();
             const showContainer = document.getElementById('show-container');
-            var openSeasonContainer = document.querySelector('.sub-menu.active');
+            const openSeasonContainer = document.querySelector('.sub-menu.active');
 
             showContainer.classList.remove('active-submenu');
             openSeasonContainer.classList.remove('active');
         },
         async webSocket() {
             const host = window.location.hostname;
-            var videoPlayer = document.getElementById('main-video');
-
-
-            this.socket = new WebSocket(`ws://${host}:3000/?remotesessionID=${this.$route.query.uuid}`);
-
-            let isFirstPlay = true;
+            const videoPlayer = document.getElementById('main-video');
             const messageWrap = document.getElementById('message-wrap');
             const msgInput = document.getElementById('message-input');
             const sendButton = document.getElementById('chatMSG');
-            var delimiter = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
+
+            this.socket = new WebSocket(`ws://${host}:3000/?remotesessionID=${this.$route.query.uuid}`);
 
             this.socket.onopen = () => {
-                var send = `joined§${this.$globalState.user.id}§${this.$globalState.user.username}§${this.$globalState.user.img}`;
-                console.log(this.$globalState.user);
-                joinedMessage(this.$globalState.user.id, this.$globalState.user.username, this.$globalState.user.img);
+                const send = `joined§${this.$globalState.user.username}§${this.$globalState.user.img}`;
                 this.socket.send(send);
+                joinedMessage(this.$globalState.user.username, this.$globalState.user.img);
             }
 
-            this.socket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            }
+            this.socket.onerror = (error) =>  console.error('WebSocket error:', error);
 
             this.socket.onmessage = (event) => {
                 try {
-                    if ( event.data.startsWith('[') ) {
-                        const jsonData = JSON.parse(event.data);
+                    if ( event.data.startsWith('msg:') ) {
+                        const jsonData = JSON.parse(event.data.replace('msg:', ''));
+
                         if ( typeof jsonData === 'object' && jsonData !== null ) {
-                            const cutter = jsonData[0];
-                            const parts = jsonData[1].split(`${cutter}`);
-                            const message = parts[1];
-                            const userID = parts[2];
-                            const username = parts[3];
-                            const userImg = parts[4];
-                            ajaxMessage(message, userID, username, userImg);
+                            const message = jsonData[0];
+                            const username = jsonData[1];
+                            const userImg = jsonData[2];
+                            ajaxMessage(message, username, userImg);
                         }
                     } else if ( event.data.startsWith('joined§') ) {
-                        const userID = event.data.split('§')[1];
-                        const username = event.data.split('§')[2];
-                        const userImg = event.data.split('§')[3];
-                        joinedMessage(userID, username, userImg);
+                        const [username, userImg] = event.data.split('§').slice(1);
+                        joinedMessage(username, userImg);
                     } else if ( event.data === 'play' ) {
                         this.player.play();
                     } else if ( event.data === 'pause' ) {
                         this.player.el.pause();
                     } else if ( event.data.startsWith('timeupdate:') ) {
-                        const newTime = parseFloat(event.data.split(':')[1]);
-                        this.player.el.currentTime(newTime);
+                        const currentTime = parseFloat(event.data.replace('timeupdate:', ''));
+                        this.player.el.currentTime(currentTime);
                     } else if ( event.data.startsWith('url:') ) {
                         const url = event.data.split(':')[1];
                         window.location.href = url;
@@ -466,141 +438,100 @@ export default {
                 }                            
             }
 
-            this.player.el.on('play', () => {
-                // Sende Aktion "Play" an den Server
-                if ( isFirstPlay ) {
-                    this.player.el.pause();
-                } else {
-                    synchTime(this.player.el);
-                    this.socket.send('play');
-                }
-            });
-    
-            this.player.el.on('pause', () => {
-                if ( !isFirstPlay ) {
-                    // Sende Aktion "Pause" an den Server
-                    synchTime();
-                    this.socket.send('pause');
-                } else {
-                    isFirstPlay = false;
-                }
-            });
-    
-            this.player.el.on('seeking', () => {
-                if ( videoPlayer.classList.contains('vjs-scrubbing') ) {
-                    synchTime();
-                }            
-            });
+            this.socket.onclose = () => {
+                console.log('WebSocket closed');
+                clearInterval();
+                this.socket.close();
+            };
 
-            const timeForwardsBtn = document.getElementsByClassName('vjs-skip-forward-10');
-            timeForwardsBtn[0].addEventListener('click', () => {
-                synchTime();
-            });
+            const ajaxMessage = (msg, username, userImg) => {
+                if (userImg === '-1') userImg = '/media/avatar.webp';
+                const message = document.createElement('div');
+                message.classList.add('message', 'marg-bottom-xs', username === this.$globalState.user.username ? 'self' : 'remote'); // , this.$globalState.user.id ? 'self' : 'remote'
+                message.innerHTML = `
+                    <div class="message-content-wrap">
+                        <p class="message-username marg-bottom-no strong">${username}</p>
+                        <p class="message-text small marg-bottom-no">${msg}</p>
+                    </div>
+                    <span class="imgWrap">
+                        <figure class="square">
+                            <img src="${userImg}">
+                        </figure>
+                    </span>
+                    <p class="message-timestamp smaller marg-bottom-no">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                `;
+                messageWrap.appendChild(message);
+                message.scrollIntoView({ behavior: 'smooth' });
+            };
 
-            const timeBackwardsBtn = document.getElementsByClassName('vjs-skip-backward-10');
-            timeBackwardsBtn[0].addEventListener('click', () => {
-                synchTime();
-            });
-
-            function synchTime() {
-                const currentTime = this.player.el.currentTime();
-                const actionTimeUpdate = `timeupdate:${currentTime}`;
-                this.socket.send(actionTimeUpdate);
-            }
-
-            function joinedMessage(userID, username, userImg) {
-                var message = `
-                <div class="message joint-msg marg-bottom-xs" data-user="${userID}">
+            const joinedMessage = (username, userImg) => {
+                if (userImg === '-1') userImg = '/media/avatar.webp';
+                const message = document.createElement('div');
+                message.classList.add('message', 'joint-msg', 'marg-bottom-xs', 'joined');
+                message.innerHTML = `
                     <span class="imgWrap">
                         <figure class="square">
                             <img src="${userImg}">
                         </figure>
                     </span>
                     <div class="message-content-wrap">
-                        <span class="message-text marg-left-xs small"><strong>${username}</strong> joined</span>
+                        <span class="message-text marg-left-xs small">
+                            <strong>${username}</strong> joined
+                        </span>
                     </div>
-                </div>`;
+                `;
+                messageWrap.appendChild(message);
+                message.scrollIntoView({ behavior: 'smooth' });
+            };
 
-                messageWrap.insertAdjacentHTML('beforeend', message);
-                messageWrap.scrollTop = messageWrap.scrollHeight;
-            }
-
-            var ajaxMessage = (ajaxMessage, ajaxUserID, ajaxUsername, ajaxUserImg) => {
-                var message = '';
-                if ( ajaxUserID === this.$globalState.user.id ) {
-                    message = `
-                    <div class="message self marg-bottom-xs">
-                        <div class="message-content-wrap">
-                            <p class="message-username marg-bottom-no strong">${ajaxUsername}</p>
-                            <p class="message-text small marg-bottom-no">${ajaxMessage}</p>
-                        </div>
-                        <span class="imgWrap marg-left-xs">
-                            <figure class="square">
-                                <img src="${ajaxUserImg}">
-                            </figure>
-                        </span>
-                    </div>`;
-                } else {
-                    message = `
-                    <div class="message marg-bottom-xs">
-                        <span class="imgWrap marg-right-xs">
-                            <figure class="square">
-                                <img src="${ajaxUserImg}">
-                            </figure>
-                        </span>
-                        <div class="message-content-wrap">
-                            <p class="message-username marg-bottom-no strong">${ajaxUsername}</p>
-                            <p class="message-text small marg-bottom-no">${ajaxMessage}</p>
-                        </div>
-                    </div>`;
-                }
-
-                messageWrap.insertAdjacentHTML('beforeend', message);
-                messageWrap.scrollTop = messageWrap.scrollHeight;
-            }
-
-            
-            
-            msgInput.addEventListener('keyup', async (event) => {
-                if (event.key === 'Enter') {
-                    var send = [];
-                    send[0] = `${delimiter}`;
-                    send[1] = `msg${delimiter}${this.userMessage}${delimiter}${this.$globalState.user.id}${delimiter}${this.$globalState.user.username}${delimiter}${this.$globalState.user.img}`;
-                    send = JSON.stringify(send);
-
-                    if ( this.userMessage.length > 0) {
-                        this.socket.send(send);
-                        ajaxMessage(this.userMessage, this.$globalState.user.id, this.$globalState.user.username, this.$globalState.user.img, this.$globalState.user.id);
-                        this.userMessage = "";
-                    }
+            sendButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (msgInput.value.trim() !== '') {
+                    const msg = msgInput.value.trim();
+                    const message = `msg:${JSON.stringify([msg, this.$globalState.user.username, this.$globalState.user.img])}`;
+                    this.socket.send(message);
+                    ajaxMessage(msg, this.$globalState.user.username, this.$globalState.user.img);
+                    msgInput.value = '';
                 }
             });
 
-            sendButton.addEventListener('click', async () => {
-                var send = [];
-                send[0] = `${delimiter}`;
-                send[1] = `msg${delimiter}${this.userMessage}${delimiter}${this.$globalState.user.id}${delimiter}${this.$globalState.user.username}${delimiter}${this.$globalState.user.img}`;
-                send = JSON.stringify(send);
+            videoPlayer.addEventListener('play', () => {
+                this.socket.send('play');
+            });
+    
+            videoPlayer.addEventListener('pause', () => {
+                if (!this.isVideoEnded) this.socket.send('pause');
+            });
+    
+            videoPlayer.addEventListener('timeupdate', () => {
+                if (!this.isVideoEnded) this.socket.send(`timeupdate:${videoPlayer.currentTime}`);
+            });
 
-                if ( this.userMessage.length > 0) {
-                    this.socket.send(send);
-                    ajaxMessage(this.userMessage, this.$globalState.user.id, this.$globalState.user.username, this.$globalState.user.img, this.$globalState.user.id);
-                    this.userMessage = "";
-                }   
+            msgInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendButton.click();
+                }
             });
         },
         moveButtons() {
-            const player = document.getElementById('main-video');
-            var backButton = document.getElementById('player-back-btn');
-            player.appendChild(backButton);
+            const btnContainer = document.querySelector('.vjs-control-bar');
+            const btnWrapper = document.createElement('div');
+            const backButton = document.getElementById('player-back-btn');
+            const sessionBtn = document.getElementById('player-session-btn');
+            const chatBtn = document.getElementById('chat-open');
+            const rewind = document.querySelector('.vjs-rewind-button');
+            const forward = document.querySelector('.vjs-forward-button');
+            const episodeSelect = document.getElementById('show-eps-btn');
 
-            if ( document.getElementById('player-session-btn') ) {
-                var sessionBtn = document.getElementById('player-session-btn');
-                player.appendChild(sessionBtn);
-            } else {
-                var chatBtn = document.getElementById('chat-open');
-                player.appendChild(chatBtn);
-            }
+            btnWrapper.classList.add('vjs-custom-buttons');
+            if (backButton) btnWrapper.appendChild(backButton);
+            if (sessionBtn) btnWrapper.appendChild(sessionBtn);
+            if (chatBtn) btnWrapper.appendChild(chatBtn);
+            if (rewind) btnWrapper.appendChild(rewind);
+            if (forward) btnWrapper.appendChild(forward);
+            if (episodeSelect) btnWrapper.appendChild(episodeSelect);
+            btnContainer.insertBefore(btnWrapper, btnContainer.firstChild);
         },
         toggleChat() {
             document.getElementById('chat').classList.toggle('hidden');
@@ -616,14 +547,22 @@ export default {
             this.multiWatch = (this.$route.query.uuid ? true : false);
         }
     },
-    async mounted() {
+    // async mounted() {
+    //     this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
+    //     this.multiWatch = (this.$route.query.uuid ? true : false);
+
+    //     await this.setUpPlayer();        
+    // },
+    async created() {
         this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
         this.multiWatch = (this.$route.query.uuid ? true : false);
 
-        await this.setUpPlayer();        
+        await this.setUpPlayer();
     },
     beforeUnmount() {
+        if (this.socket) this.socket.close();
         if (this.player.el) {
+            this.saveTime(this.player.el.currentTime());
             this.player.el.dispose();
         }
     }
