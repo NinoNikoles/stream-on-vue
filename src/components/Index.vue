@@ -35,17 +35,17 @@
         <template v-if="userWatchList && userWatchList.length > 0">
             <div class="currentWatch-slider marg-top-l">
                 <div class="col12">
-                    <div class="column column-space-2">
+                    <div class="column slider-headline">
                         <h2>Zuletzt angeschaut</h2>
                     </div>
 
-                    <div class="col12">
+                    <div class="col12 column swiper-wrap">
 
-                        <div class="swiper card-slider column column-space-2">
+                        <div class="swiper card-slider">
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
-                                    <media-card :media="media" :id="media.tmdbID+'-last'"></media-card>
+                                    <media-card :media="media" :id="media.episode_id"></media-card>
                                 </div>
 
                             </div>
@@ -55,7 +55,7 @@
                         </div>
 
                         <template v-for="(media, index) in userWatchList" :key="index">
-                            <media-content :media="media" :id="media.tmdbID+'-last'"></media-content>
+                            <media-content :media="media" :id="media.episode_id"></media-content>
                         </template>
 
                     </div>
@@ -188,6 +188,7 @@ export default {
     async mounted() {
         this.highlight = await this.getHighlight();
         this.userWatchList = await this.getAllMediaInfos(null, null, null, null, 0, 1);
+
         await this.genreSlider().then(() => {
             this.availableSliderContent = this.availableSlider;
             document.getElementById('loader').classList.add('hidden');
