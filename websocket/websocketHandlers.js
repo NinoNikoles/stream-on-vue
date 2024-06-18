@@ -31,7 +31,6 @@ function handleMessage(remotesessionID, ws, message) {
                 client.send(message.toString());
             }
         });
-        console.log(`Message from session ${remotesessionID}: ${message}`);
     } catch (error) {
         console.error(`Error handling message: ${error}`);
     }
