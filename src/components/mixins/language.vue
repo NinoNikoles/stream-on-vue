@@ -284,8 +284,7 @@ export default {
     name: 'LangSnippet',
     methods: {
         langSnippet(snippet, content = '' ) {
-            const browserLanguage = navigator.language || navigator.userLanguage;
-            var langObject = langs.find(lang => lang.locale === browserLanguage);
+            var langObject = langs.find(lang => lang.locale.includes(navigator.language));
             let langsnippet = snippet;
 
             if (langObject && langObject.translations[snippet]) {
