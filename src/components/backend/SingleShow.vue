@@ -155,7 +155,6 @@ export default {
             Fancybox.close();
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteShow?mediaID=${this.show.tmdbID}`);
-                console.log('Done');
                 this.$router.push('/backend/shows');
             } catch (err) {
                 console.log(err);
@@ -168,7 +167,6 @@ export default {
             Fancybox.close();
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/deleteSeason?mediaID=${tmdbID}&seasonNumber=${seasonNumber}`);
-                console.log(tmdbID);
                 await this.outPutShow(tmdbID).then(async(show) => {
                     // Verwenden Sie outputMovies hier, um die Daten in Ihrer Komponente zu verwenden
                     this.show = show[0];
