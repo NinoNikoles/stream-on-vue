@@ -23,7 +23,7 @@ app.config.globalProperties.$truncate = truncate;
 app.config.globalProperties.$globalState = globalState;
 
 app.mixin({
-    async created() {
+    created() {
         this.$nextTick(async () => {
             window.initCustomJS();
 

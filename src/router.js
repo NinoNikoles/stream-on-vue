@@ -10,7 +10,6 @@ import Logout from './components/Logout.vue';
 import Test from './components/Test.vue';
 import ContentManager from './components/backend/ContentManager.vue';
 import MediaPlayer from './components/player/Player.vue';
-import MediaPlayerSession from './components/player/PlayerMulti.vue';
 import BackendSettings from './components/backend/Settings.vue';
 import Users from './components/backend/Users.vue';
 import BackendGenre from './components/backend/Genre.vue';
@@ -137,12 +136,6 @@ const router = createRouter({
             component: MediaPlayer,
             meta: { requiresAuth: true, backend: false, noHeader: true }
         },
-        {
-            path: '/w',
-            name: 'PlayerMulti',
-            component: MediaPlayerSession,
-            meta: { requiresAuth: true, backend: false }
-        }
     ]
 });
 

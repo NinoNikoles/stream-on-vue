@@ -133,6 +133,7 @@ import videojs from 'video.js';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../mixins/functions.vue';
 import { v4 as uuidv4 } from 'uuid';
+import { getWebSocketInstance, createWebSocket } from '@/websocket/websocketChecker';
 
 export default {
     name: 'MediaPlayer',
@@ -157,7 +158,9 @@ export default {
                 currentTime: null,
                 duration: null,
                 ended: false,
+                firstPlay: false,
                 options: {
+                    language: navigator.language,
                     controls: true,
                     duration: true,
                     preload: 'auto',
@@ -178,6 +181,7 @@ export default {
                 },
             },
             socket: null,
+            sessionAdmin: null,
             userMessage: ''
         };
     },
@@ -252,7 +256,6 @@ export default {
                 }
             }
 
-            console.log(mediaID);
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/safeWatchTime`, {
                     userID: this.$globalState.user.id,
@@ -336,6 +339,10 @@ export default {
 
             // On video playing
             playerEL.on('play', () => {
+                if (!this.player.firstPlay && !this.$route.query.uuid) {
+                    this.player.firstPlay = true;
+                    return;
+                }
                 this.isVideoEnded = false;
                 saveInterval();
                 this.saveTime(playerEL.currentTime());
@@ -368,9 +375,9 @@ export default {
             });
 
             // On video volume change
-            playerEL.on('volumechange', () => {
-                this.$globalState.user.volume = playerEL.volume();
-                this.saveUserVolume();
+            playerEL.on('volumechange', async () => {
+                this.$globalState.user.volume = playerEL.muted() ? 0 : playerEL.volume();
+                await this.saveUserVolume();
             });
 
             // On video time update
@@ -420,17 +427,25 @@ export default {
         },
         async webSocket() {
             const host = window.location.hostname;
-            const videoPlayer = document.getElementById('main-video');
+            const uuid = this.$route.query.uuid;
+            const existingSocket = getWebSocketInstance();
+
+            // const videoPlayer = document.getElementById('main-video');
             const messageWrap = document.getElementById('message-wrap');
             const msgInput = document.getElementById('message-input');
             const sendButton = document.getElementById('chatMSG');
 
-            this.socket = new WebSocket(`ws://${host}:3000/?remotesessionID=${this.$route.query.uuid}`);
+            if (existingSocket && existingSocket.readyState !== WebSocket.CLOSED) {
+                this.socket = existingSocket;
+            } else {
+                this.socket = createWebSocket(host, uuid, this.$globalState.user.id);
+            }
 
             this.socket.onopen = () => {
                 const send = `joined§${this.$globalState.user.username}§${this.$globalState.user.img}`;
                 this.socket.send(send);
                 joinedMessage(this.$globalState.user.username, this.$globalState.user.img);
+                if (this.sessionAdmin !== this.$globalState.user.id) this.socket.send('getTime');
             }
 
             this.socket.onerror = (error) =>  console.error('WebSocket error:', error);
@@ -450,15 +465,31 @@ export default {
                         const [username, userImg] = event.data.split('§').slice(1);
                         joinedMessage(username, userImg);
                     } else if ( event.data === 'play' ) {
-                        this.player.play();
+                        this.player.el.play();
                     } else if ( event.data === 'pause' ) {
                         this.player.el.pause();
                     } else if ( event.data.startsWith('timeupdate:') ) {
                         const currentTime = parseFloat(event.data.replace('timeupdate:', ''));
-                        this.player.el.currentTime(currentTime);
+
+                        if (this.player.el.currentTime() !== currentTime) {
+                            this.player.currentTime = currentTime;
+                            this.player.el.currentTime(currentTime);
+                        }
+                    } else if ( event.data == 'getTime' ) {
+                        if (this.sessionAdmin === this.$globalState.user.id) this.socket.send(`timeupdate:${this.player.el.currentTime()}`);
                     } else if ( event.data.startsWith('url:') ) {
                         const url = event.data.split(':')[1];
                         window.location.href = url;
+                    } else if ( event.data.startsWith('dc:')) {
+                        const user = parseInt(event.data.replace('dc:', ''));
+                        leaveMessage(user);
+                    } else {
+                        const jsonData = JSON.parse(event.data);
+
+                        if (jsonData.type === 'admin') {
+                            this.sessionAdmin = parseInt(jsonData.admin);
+                            this.socket.send('getTime');
+                        }
                     }
                 } catch (error) {
                     console.log(error);
@@ -466,7 +497,6 @@ export default {
             }
 
             this.socket.onclose = () => {
-                console.log('WebSocket closed');
                 clearInterval();
                 this.socket.close();
             };
@@ -511,6 +541,23 @@ export default {
                 message.scrollIntoView({ behavior: 'smooth' });
             };
 
+            const leaveMessage = async (userID) => {
+                const response = await this.get(`SELECT username FROM users WHERE id = ${userID}`);
+                const username = response[0].username;
+
+                const message = document.createElement('div');
+                message.classList.add('message', 'joint-msg', 'marg-bottom-xs', 'joined');
+                message.innerHTML = `
+                    <div class="message-content-wrap">
+                        <span class="message-text marg-left-xs small">
+                            <strong>${username}</strong> left
+                        </span>
+                    </div>
+                `;
+                messageWrap.appendChild(message);
+                message.scrollIntoView({ behavior: 'smooth' });
+            };
+
             sendButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (msgInput.value.trim() !== '') {
@@ -522,16 +569,24 @@ export default {
                 }
             });
 
-            videoPlayer.addEventListener('play', () => {
+            this.player.el.on('play', () => {
+                if (!this.player.firstPlay) {
+                    this.player.el.pause();
+
+                    if (this.sessionAdmin !== this.$globalState.user.id) this.socket.send('getTime');
+                    this.player.firstPlay = true;
+                    return;
+                }
                 this.socket.send('play');
             });
 
-            videoPlayer.addEventListener('pause', () => {
+            this.player.el.on('pause', () => {
                 if (!this.isVideoEnded) this.socket.send('pause');
             });
 
-            videoPlayer.addEventListener('timeupdate', () => {
-                if (!this.isVideoEnded) this.socket.send(`timeupdate:${videoPlayer.currentTime}`);
+            this.player.el.on('seeking', () => {
+                if (!this.player.firstPlay) return;
+                if (!this.isVideoEnded) this.socket.send(`timeupdate:${this.player.el.currentTime()}`);             
             });
 
             msgInput.addEventListener('keypress', (e) => {

@@ -31,8 +31,6 @@ export default {
                 this.moveButtons(this.player.id_);
             });
         });
-
-        console.log(this.player);
     },
     beforeUnmount() {
         if (this.player) {
