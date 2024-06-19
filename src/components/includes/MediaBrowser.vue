@@ -400,9 +400,7 @@ export default {
                             'Conent-Type': 'multipart/form-data',
                         }
                     })
-                    .then(() => {
-                        this.changeDirectory(this.folderStructure.path, event);
-                    });
+                    this.changeDirectory(this.folderStructure.path, event);
                 } catch (err) {
                     console.log(err.response.data);
                     this.folderExists = err.response.data;
