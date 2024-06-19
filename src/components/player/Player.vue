@@ -625,12 +625,12 @@ export default {
                 this.setUpPlayer(this.$route.query.id);
             }
 
-            this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
+            this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/w') ? this.$router.options.history.state.back : this.lastPath);
             this.multiWatch = (this.$route.query.uuid ? true : false);
         }
     },
     async created() {
-        this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/watch') ? this.$router.options.history.state.back : this.lastPath);
+        this.lastPath = (this.$router.options.history.state.back && !this.$router.options.history.state.back.includes('/w') ? this.$router.options.history.state.back : this.lastPath);
         this.multiWatch = (this.$route.query.uuid ? true : false);
 
         await this.setUpPlayer();

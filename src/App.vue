@@ -6,7 +6,7 @@
         <router-view></router-view>
     </div>
 
-    <template v-if="$route.path !== '/watch' && $route.name !== 'PlayerMulti'">
+    <template v-if="$route.path !== '/w'">
         <div id="callout" data-time="0" data-id="0">
             <p id="callout-content">test</p>
         </div>

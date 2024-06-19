@@ -45,7 +45,7 @@
                             <div class="swiper-wrapper">
 
                                 <div v-for="(media, index) in userWatchList" :key="index" class="swiper-slide">
-                                    <media-card :media="media" :id="media.episode_id"></media-card>
+                                    <media-card :media="media" :id="`${media.episode_id}-last`"></media-card>
                                 </div>
 
                             </div>
@@ -55,7 +55,7 @@
                         </div>
 
                         <template v-for="(media, index) in userWatchList" :key="index">
-                            <media-content :media="media" :id="media.episode_id"></media-content>
+                            <media-content :media="media" :id="`${media.episode_id}-last`"></media-content>
                         </template>
 
                     </div>

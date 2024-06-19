@@ -86,7 +86,7 @@
                                         </div>
 
                                         <div v-if="episode.file_path" class="link-wrapper">
-                                            <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
+                                            <a :href="`/w?id=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger">
                                                 <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
                                                     <i class="icon-play"></i>
                                                 </span>
@@ -109,7 +109,7 @@
                                         </div>
 
                                         <div v-if="media && episode.file_path" class="link-wrapper">
-                                            <a :href="`/watch?s=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger" v-if="media">
+                                            <a :href="`/w?id=${episode.tmdbID}`" :title="`${episode.title}`" class="play-trigger" v-if="media">
                                                 <span class="icon-wrap col-5 col-3-medium pad-top-xs pad-bottom-xs">
                                                     <i class="icon-play"></i>
                                                 </span>
