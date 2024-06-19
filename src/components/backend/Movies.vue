@@ -125,7 +125,6 @@ export default {
         async saveData(data) {
             document.getElementById('loader').classList.remove('hidden');
             const movie = await this.searchMovieByID(data.id);
-            console.log(movie);
             const genres = movie.genres.map(genre => genre.id);
 
             let date = movie.release_date;
