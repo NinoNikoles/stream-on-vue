@@ -190,7 +190,7 @@ async function createAdmin(db) {
     const img = -1;
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
     const volume = 1;
-    const date = new Date().toLocaleDateString('en-GB');
+    const date = new Date().toLocaleDateString();
 
     return new Promise((resolve, reject) => {
         db.get('SELECT * FROM users WHERE role="superadmin"', (err, row) => {
