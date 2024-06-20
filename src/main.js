@@ -9,17 +9,18 @@ app.config.globalProperties.productionTip = false; // Setze den Wert auf true od
 
 const user = await fetchSessionStatus();
 const pageSettings = await fetchPageSettings();
+const mediaInfos = null;
 
 const globalState = reactive({
     user: user,
-    pageSettings: pageSettings
+    pageSettings: pageSettings,
+    mediaInfos: mediaInfos,
 });
 
 app.config.globalProperties.$mainURL = mainURL;
 app.config.globalProperties.$loadImg = loadImg;
 app.config.globalProperties.$truncate = truncate;
 // app.config.globalProperties.$globalState.user = user;
-// app.config.globalProperties.$globalState.pageSettings = pageSettings;
 app.config.globalProperties.$globalState = globalState;
 
 app.mixin({
@@ -32,6 +33,7 @@ app.mixin({
 
             if (user) globalState.user = user;
             globalState.pageSettings = pageSettings;
+            // globalState.mediaInfos = mediaInfos;
         });
     }
 });

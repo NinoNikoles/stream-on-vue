@@ -189,47 +189,41 @@ export default {
         scrollDiv(el) {
             var scrollDiv = 0;
             var bodyPadding = document.body.style.paddingRight;
-            if (bodyPadding != '') {
+
+            if (bodyPadding != '' && bodyPadding != '0px') {
                 scrollDiv = parseFloat(bodyPadding);
-            } else {
-                scrollDiv = window.innerWidth - el.clientWidth;
+            } else {                
+                scrollDiv = document.body.clientWidth - el.clientWidth;
             }
             return scrollDiv;
         },
-        openPopUp(event, id) {
-            event.preventDefault();
-            const body = document.body;
-            const modal = document.getElementById('media-content-modal');
-            const modalWrap = document.getElementById('modal-wrap');
-            const modalOverlay = document.getElementById('modal-overlay');
-            const modalContent = document.getElementById('media-content');
+        async openPopUp(media) {
+            this.$globalState.mediaInfos = media;
 
+                        // event.preventDefault();
+            var body = document.body;
+            var modal = document.getElementById('media-content-modal');
+            var modalWrap = document.getElementById('modal-wrap');
+            var modalOverlay = document.getElementById('modal-overlay');
             var bodyScrollWidth = this.bodyScrollDiv();
-            var content = document.getElementById(id);
-            var clonedElement = content.cloneNode(true);
-
-            // Copy content to modal
-            modalContent.appendChild(clonedElement);
 
             // Add classes to show modal
             body.classList.add('active-modal');
             modal.classList.add('active');
 
-            var scrollDiv = this.scrollDiv(modalWrap);
-
             // Add scrollbar diff to body and modal
             body.style.paddingRight = `${bodyScrollWidth}px`;
-            modalOverlay.style.width = `calc(100% - ${scrollDiv}px)`;
+            var scrollDiv = document.body.clientWidth - modalWrap.clientWidth;
+            modalOverlay.style.width = `calc(100% + -${scrollDiv}px)`;
         },
         async closePopUp(event, id) {
             event.preventDefault();
             var modal = document.getElementById(id);
-            var content = document.querySelector('#media-content .info-popup');
 
             document.body.classList.remove('active-modal');
             document.body.style.paddingRight = '';
             modal.classList.remove('active');
-            content.remove();
+            this.$globalState.mediaInfos = null;
         },
         disableButton(button) {
             button.disabled = true;
@@ -481,14 +475,20 @@ export default {
                     spaceBetween: 16,
                     allowTouchMove: true,
                     breakpoints: {
-                        720: {
+                        460: {
                             slidesPerView: 3,
                         },
-                        1080: {
+                        720: {
                             slidesPerView: 4,
                         },
-                        1400: {
+                        1080: {
                             slidesPerView: 6,
+                        },
+                        1280: {
+                            slidesPerView: 8,
+                        },
+                        1400: {
+                            slidesPerView: 10,
                         }
                     },
                     pagination: {

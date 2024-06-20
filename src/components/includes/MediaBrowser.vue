@@ -296,11 +296,13 @@ export default {
                     }).then(() => {
                         Fancybox.close();
                         this.mediaPath = videoPath;
+                        this.$route.params.selectedFile = videoPath;
                     });                
                 } else {
                     mediaType = 'episodes';
                     const mediaID = this.$route.params.episodeID;
                     const videoPath = `/${path}`;
+                    this.$route.params.selectedFile = videoPath;
 
                     await this.postDB(`addVideoPathToMedia`, {
                         params: {

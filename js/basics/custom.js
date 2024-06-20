@@ -105,7 +105,7 @@ function resizeElementHeight() {
     var body = document.body;
     var navMain = document.getElementById('navMain');
     
-    if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
+    if (body.classList.contains('active-menu') || body.classList.contains('active-modal')) {
         const windowHeight = window.innerHeight;
         body.style.height = `${windowHeight}px`;
         if(navMain && body.classList.contains('active-menu')) navMain.style.height = `${windowHeight-50}px`;
@@ -120,7 +120,7 @@ function mobileBodyHeightFix() {
     var navMain = document.getElementById('navMain');
     var windowHeight = window.innerHeight;
 
-    if (body.classList.contains('active-menu') || body.classList.contains('active-modal') || body.classList.contains('active-search')) {
+    if (body.classList.contains('active-menu') || body.classList.contains('active-modal')) {
         if (body.style.height === `${windowHeight}px` || navMain.style.height === `${windowHeight-50}px` ) return;
 
         body.style.height = `${windowHeight}px`;

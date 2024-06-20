@@ -1,5 +1,5 @@
 <template>
-    <div id="loader" class="">
+    <div id="loader" class="" style="display: none !important;">
         <div class="content-wrap">
             <i></i>
             <span></span>
@@ -54,10 +54,6 @@
                             <div class="swiper-button-next"></div>
                         </div>
 
-                        <template v-for="(media, index) in userWatchList" :key="index">
-                            <media-content :media="media" :id="`${media.episode_id}-last`"></media-content>
-                        </template>
-
                     </div>
                 </div>
             </div>
@@ -89,12 +85,6 @@
                             <div :class="`swiper-button-next`"></div>
                         </div>
 
-                        <template v-for="(id, index) in slider.mediaIDs" :key="index">
-                            <template v-for="(media, index) in allMedia" :key="index">
-                                <media-content :media="media" :id="media.tmdbID+'-'+index+'-'+slider.genre.genre_name"  v-if="media.tmdbID === id"></media-content>
-                            </template>
-                        </template>                        
-
                     </div>
                 </div>
             </div>
@@ -106,7 +96,7 @@
 import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import MediaCard from './includes/MediaCard.vue';
-import MediaContent from './includes/MediaContentPopup.vue';
+// import MediaContent from './includes/MediaContentPopup.vue';
 
 let mediaInfos = []
 
@@ -115,7 +105,7 @@ export default {
     mixins: [functions, langSnippet],
     components: {
         'media-card': MediaCard,
-        'media-content': MediaContent,
+        // 'media-content': MediaContent,
     },
     data() {
         return {

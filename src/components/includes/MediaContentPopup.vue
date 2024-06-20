@@ -23,32 +23,35 @@
             </div>
 
             <div class="innerWrap">
-                <div class="col12 marg-top-s">
+                <div class="col12 marg-top-xs">
                     <div class="col12">
-                        <div class="col-9">
-                            <p class="h2" v-if="media.tagline">{{ media.title }}<br>{{ media.tagline }}</p>
-                            <p class="h2" v-else>{{ media.title }}</p>
-                        </div>
-
-                        <div class="col-3">
-                            <p class="text-right">
-                                <!-- Like button -->
-                                <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="`${media.watchlist_status}`" class="btn btn-small btn-white hollow icon-only like-btn marg-no"></button>
-                            </p>
-                        </div>
+                        <template v-if="media.tagline">
+                                <p class="h4 marg-no" v-if="media.tagline">{{ media.title }}</p>
+                                <p class="h6 italic">{{ media.tagline }}</p>
+                        </template>
+                        <p class="h4" v-else>{{ media.title }}</p>
                     </div>
 
                     <p class="small tag-list marg-bottom-base">
                         <span class="tag">{{ media.release_date }}</span>
-                        <span class="tag">{{ media.rating }}/10 ★</span>
+                        <span class="tag">{{ Math.round(media.rating * 10) / 10 }}/10 ★</span>
                         <!-- <span class="tag">'.$extraInfo.'</span> -->
                     </p>
 
                     <!-- Play button -->
-                    <button v-if="media.file_path" href="#" class="btn btn-small btn-white icon-left icon-play marg-right-no">{{ langSnippet('watch_now') }}</button>
+                    <p class="row">
+                        <span class="column" v-if="media.file_path"><button href="#" class="btn btn-small btn-white icon-left icon-play">{{ langSnippet('watch_now') }}</button></span>
+                        <span class="column">
+                            <!-- Like button -->
+                            <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="`${media.watchlist_status}`" class="btn btn-small btn-white hollow icon-left icon-heart">{{ langSnippet('add_to_list') }}</button>
+                        </span>
+                    </p>                    
                     
+                    <p class="strong marg-no">{{ langSnippet('overview') }}</p>
                     <p class="small">{{ media.overview }}</p>
-                    <p class="small tag-list marg-bottom-base">
+
+                    <p class="tag-list marg-bottom-base">
+                        <span class="strong">{{ langSnippet('genres') }}</span><br>
                         <span v-for="(genre, index) in JSON.parse(media.genre_names)" :key="index" class="tag">
                             {{ genre }}
                         </span>

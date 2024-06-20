@@ -18,6 +18,7 @@
         <div class="modal-wrap large" id="modal-wrap">
             <div class="modal-inner-wrap rounded" id="media-content">
                 <a href="#" class="modal-close" @click="closePopUp($event, 'media-content-modal')"></a>
+                <info-popup :media="$globalState.mediaInfos" v-if="$globalState.mediaInfos"></info-popup>
             </div>
         </div>
     </div>
@@ -30,12 +31,14 @@ import tmdbAPI from './components/mixins/tmdbAPI.vue';
 import functions from './components/mixins/functions.vue';
 import langSnippet from './components/mixins/language.vue';
 import { Fancybox } from "@fancyapps/ui";
+import InfoPopup from "./components/includes/MediaContentPopup.vue";
 
 export default {
     name: 'AppIndex',
     mixins: [functions, tmdbAPI, langSnippet],
     components: {
-        'header-component': Header
+        'header-component': Header,
+        'info-popup': InfoPopup,
     },
     data() {
         return {

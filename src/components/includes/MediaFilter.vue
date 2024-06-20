@@ -1,5 +1,5 @@
 <template>        
-    <div class="grid-row col6 pad-top-xxs">
+    <div class="grid-row pad-top-xxs">
         <div class="col6 grid-padding marg-bottom-xxs field-wrap">
             <p>
                 <span class="input-wrap input-select">

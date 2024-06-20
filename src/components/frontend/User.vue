@@ -37,13 +37,14 @@
                             </span>
 
                             <span class="marg-right-xxs">
-                                <button 
-                                    class="btn btn-warning icon-only icon-replay" 
-                                    @click="cropperObj.el.reset(); zoomVal = 0"
-                                ></button>
+                                <button class="btn btn-warning icon-only icon-replay" @click="cropperReset"></button>
                             </span>
 
-                            <button class="btn btn-success icon-only icon-save loading" @click="crop($event)"></button>
+                            <span class="marg-right-xxs">
+                                <button class="btn btn-success icon-only icon-save loading" @click="crop($event)"></button>
+                            </span>
+
+                            <button class="btn btn-alert icon-only icon-close" @click="cropperDestroy"></button>
                         </p>
                     </div>
                 </div>
@@ -132,6 +133,17 @@ export default {
                 this.cropperObj.currentZoom = this.cropperObj.currentZoom+zoom;
             }
         },
+        cropperReset() {
+            this.cropperObj.currentZoom = 0.5;
+            this.cropperObj.el.reset();
+        },
+        cropperDestroy() {
+            this.file = null;
+            this.croppedImg = null;
+            this.selectedImg = null;
+            this.cropperObj.currentZoom = 0.5;
+            this.cropperObj.el.destroy();
+        },
         async crop(e) {
             const saveButton = e.target;
             await this.disableButton(saveButton);
@@ -149,6 +161,7 @@ export default {
             try {
                 await axios.post(`${this.$mainURL}:3000/api/db/postQuery`, { query, data });
                 this.cropperObj.el.destroy();
+                this.cropperObj.currentZoom = 0.5;
                 this.file = null;
                 this.croppedImg = null;
                 this.selectedImg = null;

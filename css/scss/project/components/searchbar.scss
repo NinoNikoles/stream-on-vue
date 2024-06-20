@@ -55,7 +55,7 @@
 
 #searchResults {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 100px) !important;
     position: absolute;
     top: rem-calc(100);
     left: 0;
@@ -63,7 +63,7 @@
     z-index: -1;
 
     @include MQ(medium) {
-        height: calc(100vh - 50px);
+        height: calc(100vh - 50px) !important;
         top: rem-calc(50);
     }
 }

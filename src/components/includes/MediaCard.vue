@@ -1,23 +1,23 @@
 <template>        
     <div class="media-card rounded" v-if="media">
         <div class="media-card-wrapper">
-            <template v-if="media.file_path === null">
+            <!-- <template v-if="media.file_path === null">
                 <figure class="widescreen desktop-only disabled">
                     <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
                 </figure>
                 <figure class="poster mobile-only disabled">
                     <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
                 </figure>
-            </template>
+            </template> -->
 
-            <template v-else>
-                <figure class="widescreen desktop-only">
+            <!-- <template> -->
+                <!-- <figure class="widescreen desktop-only">
                     <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                </figure>
-                <figure class="poster mobile-only">
+                </figure> -->
+                <figure class="poster">
                     <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
                 </figure>
-            </template>
+            <!-- </template> -->
             
             <div class="link-wrapper">
                 <progress v-if="getWatchedTime(media.watched_seconds, media.total_length)" max="100" :value="getWatchedTime(media.watched_seconds, media.total_length)"></progress>
@@ -25,7 +25,7 @@
                 <router-link v-else-if="media.media_type === 'show' && media.episode_id" :to="`/w?id=${media.episode_id}`" :title="`${media.title}`" class="play-trigger"></router-link>
                 <router-link v-else-if="media.media_type === 'show' && media.episodes[0].file_path" :to="`/w?id=${media.episodes[0].tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
                 
-                <button @click="openPopUp($event, id)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
+                <button @click="openPopUp(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
                 <router-link v-if="$globalState.pageSettings[4].setting_option === 'true' && ($globalState.user.role ==='superadmin' || $globalState.user.role === 'admin')" :to="`/b/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
             </div>
         </div>

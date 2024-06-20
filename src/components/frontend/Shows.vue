@@ -1,5 +1,5 @@
 <template>
-    <div id="loader" class="">
+    <div id="loader" class="" style="display: none !important;">
         <div class="content-wrap">
             <i></i>
             <span></span>
@@ -8,11 +8,15 @@
 
     <div class="col12 pad-top-xl sticky-top">
         <div class="innerWrap">
-            <div class="col6 grid-padding field-wrap ">
-                <h1>{{ langSnippet('shows') }}</h1>
-            </div>
+            <div class="grid-row">
+                <div class="col6 field-wrap grid-padding">
+                    <h1>{{ langSnippet('shows') }}</h1>
+                </div>
 
-            <media-filter></media-filter>
+                <div class="col6 grid-padding">
+                    <media-filter></media-filter>
+                </div>
+            </div>            
         </div>
     </div>
 
@@ -20,9 +24,8 @@
         <!-- Shows -->
         <template v-if="shows">
             <div class="grid-row" id="media-list">
-                <div v-for="(media, index) in visibleMedia" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding media" :data-genre="`${media.genres}`" :data-title="media.title" :data-rating="media.rating">
+                <div v-for="(media, index) in visibleMedia" :key="index" class="col-6 col-4-xsmall col-3-small col-2-medium grid-padding media" :data-genre="`${media.genres}`" :data-title="media.title" :data-rating="media.rating">
                     <media-card :media="media" :id="media.tmdbID"></media-card>
-                    <media-content :media="media" :id="media.tmdbID"></media-content>
                 </div>
                 <p id="sentinel" class="text-center marg-top-xs marg-bottom-no" style="display: none;">
                     <button id="sentinel-btn" class="btn btn-primary marg-no loading" style="opacity: 0;" @click="loadNextPage">Load more</button>
@@ -42,9 +45,6 @@ import functions from '../mixins/functions.vue';
 import langSnippet from '../mixins/language.vue';
 import MediaFilter from './../includes/MediaFilter.vue';
 import MediaCard from './../includes/MediaCard.vue';
-import MediaContent from './../includes/MediaContentPopup.vue';
-
-// let mediaInfos = [];
 
 export default {
     name: 'FrontendShows',
@@ -52,7 +52,6 @@ export default {
     components: {
         'media-filter': MediaFilter,
         'media-card': MediaCard,
-        'media-content': MediaContent,
     },
     data() {
         return {
@@ -61,7 +60,7 @@ export default {
             genres: null,
             genreFilter: 'all',
             orderFilter: "title,ASC",
-            pageSize: 20,
+            pageSize: 24,
             page: 1,
             totalPages: 0,
             visibleMedia: null,
@@ -119,7 +118,7 @@ export default {
         async getShows() {
             this.shows = this.movies = await this.getAllMediaInfos('title', 'ASC', null, 'show');
 
-            this.totalPages = Math.ceil(this.shows.length/20);
+            this.totalPages = Math.ceil(this.shows.length/this.totalPages);
             this.visibleMedia = this.shows.slice(0, this.page * this.pageSize);
         },
         async watchListAction(mediaID, buttonID) {

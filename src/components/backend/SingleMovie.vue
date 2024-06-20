@@ -28,19 +28,17 @@
                             </span>
                         </p>
                     </div>
+
+                    <div class="col12 marg-top-s">
+                        <div class="row">
+                            <span class="column"><a href="#edit-movie" data-fancybox class="btn btn-primary btn-small icon-left icon-pen">Infos bearbeiten</a></span>
+                            <span class="column" v-if="isHighlight===null"><button @click="addHighlight(movie.tmdbID)" class="btn btn-warning hollow btn-small icon-left icon-star" name="addHighlight">{{ langSnippet('add_highlight') }}</button></span>
+                        </div>
+                    </div>
                 </div>
  
                 <div class="col3 marg-left-col1">
-                    <div class="col12">
-                        <p class="text-right">
-                            <a href="#edit-movie" data-fancybox class="btn btn-primary btn-small icon-left icon-pen">Infos bearbeiten</a>
-                        </p>
-                        <p class="text-right" v-if="isHighlight===null">
-                            <button @click="addHighlight(movie.tmdbID)" class="btn btn-warning hollow btn-small icon-left icon-star" name="addHighlight">{{ langSnippet('add_highlight') }}</button>
-                        </p>
-                    </div>
-
-                    <div class="col12" v-if="movie.file_path">
+                    <div class="col12" v-if="movie.file_path || this.$route.params.selectedFile">
                         <figure class="widescreen">
                             <video :src="`${this.$mainURL}:8080/${this.movie.file_path.replace('/public/', '')}`" controls></video>
                         </figure>
@@ -52,7 +50,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col6 column">
+                        <div class="col12 column">
                             <a href="#movie-poster" data-fancybox data-src="#movie-poster">
                                 <figure class="poster">
                                     <img :src="$loadImg(movie.poster)" loading="lazy" alt="" id="mainPoster">
@@ -76,7 +74,7 @@
                             </div>
                         </div>
 
-                        <div class="col6 column">
+                        <div class="col12 column">
                             <a href="#movie-backdrop" data-fancybox data-src="#movie-backdrop">
                                 <figure class="widescreen">
                                     <img :src="$loadImg(movie.backdrop)" loading="lazy" alt="" id="mainBackdrop">

@@ -17,7 +17,7 @@
                     <div id="search-bar" class="search-bar">
                         <div class="searchbar-wrap">
                             <div class="search-bar-fix"></div>
-                            <input type="text" id="media-live-search" name="search" placeholder="Suchen">
+                            <input type="text" id="media-live-search" name="search" v-model="searchInput" placeholder="Suchen">
                             <span class="loader"></span>
                             <button id="search-btn" @click="searchTrigger($event)" class="btn search-btn"></button>
                         </div>
@@ -84,17 +84,13 @@
 
             <div class="innerWrap">
                 <div class="grid-row" id="media-list">
-                    <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-medium grid-padding">
+                    <div v-for="(media, index) in searchResults" :key="index" class="col-6 col-4-xsmall col-3-small col-2-medium grid-padding media">
                         <media-card :media="media" :id="media.tmdbID+'-search'"></media-card>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
-    <template v-for="(media, index) in searchResults" :key="index">
-        <media-content :media="media" :id="media.tmdbID+'-search'"></media-content>
-    </template>
     
 </template>
   
@@ -104,7 +100,6 @@ import functions from './mixins/functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
 import MediaCard from './includes/MediaCard.vue';
-import MediaContent from './includes/MediaContentPopup.vue';
 
 let mediaInfos = [];
 
@@ -113,7 +108,6 @@ export default {
     mixins: [functions, langSnippet, tmdb],
     components: {
         'media-card': MediaCard,
-        'media-content': MediaContent,
     },
     data() {
         return {
@@ -160,8 +154,6 @@ export default {
                     const input = searchInputField.value;
 
                     if (input !== '') {
-                        var scrollDiv = this.bodyScrollDiv();
-                        document.body.style.paddingRight = scrollDiv+'px';
                         document.body.classList.add('active-search');
 
                         var mediaResponse = await this.get(`SELECT tmdbID FROM media WHERE title $$$$ ORDER BY title ASC`, input);
@@ -175,7 +167,6 @@ export default {
                         var ids = mediaInfos.filter(num => mediaResponse.some(obj => obj.tmdbID === num));
                         this.searchResults = await this.getAllMediaInfos('title', 'ASC', ids);
                     } else {
-                        document.body.style.paddingRight = '';
                         document.body.classList.remove('active-search');                        
                         this.searchResults = null;
                     }
