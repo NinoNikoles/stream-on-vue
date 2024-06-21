@@ -228,8 +228,23 @@ export default {
 
             if ( user.id !== null && user.name !== '' ) {
                 try {
-                    await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${user.id}&username=${user.name}&role=${user.role}`)
+                    var role = 'user';
+                    if (user.role) role = 'admin';
+                    if (this.$globalState.user.id === user.id) {
+                        if (this.$globalState.user.role === 'superadmin') role = this.$globalState.user.role;
+
+                        await this.postDB(`session`, {
+                            username: user.name,
+                            role: role
+                        }, { withCredentials: true });
+                    }
+
+                    await axios.post(`${this.$mainURL}:3000/api/db/editUser?userID=${user.id}&username=${user.name}&role=${role}`);
+
+                    this.$globalState.user.username = user.name;
+
                     this.callout('success', `${this.langSnippet('settings')} ${this.langSnippet('saved')}`);
+
                     this.selectedUser.id = null;
                     this.selectedUser.name = null;
                     this.selectedUser.role = null;

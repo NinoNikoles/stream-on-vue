@@ -329,18 +329,19 @@ function formLabels() {
 }
 
 function YTplayer() {
-    var playerIframe = document.getElementById('player');
-    var highlight = document.getElementById('highlight');
-    var highlightTexts = document.querySelectorAll('#highlight-content h1, #highlight-content p');
-    var playerRdy;
+    const playerWrap = document.getElementById('player-wrap');
+    const playerIframe = document.getElementById('player');
+    const highlight = document.getElementById('highlight');
+    const highlightTexts = document.querySelectorAll('#highlight-content h1, #highlight-content p');
+    var playerRdy = false;
+
+    highlightTexts.forEach(text => {
+        text.style.opacity = 0;
+    });
 
     if (playerIframe) {
-        highlightTexts.forEach(text => {
-            text.style.opacity = 0;
-        });
         var videoID = playerIframe.getAttribute('data-trailer-id');
         const muteBtn = document.getElementById('player-btn');
-        playerRdy = false;
 
         const player = new YT.Player('player', {
             height: '1080',
@@ -366,10 +367,11 @@ function YTplayer() {
 
         function onPlayerReady(event) {
             playerRdy = true;
+            playerWrap.classList.add('playerRdy');
             event.target.mute();
-            setTimeout(function() {
+            // setTimeout(function() {
                 event.target.playVideo();
-            }, 1000);
+            // }, 1000);
         }
 
         var done = false;
@@ -391,13 +393,10 @@ function YTplayer() {
         }
 
         function hideVideo() {
-            document.getElementById('player-wrap').style.opacity = '0';
-            setTimeout(function() {
-                document.getElementById('player-wrap').style.display = 'none';
-                highlightTexts.forEach(text => {
-                    text.style.opacity = 1;
-                });
-            }, 350);
+            highlightTexts.forEach(text => {
+                text.style.opacity = 1;
+            });
+            playerWrap.classList.remove('playerRdy');
         }
 
         muteBtn.addEventListener('click', function() {
@@ -409,6 +408,10 @@ function YTplayer() {
             } else {
                 player.unMute();
             }
+        });
+    } else {
+        highlightTexts.forEach(text => {
+            text.style.opacity = 1;
         });
     }
 }

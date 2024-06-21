@@ -14,6 +14,14 @@ const getSession = (req, res) => {
     res.json(sessionData);
 }
 
+const updateSession = (req, res) => {
+    const {username, role} = req.body;
+
+    req.session.user.name = username;
+    req.session.user.role = role;
+    res.json(true);
+};
+
 function loginFunction(username, password, request) {
     return new Promise((resolve, reject) => {
         // Finde den Benutzer in der Datenbank
@@ -831,10 +839,7 @@ const editUser = (req, res) => {
 
     let query = `UPDATE users SET username = ?, role = ? WHERE id = ?`;
 
-    var stringRole = 'user';
-    if ( role ===  'true' || role ===  true ) stringRole = 'admin';
-
-    db.all(query, [username, stringRole, userID], (err) => {
+    db.all(query, [username, role, userID], (err) => {
         if (err) {
             res.status(500).send(err.message);
             return;
@@ -1117,8 +1122,8 @@ const getFromWatchlist = async(req, res) => {
 }
 
 const updateWatchlist = async(req, res) => {
-    const { mediaID, userID } = req.query;
-
+    const { userID, mediaID } = req.query;
+    
     try {
         const response = await selectFromWatchList(userID, mediaID);
         var status = null;
@@ -1139,6 +1144,7 @@ module.exports = {
     getQuery,
     postQuery,
     getSession,
+    updateSession,
     login,
     logout,
 
@@ -1196,5 +1202,5 @@ module.exports = {
     safeWatchTime,
 
     getFromWatchlist,
-    updateWatchlist
+    updateWatchlist,
 };

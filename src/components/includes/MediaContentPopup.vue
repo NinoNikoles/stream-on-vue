@@ -38,20 +38,24 @@
                         <!-- <span class="tag">'.$extraInfo.'</span> -->
                     </p>
 
-                    <!-- Play button -->
-                    <p class="row">
-                        <span class="column" v-if="media.file_path"><button href="#" class="btn btn-small btn-white icon-left icon-play">{{ langSnippet('watch_now') }}</button></span>
-                        <span class="column">
-                            <!-- Like button -->
-                            <button @click="watchListAction(media.tmdbID, `btn-${media.tmdbID}`)" :id="`btn-${media.tmdbID}`" :data-status="`${media.watchlist_status}`" class="btn btn-small btn-white hollow icon-left icon-heart">{{ langSnippet('add_to_list') }}</button>
+                    <div class="col12 row">
+                        <!-- Play button -->
+                        <span class="column marg-bottom-xs" v-if="media.file_path">
+                            <a :href="`/w?id=${media.tmdbID}`" class="btn btn-small btn-white icon-left icon-play">{{ langSnippet('watch_now') }}</a>
                         </span>
-                    </p>                    
+
+                        <!-- Like button -->
+                        <span class="column marg-bottom-xs">
+                            <button v-if="media.in_watchlist === 0" @click="watchListTrigger($event, media.tmdbID)" :id="`btn-${media.tmdbID}`" :data-status="`${media.in_watchlist}`" class="btn btn-small btn-white icon-left icon-heart like-btn loading">{{ langSnippet('add_to_list') }}</button>
+                            <button v-else @click="watchListTrigger($event, media.tmdbID)" :id="`btn-${media.tmdbID}`" :data-status="`${media.in_watchlist}`" class="btn btn-small btn-white icon-left icon-remove like-btn loading">{{ langSnippet('remove_from_list') }}</button>
+                        </span>
+                    </div>                    
                     
                     <p class="strong marg-no">{{ langSnippet('overview') }}</p>
                     <p class="small">{{ media.overview }}</p>
 
-                    <p class="tag-list marg-bottom-base">
-                        <span class="strong">{{ langSnippet('genres') }}</span><br>
+                    <p class="strong marg-no">{{ langSnippet('genres') }}</p>
+                    <p class="tag-list marg-bottom-base small">
                         <span v-for="(genre, index) in JSON.parse(media.genre_names)" :key="index" class="tag">
                             {{ genre }}
                         </span>
@@ -85,7 +89,7 @@
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
                                             <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                            <p class="small">{{ $truncate(episode.overview, 100) }}</p>
+                                            <p class="small" style="color: var(--white-90);">{{ $truncate(episode.overview, 100) }}</p>
                                         </div>
 
                                         <div v-if="episode.file_path" class="link-wrapper">
@@ -108,7 +112,7 @@
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
                                             <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                            <p class="small">{{ $truncate(episode.overview, 100) }}</p>
+                                            <p class="small" style="color: var(--white-90);">{{ $truncate(episode.overview, 100) }}</p>
                                         </div>
 
                                         <div v-if="media && episode.file_path" class="link-wrapper">
@@ -144,10 +148,5 @@ export default {
             videoID: null
         }
     },
-    methods: {
-        async watchListAction(mediaID, buttonID) {
-            this.watchListTrigger(this.$globalState.user.id, mediaID, buttonID);
-        },       
-    }
 }
 </script>

@@ -26,6 +26,8 @@
 
 .swiper {
     overflow: visible;
+    opacity: 0;
+    @include transition(opacity $transition-default);
 
     &:hover {
         .swiper-button-prev,
@@ -35,13 +37,17 @@
             }
         }
     }
+
+    &.visible {
+        opacity: 1;
+    }
 }
 
 .swiper-button-prev,
 .swiper-button-next {
     color: var(--white);
     width: rem-calc(32);
-    height: rem-calc(64);
+    height: 100%;
     margin: 0;
     top: 50%;
     transform: translateY(-50%);
@@ -52,11 +58,6 @@
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%);
-    }
-
-    @include MQ(medium) {
-        height: 100%;
-        // opacity: 0;
     }
 }
 

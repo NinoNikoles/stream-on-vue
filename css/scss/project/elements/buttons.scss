@@ -117,76 +117,82 @@ a.btn, .btn, button.btn:not(.acf-button):not(.add_media), .button:not(.acf-butto
     }
 
     &.like-btn {
-        background: {
-            color: transparent !important;
-        }
-        border: {
-            color: transparent !important;
-        }
-        color: var(--font-color) !important;
-        min-height: unset !important;
-        @include transitions(background-color $transition-default, color $transition-default);
-
-        @include keyframes(bounce-in) {
-            0% { transform: translate(-50%, -50%) scale(0.25); opacity: 0;}
-            75% { transform: translate(-50%, -50%) scale(1.3); }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1;}
-        }
-        @include keyframes(bounce-out) {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1;}
-            25% { transform: translate(-50%, -50%) scale(1.3);}
-            100% { transform: translate(-50%, -50%) scale(0); opacity: 0;}
-        }
-
-        &::before {
-            content: $icon-heart-empty;
-            color: inherit;
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
-            @include animate(bounce-in, 0.15s, ease-in-out, 1, 0.1s);
-        }
-
-        &::after {
-            display: block !important;
-            background: {
-                color: transparent;
-            }
-            content: $icon-heart;
-            color: inherit;
-            font: {
-                family: $icon-font;
-                size: rem-calc(26) !important;
-            }
-            margin: 0 !important;
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) scale(0.25);
-            opacity: 0;
-            visibility: visible;
-            @include animate(bounce-out, 0.15s, ease-in-out, 1);
-        }
-
         &[data-status="1"] {
-            &::before {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-                @include animate(bounce-out, 0.15s, ease-in-out, 1);
-            }
-
-            &::after {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-                @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
-                @include animate(bounce-in, 0.15s, ease-in-out, 1, 0.1s);
-            }
-        }
-
-        &:hover {
-            color: var(--grey) !important;
+            @extend .btn-white;
         }
     }
+
+    // &.like-btn {
+    //     background: {
+    //         color: transparent !important;
+    //     }
+    //     border: {
+    //         color: transparent !important;
+    //     }
+    //     color: var(--font-color) !important;
+    //     min-height: unset !important;
+    //     @include transitions(background-color $transition-default, color $transition-default);
+
+    //     @include keyframes(bounce-in) {
+    //         0% { transform: translate(-50%, -50%) scale(0.25); opacity: 0;}
+    //         75% { transform: translate(-50%, -50%) scale(1.3); }
+    //         100% { transform: translate(-50%, -50%) scale(1); opacity: 1;}
+    //     }
+    //     @include keyframes(bounce-out) {
+    //         0% { transform: translate(-50%, -50%) scale(1); opacity: 1;}
+    //         25% { transform: translate(-50%, -50%) scale(1.3);}
+    //         100% { transform: translate(-50%, -50%) scale(0); opacity: 0;}
+    //     }
+
+    //     &::before {
+    //         content: $icon-heart-empty;
+    //         color: inherit;
+    //         transform: translate(-50%, -50%) scale(1);
+    //         opacity: 1;
+    //         @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
+    //         @include animate(bounce-in, 0.15s, ease-in-out, 1, 0.1s);
+    //     }
+
+    //     &::after {
+    //         display: block !important;
+    //         background: {
+    //             color: transparent;
+    //         }
+    //         content: $icon-heart;
+    //         color: inherit;
+    //         font: {
+    //             family: $icon-font;
+    //             size: rem-calc(26) !important;
+    //         }
+    //         margin: 0 !important;
+    //         position: absolute !important;
+    //         top: 50% !important;
+    //         left: 50% !important;
+    //         transform: translate(-50%, -50%) scale(0.25);
+    //         opacity: 0;
+    //         visibility: visible;
+    //         @include animate(bounce-out, 0.15s, ease-in-out, 1);
+    //     }
+
+    //     &[data-status="1"] {
+    //         &::before {
+    //             transform: translate(-50%, -50%) scale(0);
+    //             opacity: 0;
+    //             @include animate(bounce-out, 0.15s, ease-in-out, 1);
+    //         }
+
+    //         &::after {
+    //             transform: translate(-50%, -50%) scale(1);
+    //             opacity: 1;
+    //             @include transitions(translate 0s ease-in-out 0.1s, opacity 0s ease-in-out 0.1s);
+    //             @include animate(bounce-in, 0.15s, ease-in-out, 1, 0.1s);
+    //         }
+    //     }
+
+    //     &:hover {
+    //         color: var(--grey) !important;
+    //     }
+    // }
 }
 
 i {

@@ -122,7 +122,6 @@
             right: 0;
             bottom: 0;
             width: 100%;
-            pointer-events: none;
 
             @include MQ(xsmall) {
                 padding: {
@@ -164,8 +163,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            opacity: 1;
-            @include transition(opacity $transition-default);
+            opacity: 0;
+            visibility: hidden;
+            @include transitions(opacity $transition-default, visibility 0s ease $transition-duration);
 
             iframe {
                 aspect-ratio: 16 / 9;
@@ -181,6 +181,12 @@
                 transform: translate(-50%, -50%);
                 object-fit: cover;
                 object-position: center;
+            }
+
+            &.playerRdy {
+                opacity: 1;
+                visibility: visible;
+                @include transitions(opacity $transition-default, visibility 0s ease 0s);
             }
         }
 

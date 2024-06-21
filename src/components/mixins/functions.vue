@@ -347,16 +347,24 @@ export default {
                 return 0;
             }
         },
-        async watchListTrigger(userID, mediaID, buttonID) {
-            var button = document.getElementById(buttonID);
+        async watchListTrigger(e, mediaID) {
+            const userID = this.$globalState.user.id;
+            const button = e.target;
+            this.disableButton(button);
 
             try {
-                const response = await this.fetchDB(`updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
-                var status = response.data;
-                button.setAttribute('data-status', status);
-            } catch(err) {
-                console.log(err);
+                var response = await this.fetchDB(`updateWatchlist?userID=${userID}&mediaID=${mediaID}`);
+                var result = response.data;
+
+                button.setAttribute('data-status', result);
+                button.textContent = result === 1 ? this.langSnippet('remove_from_list') : this.langSnippet('add_to_list');    
+                button.classList.toggle('icon-heart');            
+                button.classList.toggle('icon-remove');            
+            } catch(error) {
+                console.error('Es gab einen Fehler!', error);
             }
+
+            this.enableButton(button);
         },
         filterByGenre(event) {
             var $this = document.getElementById(event.target.id);
@@ -423,7 +431,7 @@ export default {
             }
         },
         async getSettings() {
-            const response = await axios.get(`${this.$mainURL}:3000/api/db/getSettings`);
+            const response = await this.fetchDB(`getSettings`);
             return new Promise((resolve) => {
                 resolve(response.data);
             });
@@ -502,7 +510,7 @@ export default {
                 });
 
                 swiper;
-
+                swiperElement.classList.add('visible');
                 sliderNumber++;
             });
         }

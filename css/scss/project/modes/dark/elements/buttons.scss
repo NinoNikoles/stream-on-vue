@@ -1,3 +1,12 @@
 .btn-primary { @include button-colors(var(--font-color), var(--font-color), var(--primary), var(--primary-light)); }
 
 .btn-white { @include button-colors(var(--font-color-invert), var(--black), var(--white), var(--grey)); }
+
+
+.btn-white.like-btn {
+    @include button-colors(var(--font-color-invert), var(--black), var(--white), var(--white));
+
+    &:not(.saved[data-status="0"]):not(.is-loading[data-status="0"]):not(.saved[data-status="1"]):not(.is-loading[data-status="1"]) {
+        @extend .hollow;
+    }
+}

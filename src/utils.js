@@ -55,6 +55,7 @@ async function getCurrentUserInfos(user) {
         };
 
         userInfos.img = userData.img !== '-1' ? `${userData.img}` : `/media/avatar.webp`;
+        
         return userInfos;
     } catch (error) {
         console.error('Error fetching user info:', error);

@@ -24,9 +24,9 @@
                 <router-link v-if="media.file_path && media.media_type === 'movie'" :to="`/w?id=${media.tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
                 <router-link v-else-if="media.media_type === 'show' && media.episode_id" :to="`/w?id=${media.episode_id}`" :title="`${media.title}`" class="play-trigger"></router-link>
                 <router-link v-else-if="media.media_type === 'show' && media.episodes[0].file_path" :to="`/w?id=${media.episodes[0].tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
-                
+
                 <button @click="openPopUp(media)" :title="langSnippet('more_informations')" class="info-trigger trigger-normal"></button>
-                <router-link v-if="$globalState.pageSettings[4].setting_option === 'true' && ($globalState.user.role ==='superadmin' || $globalState.user.role === 'admin')" :to="`/b/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></router-link>
+                <a v-if="$globalState.pageSettings[4].setting_option === 'true' && ($globalState.user.role ==='superadmin' || $globalState.user.role === 'admin')" :href="`/b/${media.media_type}/${media.tmdbID}`" :title="langSnippet('edit')" class="edit-trigger"></a>
             </div>
         </div>
         <div v-if="mediaWatchList" class="watched-bar">

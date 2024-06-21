@@ -7,6 +7,7 @@ const langs = [
             // Universal
             'add': 'Add',
             'add_highlight': 'Add to highlights',
+            'add_to_list': 'add to watchlist',
             'admin': 'Admin',
             'add_user': 'Add User',
             'all': 'All',
@@ -65,6 +66,7 @@ const langs = [
             'rating': 'Rating',
             'release_date': 'Release date',
             'remove': 'Remove',
+            'remove_from_list': 'remove from watchlist',
             'rename_folder': 'Rename folder',
             'reset': 'Reset',
             'role': 'Role',
@@ -147,6 +149,7 @@ const langs = [
             // Universal
             'add': 'Hinzufügen',
             'add_highlight': 'Zu Highlights hinzufügen',
+            'add_to_list': 'zur Liste hinzufügen',
             'admin': 'Administrator',
             'add_user': 'Benutzer hinzufügen',
             'all': 'Alle',
@@ -205,6 +208,7 @@ const langs = [
             'rating': 'Bewertung',
             'release_date': 'Erscheinungsdatum',
             'remove': 'Entfernen',
+            'remove_from_list': 'von Liste entfernen',
             'rename_folder': 'Ordner umbenennen',
             'reset': 'Zurücksetzen',
             'role': 'Rolle',

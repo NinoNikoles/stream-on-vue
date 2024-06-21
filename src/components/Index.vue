@@ -21,12 +21,12 @@
                 </figure>
                 
                 <div class='content-wrap mobile-only'>
-                    <h1 class="h1 text-center">{{  highlight.title }}</h1>
+                    <h1 class="h1 text-center" style="opacity: 0;">{{  highlight.title }}</h1>
                     <!-- <p class="small">{{  highlight.overview }}</p> -->
                 </div>
                 <div class='content-wrap desktop-only'>
-                    <h1 class="h2 text-center">{{  highlight.title }}</h1>
-                    <p>{{  highlight.overview }}</p>
+                    <h1 class="h2 text-center" style="opacity: 0;">{{  highlight.title }}</h1>
+                    <p style="opacity: 0;">{{  highlight.overview }}</p>
                 </div>
             </div>      
         </div>
@@ -75,7 +75,6 @@
                                 <div v-for="(id, index) in slider.mediaIDs" :key="index" class="swiper-slide">
                                     <template v-for="(media, index) in allMedia" :key="index">
                                         <media-card v-if="media.tmdbID === id" :media="media" :id="media.tmdbID+'-'+index+'-'+slider.genre.genre_name"></media-card>
-                                        <template v-else></template>
                                     </template>
                                 </div>
 
@@ -115,7 +114,8 @@ export default {
             availableSliderContent: null,
             url: window.location.protocol + '//' + window.location.hostname,
             allMedia: null,
-            userWatchList: null
+            userWatchList: null,
+            playerRdy: false
         };
     },
     methods: {
@@ -175,9 +175,9 @@ export default {
             });
         },
     },
-    async mounted() {
+    async mounted() { 
         this.highlight = await this.getHighlight();
-        this.userWatchList = await this.getAllMediaInfos(null, null, null, null, 0, 1);
+        this.userWatchList = await this.getAllMediaInfos(null, null, null, null, 0, 1);        
 
         await this.genreSlider().then(() => {
             this.availableSliderContent = this.availableSlider;
