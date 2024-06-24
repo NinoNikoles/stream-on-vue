@@ -16,32 +16,47 @@
                     <h1>{{ langSnippet('movies') }}</h1>
                 </div>
 
-                <div v-if="genreAvailable" class="col12">
-                    <div id="searchbar">
-                        <label for="movie-api-search">
-                            <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('search')+` ...`" required>
-                        </label>
+                <div class="col12" v-if="genreAvailable">
+                    <p class="text-right">
+                        <a href="#add-new-movie" data-fancybox class="btn btn-primary btn-small icon-left icon-add">
+                            {{ langSnippet('add_movie') }}
+                        </a>
+                    </p>
 
-                        <div v-if="movies" id="movieSearchResults" class="rounded">
-                            <a v-for="(movie, index) in movies" :key="index" :href="`#add-movie-${movie.id}`" data-fancybox class="display-flex flex-row marg-no">
-                                <figure class="poster" style="width:20%;max-width:100px;">
-                                    <img :src="$loadImg(movie.poster_path)" loading="lazy" :alt="`${movie.title}`">
-                                </figure>
-                                <span class="pad-xs marg-no" style="width:80%;">{{ movie.title }}</span>
+                    <div id="add-new-movie" style="display: none;">
+                        <div id="searchbar">
+                            <label for="movie-api-search">
+                                <input v-model="inputText" @input="handleInputChange" type="text" id="movie-api-search" name="movie-name" :placeholder="langSnippet('search')+` ...`" required>
+                            </label>
 
-                                <div :id="`add-movie-${movie.id}`" style="display:none;">
-                                    <p v-html="langSnippet('add_movie_to_library', movie.title)"></p>
-                                    <p class="text-right marg-no">
-                                        <button class="btn btn-success icon-left icon-add" :data-media="`${movie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(movie)">{{ langSnippet('add') }}</button>
-                                    </p>
+                            <div v-if="movies" id="movieSearchResults" class="rounded">
+                                <div v-for="(movie, index) in movies" :key="index" class="search-result-item display-flex flex-row marg-no">
+                                    <figure class="poster" style="width:20%;max-width:100px;">
+                                        <img :src="$loadImg(movie.poster_path)" loading="lazy" :alt="`${movie.title}`">
+                                    </figure>
+                                    <span class="pad-xs marg-no" style="width:80%;">
+                                        {{ movie.title }}
+                                        <p class="marg-no text-right">
+                                            <button class="btn btn-small btn-success icon-left icon-add" :data-media="`${movie.id}`" data-fancybox-close type="submit" name="add-movie" @click="saveData(movie)">{{ langSnippet('add') }}</button>
+                                        </p>
+                                    </span>
                                 </div>
-                            </a>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div v-if="outputMovies" class="col12 marg-top-m">
+
+                <div class="col12">
+                    <div v-if="outputMovies" class="col12">
+                        <p>
+                            <label for="local-search">
+                                <input v-model="localSearch" @input="localSearchFunction" type="text" id="local-search" name="local-search" :placeholder="langSnippet('search')+` ...`">
+                            </label>
+                        </p>
+
                         <div class="grid-row">
-                            <div v-for="(movie, index) in outputMovies" :key="index" class="col-6 col-4-xsmall col-2-medium grid-padding">
+                            <div v-for="(movie, index) in outputMovies" :key="index" :data-title="movie.title" class="col-6 col-4-xsmall col-2-medium grid-padding local-output-items">
                                 <router-link :to="`/b/movie/${movie.tmdbID}`" :title="`${movie.title}`" class="media-card-wrap">
                                     <figure class="media-card poster rounded">
                                         <img :src="$loadImg(movie.poster)" loading="lazy" :alt="`${movie.title}`">
@@ -51,10 +66,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div v-else class="col12 marg-bottom-m">
-                    <p>Please setup Genre</p>
+                    <div v-else class="col12">
+                        <p>Please setup Genre</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,7 +78,7 @@
 
 <script>
 import axios from 'axios';
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
 import BackendMenu from './../includes/BackendMenu.vue';
@@ -82,7 +97,8 @@ export default {
             outputMovies: null,
             genre: null,
             loader: document.getElementById('loader'),
-            genreAvailable: false
+            genreAvailable: false,
+            localSearch: ''
         };
     },
     methods: {
@@ -196,6 +212,29 @@ export default {
                 if (genre.length > 0) resolve(true);
                 resolve(false);
             });
+        },
+        async localSearchFunction() {
+            var localOutputItems = document.querySelectorAll('.local-output-items');
+
+            localOutputItems.forEach((item) => {
+                var dataTitle = normalizeString(item.getAttribute('data-title'));
+                if ( this.localSearch !== '' && !dataTitle.includes(normalizeString(this.localSearch)) ) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'inline-block';
+                }
+            });
+
+            function normalizeString(str) {
+                return str.toLowerCase()
+                        .replace(/ä/g, 'ae')
+                        .replace(/ö/g, 'oe')
+                        .replace(/ü/g, 'ue')
+                        .replace(/ß/g, 'ss')
+                        .replace(/ /g, '')
+                        .replace(/:/g, '')
+                        .replace(/-/g, '');
+            }
         }
     },
     async mounted() {
