@@ -12,7 +12,7 @@
 
         <div class="col12 backend-content pad-top-xl pad-bottom-l">
             <div class="innerWrap" v-if="show">
-                <div class="col7">
+                <div class="col8">
                     <div class="col12"><h1>{{ show.title }}</h1></div>
                     <div class="col12"><p>{{ show.overview }}</p></div>
                     <div class="col3"><p><strong>{{ langSnippet('rating') }}:</strong><br>{{ show.rating }}</p></div>
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <div class="col5">
+                <div class="col4">
                     <p class="text-right">
                         <button href="#deleteShow" data-fancybox class="btn btn-small btn-alert icon-left icon-trash" >{{ langSnippet('delete')  }}</button>
                     </p>
