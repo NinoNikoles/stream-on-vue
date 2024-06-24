@@ -7,6 +7,8 @@ const langs = [
             // Universal
             'add': 'Add',
             'add_highlight': 'Add to highlights',
+            'add_movie': 'add new movie',
+            'add_show': 'add new show',
             'add_to_list': 'add to watchlist',
             'admin': 'Admin',
             'add_user': 'Add User',
@@ -149,6 +151,8 @@ const langs = [
             // Universal
             'add': 'Hinzufügen',
             'add_highlight': 'Zu Highlights hinzufügen',
+            'add_movie': 'neuen Film hinzufügen',
+            'add_show': 'neue Serie hinzufügen',
             'add_to_list': 'zur Liste hinzufügen',
             'admin': 'Administrator',
             'add_user': 'Benutzer hinzufügen',
