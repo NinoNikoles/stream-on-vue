@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="header--logo">
                     <router-link class="logo--small" title="Zur Startseite" to="/">
-                        <span class="bold">Stream On</span>
+                        <span class="bold">{{ get_page_title() }}</span>
                     </router-link>
                 </div>
             
@@ -96,7 +96,7 @@
   
 <script>
 import router from './../router';
-import functions from './mixins/functions.vue';
+import functions from './functions.vue';
 import langSnippet from './mixins/language.vue';
 import tmdb from './mixins/tmdbAPI.vue';
 import MediaCard from './includes/MediaCard.vue';
@@ -213,16 +213,6 @@ export default {
             }
         }
     },
-    // watch: {
-    //     searchResults: {
-    //         handler(newValue) {
-    //             if ( newValue !== null ) {
-    //                 this.space = `calc(100% + ${document.body.style.paddingRight})`;
-    //             }
-    //         },
-    //         immediate: false // Falls du möchtest, dass die Methode auch bei der Komponenteninitialisierung aufgerufen wird
-    //     }
-    // },
     async mounted() {
         if ( this.$globalState.user && this.$globalState.user.isLoggedIn === true ) {
             await this.mainRouter().then(routes => {
