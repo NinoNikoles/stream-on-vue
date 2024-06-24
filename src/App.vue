@@ -1,6 +1,6 @@
 <template>
 
-    <div id="main">
+    <div id="main" :class="get_page_design()">
         <header-component v-if="!noHeader"></header-component>
         
         <router-view></router-view>
@@ -28,7 +28,7 @@
 <script>
 import Header from './components/Header.vue';
 import tmdbAPI from './components/mixins/tmdbAPI.vue';
-import functions from './components/mixins/functions.vue';
+import functions from './components/functions.vue';
 import langSnippet from './components/mixins/language.vue';
 import { Fancybox } from "@fancyapps/ui";
 import InfoPopup from "./components/includes/MediaContentPopup.vue";
@@ -104,7 +104,6 @@ export default {
         }
     },
     async mounted() {
-        await this.getDesign();
         await this.colors();
         Fancybox.bind('[data-fancybox]', {
             dragToClose: false,
