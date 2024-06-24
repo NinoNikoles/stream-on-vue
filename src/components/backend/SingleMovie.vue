@@ -12,7 +12,7 @@
 
         <div class="col12 backend-content pad-top-xl pad-bottom-l">
             <div class="innerWrap" v-if="movie">
-                <div class="col7">
+                <div class="col8">
                     <div class="col12">
                         <h1 v-if="movie.tagline">{{ movie.title }}<br>{{ movie.tagline }}</h1>
                         <h1 v-else>{{ movie.title }}</h1>
