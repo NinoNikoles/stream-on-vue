@@ -235,7 +235,7 @@
 <script>
 import tmdbAPI from './../mixins/tmdbAPI.vue';
 import langSnippet from './../mixins/language.vue';
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 import BackendMenu from './../includes/BackendMenu.vue';
 import chroma from 'chroma-js';
 import axios from 'axios';
@@ -316,7 +316,7 @@ export default {
                     });
                 });
 
-                this.$globalState.pageSettings = this.settings = await this.getSettings();
+                this.$globalState.pageSettings = this.settings = await this.get_page_settings();
 
                 this.callout('success', this.langSnippet('save'));
             } else {
