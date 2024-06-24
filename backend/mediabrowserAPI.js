@@ -110,6 +110,18 @@ const deleteFolder = async (req, res) => {
     }
 };
 
+const deleteFile = async (req, res) => {
+    const { filePath } = req.body.params;
+
+    try {
+        rimraf.sync(filePath);
+        res.send('File deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting file');
+    }
+};
+
 const uploadVideo = async (req, res) => {
     const { folder } = req.query;
     const uploadDirectory = path.join(__dirname, `../${folder}`);
@@ -158,5 +170,6 @@ module.exports = {
     createFolder,
     renameFolder,
     deleteFolder,
+    deleteFile,
     uploadVideo
 }

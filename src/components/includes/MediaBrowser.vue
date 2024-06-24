@@ -387,6 +387,22 @@ export default {
                 this.folderExists = err.response.data;
             }
         },
+        async deleteFile(file) {
+            var filePath = String(file[0]);
+
+            try {
+                await axios.post(`${this.$mainURL}:3000/deleteFile`, {
+                    params: {
+                        filePath
+                    }
+                }).then(() => {
+                    this.changeDirectory(this.mainFolder, event);
+                    Fancybox.close();
+                });
+            } catch (err) {
+                console.log(err.response.data);
+            }
+        },
         async uploadVideo() {
             const folder = this.folderStructure.path;
             const fileInput = this.$refs.fileInput;
