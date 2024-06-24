@@ -12,11 +12,11 @@
 
         <div class="col12 backend-content pad-top-xl pad-bottom-l">
             <div class="innerWrap">
-                <div class="col12">
+                <div class="col8">
                     <h1>{{ langSnippet('movies') }}</h1>
                 </div>
 
-                <div class="col12" v-if="genreAvailable">
+                <div class="col4" v-if="genreAvailable">
                     <p class="text-right">
                         <a href="#add-new-movie" data-fancybox class="btn btn-primary btn-small icon-left icon-add">
                             {{ langSnippet('add_movie') }}
