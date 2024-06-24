@@ -181,7 +181,7 @@ export default {
         },
     },
     async mounted() {
-        var settings = await this.getSettings();
+        var settings = await this.get_page_settings();
         this.API_KEY = settings[1].setting_option;
         this.LANGUAGE = settings[2].setting_option;
     }
