@@ -131,7 +131,7 @@
 import axios from 'axios';
 import videojs from 'video.js';
 import langSnippet from '../mixins/language.vue';
-import mainFunctions from '../mixins/functions.vue';
+import mainFunctions from '../functions.vue';
 import { v4 as uuidv4 } from 'uuid';
 import { getWebSocketInstance, createWebSocket } from '@/websocket/websocketChecker';
 

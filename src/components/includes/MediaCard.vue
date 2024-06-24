@@ -38,7 +38,7 @@
 
 <script>
 //import axios from 'axios';
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 import langSnippet from '../mixins/language.vue';
 
 export default {

@@ -88,7 +88,7 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import language from '../mixins/language.vue';
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 import ContentManager from '../includes/MediaBrowser.vue';
 import { Fancybox } from '@fancyapps/ui';
 import BackendMenu from './../includes/BackendMenu.vue';

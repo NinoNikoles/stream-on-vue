@@ -208,7 +208,7 @@
 import axios from 'axios';
 import { Fancybox } from '@fancyapps/ui';
 import langSnippet from '../mixins/language.vue';
-import mainFunctions from '../mixins/functions.vue';
+import mainFunctions from '../functions.vue';
 
 export default {
     name: 'MediaBrowser',

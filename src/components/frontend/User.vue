@@ -61,7 +61,7 @@
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
 import langSnippet from '../mixins/language.vue';
-import mainFunctions from '../mixins/functions.vue';
+import mainFunctions from '../functions.vue';
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
 // import { Fancybox } from '@fancyapps/ui';

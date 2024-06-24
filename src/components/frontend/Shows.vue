@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 import langSnippet from '../mixins/language.vue';
 import MediaFilter from './../includes/MediaFilter.vue';
 import MediaCard from './../includes/MediaCard.vue';

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import functions from './mixins/functions.vue';
+import functions from './functions.vue';
 
 export default {
     name: 'AppIndex',

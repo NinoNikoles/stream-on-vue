@@ -15,7 +15,7 @@
 <script>
 import router from './../../router';
 import langSnippet from './../mixins/language.vue';
-import functions from '../mixins/functions.vue';
+import functions from '../functions.vue';
 
 export default {
     name: 'BackendMenu',

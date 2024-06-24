@@ -92,10 +92,9 @@
 </template>
 
 <script>
-import functions from './mixins/functions.vue';
+import functions from './functions.vue';
 import langSnippet from './mixins/language.vue';
 import MediaCard from './includes/MediaCard.vue';
-// import MediaContent from './includes/MediaContentPopup.vue';
 
 let mediaInfos = []
 
@@ -104,7 +103,6 @@ export default {
     mixins: [functions, langSnippet],
     components: {
         'media-card': MediaCard,
-        // 'media-content': MediaContent,
     },
     data() {
         return {

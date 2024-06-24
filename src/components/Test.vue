@@ -103,7 +103,7 @@
 <script>
 import axios from 'axios';
 // import 'cropperjs/dist/cropper.css';
-import functions from './mixins/functions.vue';
+import functions from './functions.vue';
 import Cropper from 'cropperjs';
 
 export default {

@@ -21,7 +21,7 @@
 
 <script>
 import tmdbAPI from '../mixins/tmdbAPI.vue';
-import mainFunctions from '../mixins/functions.vue';
+import mainFunctions from '../functions.vue';
 import BackendMenu from '../includes/BackendMenu.vue';
 import ContentManager from '../includes/MediaBrowser.vue';
 

@@ -38,7 +38,7 @@
 <script>
 import axios from 'axios';
 import tmdbAPI from '../mixins/tmdbAPI.vue';
-import mainFunctions from '../mixins/functions.vue';
+import mainFunctions from '../functions.vue';
 import BackendMenu from './../includes/BackendMenu.vue';
 
 export default {
