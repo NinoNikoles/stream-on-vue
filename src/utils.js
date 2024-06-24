@@ -5,8 +5,8 @@ export const mainURL = `${window.location.protocol}//${window.location.hostname}
 
 export function loadImg(img, size = 'original') {
     if (!img || !size) return '/build/css/images/placeholder.webp';
-    // return `/build/css/images/placeholder.webp`;
-    return `http://image.tmdb.org/t/p/${size}${img}`;
+    return `/build/css/images/placeholder.webp`;
+    // return `http://image.tmdb.org/t/p/${size}${img}`;
 }
 
 export function truncate(string, length = 100, append = "...") {
