@@ -164,7 +164,7 @@
             transform: translate(-50%, -50%) scale(0);
             overflow: hidden;
             z-index: -1;
-            @include transition(all 0.3s ease-in-out 0.1s);
+            @include transition(all 0.25s ease-in-out 0.1s);
         }
 
         &.hollow {
@@ -176,11 +176,11 @@
 
         &:hover {
             color: $colorHover;
-            @include transition(all 0.3s ease-in-out 0s);
+            @include transition(all 0.25s ease-in-out 0s);
 
             &::after {
                 transform: translate(-50%, -50%) scale(1);
-                @include transition(all 0.3s ease-in-out 0s);
+                @include transition(all 0.25s ease-in-out 0s);
             }
         }
     }
