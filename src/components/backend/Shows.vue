@@ -44,33 +44,32 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col12">
-                        <div v-if="outputShows" class="col12">
-                            <p>
-                                <label for="local-search">
-                                    <input v-model="localSearch" @input="localSearchFunction" type="text" id="local-search" name="local-search" :placeholder="langSnippet('search')+` ...`">
-                                </label>
-                            </p>
-
-                            <div class="grid-row">
-                                <div v-for="(show, index) in outputShows" :key="index" :data-title="show.title" class="col-6 col-4-xsmall col-2-medium grid-padding local-output-items">
-                                    <router-link :to="`/b/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card-wrap">
-                                        <figure class="media-card poster rounded">
-                                            <img :src="$loadImg(show.poster)" loading="lazy" :alt="`${show.title}`">
-                                        </figure>
-                                        <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
-                                    </router-link>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-else class="col12 marg-bottom-m">
-                            <p>Please setup Genre</p>
-                        </div>
-                    </div>
                 </div>
 
+                <div class="col12">
+                    <div v-if="outputShows" class="col12">
+                        <p>
+                            <label for="local-search">
+                                <input v-model="localSearch" @input="localSearchFunction" type="text" id="local-search" name="local-search" :placeholder="langSnippet('search')+` ...`">
+                            </label>
+                        </p>
+
+                        <div class="grid-row">
+                            <div v-for="(show, index) in outputShows" :key="index" :data-title="show.title" class="col-6 col-4-xsmall col-2-medium grid-padding local-output-items">
+                                <router-link :to="`/b/show/${show.tmdbID}`" :title="`${show.title}`" class="media-card-wrap">
+                                    <figure class="media-card poster rounded">
+                                        <img :src="$loadImg(show.poster)" loading="lazy" :alt="`${show.title}`">
+                                    </figure>
+                                    <span class="title marg-no">{{ $truncate(show.title, 20) }}</span>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-else class="col12 marg-bottom-m">
+                        <p>Please setup Genre</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>    
