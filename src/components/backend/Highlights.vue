@@ -23,10 +23,14 @@
                                 <td class="desktop-only"><figure class="widescreen"><img :src="$loadImg(highlight.backdrop)" loading="lazy"></figure></td>
                                 <td><a :href="`/backend/movie/${highlight.highlight_id}`" :title="`${highlight.title}`" class="marg-no dark">{{ highlight.title }}</a></td>
                                 <td>
-                                    <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-if="highlight.highlight_status === 1" v-bind:checked="true">
-                                    <input type="checkbox" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" class="highlight-change" v-else>
+                                    <div class="col12 display-flex flex-center">
+                                        <input type="checkbox" v-model="highlight.highlight_status" @change="changeHighlightStatus" :data-media="`${highlight.highlight_id}`" :true-value="1" :false-value="0" class="highlight-change">
+                                        <span :class="highlight.highlight_status === 1 ? 'marg-no tag bg-success' : 'marg-no tag bg-alert'">{{ highlight.highlight_status === 1 ? 'active' : 'inactive' }}</span>
+                                    </div>                                    
                                 </td>
-                                <td><button :data-src="`#delete-highlight-${highlight.highlight_id}`" class="btn btn-alert icon-only icon-trash marg-no" data-fancybox></button></td>
+                                <td>
+                                    <button :data-src="`#delete-highlight-${highlight.highlight_id}`" class="btn btn-alert icon-only icon-trash marg-no" data-fancybox></button>
+                                </td>
                             
                                 <div :id="`delete-highlight-${highlight.highlight_id}`" style="display:none;">
                                     <p v-html="langSnippet('delete_highlight', highlight.title)"></p>
