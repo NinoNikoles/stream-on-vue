@@ -220,3 +220,31 @@ main .main {
     &-bottom-no { margin-bottom: 0 !important; }
     &-left-no { margin-left: 0 !important; }
 }
+
+
+// CSS Grid
+.cgrid {
+    display: grid;
+    grid-auto-flow: row; /* Neue Rows werden automatisch hinzugefügt */
+    grid-template-columns: repeat($grid-columns, 1fr); /* Spalten teilen sich automatisch gleichmäßig auf */
+    gap: rem-calc($grid-padding*2); /* Optionaler Abstand */
+
+    @for $i from 1 through $grid-columns {
+        .col#{$i} {
+            grid-column: span $i;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+    
+    @each $key, $val in $breakpoints {
+        @for $i from 1 through $grid-columns {    
+            .col#{$i}-#{$key} {
+                @include MQ($key) {
+                    grid-column: span $i;
+                }
+            }
+        }
+    }
+}
