@@ -1,3 +1,5 @@
+const os = require('os');
+const path = require('path');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -9,14 +11,54 @@ const greenColor = "\x1b[32m";
 const yellowColor = "\x1b[33m";
 const blueColor = "\x1b[34m";
 
+// Bestimme das Betriebssystem
+const platform = os.platform();
+let extensionPath = '';
+
+if (platform === 'win32') {
+    extensionPath = './sqlite/win/';
+} else if (platform === 'linux') {
+    extensionPath = './sqlite/linux/';
+} else if (platform === 'darwin') {
+    extensionPath = './sqlite/mac/'; // Hier kommen die macOS `.dylib` Dateien hin
+} else {
+    console.error('Nicht unterstütztes Betriebssystem.');
+}
+
 async function connectToDatabase() {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database('./database.db', (err) => {
             if (err) {
-                reject(`${redColor}ERROR:${resetColor} Fehler beim Öffnen der Datenbank:`, err.message);
+                reject(`Fehler beim Öffnen der Datenbank: ${err.message}`);
             } else {
-                console.log(`${yellowColor}Verbindung zur SQLite-Datenbank hergestellt${resetColor}.`);
-                db.loadExtension('./sqlite/win/unicode.dll');
+                console.log('Verbindung zur SQLite-Datenbank hergestellt.');
+
+                // Erweiterungen automatisch laden
+                const extensions = [
+                    // 'crypto',
+                    // 'define',
+                    // 'fileio',
+                    // 'fuzzy',
+                    // 'math',
+                    // 'regexp',
+                    // 'sqlean',
+                    // 'stats',
+                    // 'text',
+                    'unicode',
+                    // 'uuid',
+                    // 'vsv'
+                ];
+
+                extensions.forEach(ext => {
+                    const extPath = path.join(extensionPath, `${ext}${platform === 'win32' ? '.dll' : '.dylib'}`);
+                    try {
+                        db.loadExtension(extPath);
+                        console.log(`Erweiterung geladen: ${extPath}`);
+                    } catch (error) {
+                        console.error(`Fehler beim Laden der Erweiterung ${ext}:`, error.message);
+                    }
+                });
+
                 resolve(db);
             }
         });

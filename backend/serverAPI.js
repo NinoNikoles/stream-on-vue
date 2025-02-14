@@ -4,10 +4,50 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const { parseJSON } = require('jquery');
+const os = require('os');
 const saltRounds = 10;
 
 const db = new sqlite3.Database('./database.db');
-db.loadExtension('./sqlite/win/unicode.dll');
+
+// Bestimme das Betriebssystem
+const platform = os.platform();
+let extensionPath = '';
+
+if (platform === 'win32') {
+    extensionPath = './sqlite/win/';
+} else if (platform === 'linux') {
+    extensionPath = './sqlite/linux/';
+} else if (platform === 'darwin') {
+    extensionPath = './sqlite/mac/'; // Hier kommen die macOS `.dylib` Dateien hin
+} else {
+    console.error('Nicht unterstütztes Betriebssystem.');
+}
+
+// Erweiterungen automatisch laden
+const extensions = [
+    // 'crypto',
+    // 'define',
+    // 'fileio',
+    // 'fuzzy',
+    // 'math',
+    // 'regexp',
+    // 'sqlean',
+    // 'stats',
+    // 'text',
+    'unicode',
+    // 'uuid',
+    // 'vsv'
+];
+
+extensions.forEach(ext => {
+    const extPath = path.join(extensionPath, `${ext}${platform === 'win32' ? '.dll' : '.dylib'}`);
+    try {
+        db.loadExtension(extPath);
+        console.log(`Erweiterung geladen: ${extPath}`);
+    } catch (error) {
+        console.error(`Fehler beim Laden der Erweiterung ${ext}:`, error.message);
+    }
+});
 
 const getSession = (req, res) => {
     const sessionData = req.session;
