@@ -25,7 +25,14 @@
                         </tr>
                     </template>
 
-                    <template v-if="folderStructure.children && folderStructure.children.length > 0">
+                    <!--- If type folder only contains .gitignore --->
+                    <template v-if="folderStructure.children && folderStructure.children.length === 1 && folderStructure.children[0].name === '.gitignore'">
+                        <tr>
+                            <td>...</td>
+                        </tr>
+                    </template>
+
+                    <template v-else-if="folderStructure.children && folderStructure.children.length > 0">
                         <template v-for="(media, index) in folderStructure.children" :key="index">
 
                             <!--- If type is folder --->
@@ -57,7 +64,7 @@
                             </tr>
 
                             <!--- If page is NOT media-browser and file is MP4 --->
-                            <tr v-else-if="$route.path !== '/b/content-manager' && media.name.endsWith('.mp4')">
+                            <tr v-else-if="$route.path !== '/b/content-manager' && media.name.endsWith('.mp4') && media.name !== '.gitignore'">
                                 <td>
                                     <span class="marg-no icon-left icon-movie">{{ media.name }}</span>
                                 </td>
@@ -82,7 +89,7 @@
                             </tr>
 
                             <!--- If page is media-browser --->
-                            <tr v-else-if="$route.path === '/b/content-manager'">
+                            <tr v-else-if="$route.path === '/b/content-manager' && media.name !== '.gitignore'">
                                 <td>
                                     <span v-if="media.name.endsWith('.mp4')" class="marg-no icon-left icon-movie">{{ media.name }}</span>
                                     <span v-else-if="media.name.endsWith('.jpg') || media.name.endsWith('.jpeg') || media.name.endsWith('.png') || media.name.endsWith('.gif')" class="marg-no icon-left icon-image">{{ media.name }}</span>
