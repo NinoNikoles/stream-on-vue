@@ -53,7 +53,8 @@
                                 <figure class="widescreen" v-else>
                                     <img :src="$loadImg(episode.backdrop)" loading="lazy" importance="low" :alt="`${episode.title}`">
                                 </figure>
-                                <span class="small marg-top-xxs">Episode {{episode.episode_number}}:<br>{{episode.title}}</span>
+                                <span class="small marg-top-xxs"><strong>Episode {{episode.episode_number}}:</strong><br>{{episode.title}}</span>
+                                <p class="small marg-top-xxs" v-if="episode.overview"><strong>{{ langSnippet('overview') }}:</strong><br>{{episode.overview}}</p>
                                 <button :href="`#media-browser-${episode.episode_number}`" data-fancybox @click="selectMedia(show, episode.tmdbID)" class="btn btn-small btn-success" >{{ langSnippet('select_file')  }}</button>
                                 
                                 <div :id="`media-browser-${episode.episode_number}`" style="display: none;">
