@@ -88,8 +88,8 @@
                                             </figure>
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
-                                            <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                            <p class="small" style="color: var(--white-90);">{{ $truncate(episode.overview, 100) }}</p>
+                                            <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ episode.title }}</p>
+                                            <p class="small" style="color: var(--white-90);">{{ episode.overview }}</p>
                                         </div>
 
                                         <div v-if="episode.file_path" class="link-wrapper">
@@ -111,8 +111,8 @@
                                             </figure>
                                         </div>
                                         <div class="col-7 col-9-medium pad-left-xs">
-                                            <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ $truncate(episode.title, 50) }}</p>
-                                            <p class="small" style="color: var(--white-90);">{{ $truncate(episode.overview, 100) }}</p>
+                                            <p class="small strong marg-no">{{ langSnippet('episode') }} {{ episode.episode_number }}: {{ episode.title }}</p>
+                                            <p class="small" style="color: var(--white-90);">{{ episode.overview }}</p>
                                         </div>
 
                                         <div v-if="media && episode.file_path" class="link-wrapper">
