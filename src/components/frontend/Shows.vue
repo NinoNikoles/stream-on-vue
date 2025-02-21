@@ -99,12 +99,6 @@ export default {
             }, timeOut);
         },
         handleIntersect(entries) {
-            if ( this.page > 4 ) {
-                this.observer.disconnect();
-                this.observer = null;
-                document.getElementById('sentinel-btn').style.opacity = 1;
-            }
-
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     this.loadNextPage();
