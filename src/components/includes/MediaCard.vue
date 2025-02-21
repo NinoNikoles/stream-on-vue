@@ -1,24 +1,9 @@
 <template>        
     <div class="media-card rounded" v-if="media">
-        <div class="media-card-wrapper">
-            <!-- <template v-if="media.file_path === null">
-                <figure class="widescreen desktop-only disabled">
-                    <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                </figure>
-                <figure class="poster mobile-only disabled">
-                    <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
-                </figure>
-            </template> -->
-
-            <!-- <template> -->
-                <!-- <figure class="widescreen desktop-only">
-                    <img :src="$loadImg(media.backdrop)" :alt="`${media.title}`">
-                </figure> -->
-                <figure class="poster">
-                    <img :src="$loadImg(media.poster)" :alt="`${media.title}`">
-                </figure>
-            <!-- </template> -->
-            
+        <div :class="['media-card-wrapper', { 'animate-pulse': !imageLoaded }]">
+            <figure class="poster">
+                <img :src="$loadImg(media.poster)" :alt="`${media.title}`" @load="imageLoaded=false">
+            </figure>            
             <div class="link-wrapper">
                 <progress v-if="getWatchedTime(media.watched_seconds, media.total_length)" max="100" :value="getWatchedTime(media.watched_seconds, media.total_length)"></progress>
                 <router-link v-if="media.file_path && media.media_type === 'movie'" :to="`/w?id=${media.tmdbID}`" :title="`${media.title}`" class="play-trigger"></router-link>
@@ -33,7 +18,6 @@
             <p class="smaller marg-bottom-xxs">{{ media.title }}</p>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -59,5 +43,10 @@ export default {
             return watchedInPercent;
         }
     },
+    data() {
+        return {
+            imageLoaded: false,
+        }
+    }
 }
 </script>
