@@ -3,9 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const http = require('http');
 const helmet = require('helmet');
-const { port } = require('./config/config');
-const errorHandler = require('./middlewares/errorHandler');
-const sessionConfig = require('./middlewares/sessionConfig');
+const { port } = require('./backend/config/config');
+const errorHandler = require('./backend/middlewares/errorHandler');
+const sessionConfig = require('./backend/middlewares/sessionConfig');
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.use('', fileRoutes);
 
 // WebSocket setup
 const server = http.createServer(app);
-const setupWebSocketServer = require('./websocket/websocketConfig');
+const setupWebSocketServer = require('./backend/websocket/websocketConfig');
 const wss = setupWebSocketServer(server);
 
 app.use(errorHandler);
