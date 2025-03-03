@@ -40,5 +40,9 @@ const wss = setupWebSocketServer(server);
 app.use(errorHandler);
 
 server.listen(port, () => {
+    console.log(`----------------------------------------------------`);
+    console.log('');
     console.log(`Server is listening on port ${port}`);
+    console.log('');
+    console.log(`----------------------------------------------------`);
 });

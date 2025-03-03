@@ -25,13 +25,43 @@ if (platform === 'win32') {
     console.error('Nicht unterstütztes Betriebssystem.');
 }
 
+// Tables
+const Settings = require('./tables/Settings');
+const Users = require('./tables/Users');
+const Genre = require('./tables/Genre');
+const Media = require('./tables/Media');
+const Seasons = require('./tables/Seasons');
+const Episodes = require('./tables/Episodes');
+const MediaGenre = require('./tables/MediaGenre');
+const Watchlist = require('./tables/Watchlist');
+const Highlights = require('./tables/Highlights');
+const MediaWatched = require('./tables/MediaWatched');
+
+const tableDefinitions = {
+    settings: Settings,
+    users: Users, 
+    genre: Genre,
+    media: Media,
+    seasons: Seasons,
+    episodes: Episodes,
+    media_genre: MediaGenre,
+    watchlist: Watchlist,
+    highlights: Highlights,
+    media_watched: MediaWatched
+};
+
 async function connectToDatabase() {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database('./database.db', (err) => {
+            console.log(`----------------------------------------------------`);
+            console.log(`Erkanntes OS: ${yellowColor}${platform}${resetColor}`);
+            console.log(`----------------------------------------------------`);
+
             if (err) {
                 reject(`Fehler beim Öffnen der Datenbank: ${err.message}`);
             } else {
-                console.log('Verbindung zur SQLite-Datenbank hergestellt.');
+                console.log(`${greenColor}Verbindung zur SQLite-Datenbank hergestellt.${resetColor}`);
+                console.log(`----------------------------------------------------`);
 
                 // Erweiterungen automatisch laden
                 const extensions = [
@@ -53,7 +83,9 @@ async function connectToDatabase() {
                     const extPath = path.join(extensionPath, `${ext}${platform === 'win32' ? '.dll' : '.dylib'}`);
                     try {
                         db.loadExtension(extPath);
-                        console.log(`Erweiterung geladen: ${extPath}`);
+                        console.log('');
+                        console.log(`Erweiterung geladen: ${yellowColor}${ext}${resetColor}`);
+                        console.log('');
                     } catch (error) {
                         console.error(`Fehler beim Laden der Erweiterung ${ext}:`, error.message);
                     }
@@ -64,136 +96,6 @@ async function connectToDatabase() {
         });
     });
 }
-
-const tableDefinitions = {
-    settings: `
-        CREATE TABLE IF NOT EXISTS settings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            setting_name VARCHAR(255),
-            setting_option VARCHAR(255)
-        )
-    `,
-    users: `
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username VARCHAR(255) UNIQUE,
-            firstname VARCHAR(255),
-            lastname VARCHAR(255),
-            password VARCHAR(255),
-            img TEXT,
-            uploads TEXT,
-            role VARCHAR(10),
-            media_volume FLOAT,
-            created TIMESTAMP
-        )
-    `,
-    genre: `
-        CREATE TABLE IF NOT EXISTS genre (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            genre_id INTEGER UNIQUE,
-            genre_name VARCHAR(255),
-            created TIMESTAMP
-        )
-    `,
-    media: `
-        CREATE TABLE IF NOT EXISTS media (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tmdbID INTEGER UNIQUE,
-            title TEXT,
-            tagline TEXT,
-            overview TEXT,
-            poster TEXT,
-            backdrop TEXT,
-            rating INTEGER,
-            release_date DATE,
-            runtime INTEGER NULL,
-            collection INTEGER NULL,
-            file_path TEXT NULL,
-            genres VARCHAR(255),
-            trailer VARCHAR(255),
-            show_season_count INTEGER,
-            show_seasons TEXT,
-            show_episodes_count INTEGER,
-            media_type VARCHAR(10),
-            created TIMESTAMP
-        )
-    `,
-    seasons: `
-        CREATE TABLE IF NOT EXISTS seasons (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tmdbID INTEGER UNIQUE,
-            title TEXT,
-            overview TEXT,
-            poster TEXT,
-            season_number INTEGER,
-            rating INTEGER,
-            release_date DATE,
-            episodes_count INTEGER,
-            show_tmdbID INTEGER,
-            created TIMESTAMP,
-            FOREIGN KEY (show_tmdbID) REFERENCES media(tmdbID)
-        )
-    `,
-    episodes: `
-        CREATE TABLE IF NOT EXISTS episodes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tmdbID INTEGER UNIQUE,
-            episode_number INTEGER,
-            title TEXT,
-            overview TEXT,
-            backdrop TEXT,
-            file_path TEXT,
-            runtime INTEGER,
-            rating INTEGER,
-            release_date DATE,
-            show_id INTEGER,
-            season_number INTEGER,
-            created TIMESTAMP,
-            FOREIGN KEY (show_id) REFERENCES media(tmdbID)
-        )
-    `,
-    media_genre: `
-        CREATE TABLE IF NOT EXISTS media_genre (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            media_id INTEGER,
-            genre_id INTEGER,
-            UNIQUE (media_id, genre_id),
-            FOREIGN KEY (media_id) REFERENCES media(tmdbID),
-            FOREIGN KEY (genre_id) REFERENCES genre(genre_id)
-        )
-    `,
-    watchlist: `
-        CREATE TABLE IF NOT EXISTS watchlist (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            media_id INTEGER,
-            UNIQUE (user_id, media_id),
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-    `,
-    highlights: `
-        CREATE TABLE IF NOT EXISTS highlights (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            highlight_id INTEGER,
-            highlight_status BOOLEAN,
-            FOREIGN KEY (highlight_id) REFERENCES media(tmdbID)
-        )
-    `,
-    media_watched: `
-        CREATE TABLE IF NOT EXISTS media_watched (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            media_id INTEGER,
-            show_id INTEGER,
-            watched_seconds DECIMAL(10, 6),
-            total_length DECIMAL(10, 6),
-            watched INTEGER,
-            last_watched TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id),
-            UNIQUE(user_id, media_id)
-        )
-    `
-};
 
 async function checkIfTableExists(db, tableName) {
     return new Promise((resolve, reject) => {
@@ -215,9 +117,9 @@ async function createTable(db, tableName, tableDefinition) {
                 reject(`${redColor}ERROR:${resetColor} Fehler beim Erstellen der Tabelle "${tableName}": ${err.message}`);
             } else {
                 if (exists) {
-                    console.log(`Tabelle "${tableName}" ${blueColor}geladen${resetColor}.`);
+                    console.log(`Tabelle "${greenColor}${tableName}${resetColor}" ${blueColor}geladen${resetColor}.`);
                 } else {
-                    console.log(`Tabelle "${tableName}" ${greenColor}erstellt${resetColor}.`);
+                    console.log(`Tabelle "${yellowColor}${tableName}${resetColor}" ${greenColor}erstellt${resetColor}.`);
                 }
                 resolve();
             }
