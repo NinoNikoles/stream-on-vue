@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import langSnippet from './components/mixins/language.vue';
-import { isAuthenticated } from 'frontend/src/auth';
+import { isAuthenticated } from './auth';
 
 import Index from './components/Index.vue';
 import FrontendMovies from './components/frontend/Movies.vue';

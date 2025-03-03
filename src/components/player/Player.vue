@@ -133,7 +133,7 @@ import videojs from 'video.js';
 import langSnippet from '../mixins/language.vue';
 import mainFunctions from '../functions.vue';
 import { v4 as uuidv4 } from 'uuid';
-import { getWebSocketInstance, createWebSocket } from 'frontend/src/websocket/websocketChecker';
+import { getWebSocketInstance, createWebSocket } from '@/websocket/websocketChecker';
 
 export default {
     name: 'MediaPlayer',
